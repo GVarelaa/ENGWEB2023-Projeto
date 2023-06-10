@@ -1,8 +1,8 @@
 var Acordao = require('../models/acordao')
 
-module.exports.list = (skip, limit) => {
+module.exports.list = (query, skip, limit) => {
     return Acordao
-            .find()
+            .find(query)
             .skip(skip)
             .limit(limit)
             .then(response => {

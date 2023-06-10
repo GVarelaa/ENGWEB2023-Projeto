@@ -4,10 +4,20 @@ var Acordao = require('../controllers/acordao')
 
 /* GET home page. */
 router.get('/acordaos', function(req, res, next) {
-  var skip = req.query.skip == undefined ? 0 : req.query.skip
-  var limit = req.query.limit == undefined ? 0 : req.query.limit
+  var skip = 0
+  var limit = 0
 
-  Acordao.list(skip, limit)
+  if(req.query.skip){
+    skip = req.query.skip
+    delete req.query.skip
+  }
+
+  if(req.query.limit){
+    limit = req.query.limit
+    delete req.query.limit
+  }
+
+  Acordao.list(req.query, skip, limit)
     .then(data => {
       res.status(200).json(data)
     })
