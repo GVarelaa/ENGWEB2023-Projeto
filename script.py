@@ -17,6 +17,7 @@ for file in files:
         for accordion in accordions:
             accordion["_id"] = "a" + str(i)
             i += 1
+
             if "Magistrado" in accordion:
                 accordion["Relator"] = accordion["Magistrado"]
                 accordion.pop("Magistrado")
@@ -36,6 +37,9 @@ for file in files:
             elif "Data da Decisão" in accordion:
                 accordion["Data"] = accordion["Data da Decisão"]
                 accordion.pop("Data da Decisão")
+            elif "Data da Decisão Sumária" in accordion:
+                accordion["Data"] = accordion["Data da Decisão Sumária"]
+                accordion.pop("Data da Decisão Sumária")
 
             if "url" in accordion:
                 accordion.pop("url")
