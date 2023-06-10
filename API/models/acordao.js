@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 
-
 var acordaoSchema = new mongoose.Schema({
     _id: String,
     Processo: String,
@@ -16,7 +15,8 @@ var acordaoSchema = new mongoose.Schema({
     "Indicações Eventuais": String,
     "Área Temática": String,
     "Sumário": String,
-    "Decisão Texto Integral": String
+    "Decisão Texto Integral": String,
+    tribunal: String,
 });
 
 module.exports = mongoose.model('acordao', acordaoSchema)
