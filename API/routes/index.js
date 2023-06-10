@@ -70,4 +70,15 @@ router.delete('/acordaos/:id', function(req, res, next) {
     })
 });
 
+
+router.put('/acordaos/:id', function(req, res){
+  Acordao.updateAcordao(req.body)
+    .then(dados => {
+      res.status(201).json(dados)
+    })
+    .catch(erro => {
+      res.status(525).json({erro: erro, mensagem: "Erro a atualizar acordão."})
+    })
+})
+
 module.exports = router;

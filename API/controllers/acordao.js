@@ -37,7 +37,7 @@ module.exports.getRelatores = () => {
 
 module.exports.addAcordao = acordao => {
     acordao._id = Acordao.find().count()
-    
+
     return Acordao
             .create(acordao)
             .then(response => {
@@ -59,3 +59,13 @@ module.exports.deleteAcordao = id => {
             })
 }
 
+module.exports.updateAcordao = acordao => {
+    return Acordao
+            .updateOne({_id:acordao._id}, acordao)
+            .then(response => {
+                return response
+            })
+            .catch(error => {
+                return error
+            })
+}
