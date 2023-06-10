@@ -33,6 +33,9 @@ for file in files:
             if "Data do Acordão" in accordion:
                 accordion["Data"] = accordion["Data do Acordão"]
                 accordion.pop("Data do Acordão")
+            elif "Data da Decisão" in accordion:
+                accordion["Data"] = accordion["Data da Decisão"]
+                accordion.pop("Data da Decisão")
 
             if "url" in accordion:
                 accordion.pop("url")
