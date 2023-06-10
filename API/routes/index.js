@@ -26,6 +26,7 @@ router.get('/acordaos', function(req, res, next) {
     })
 });
 
+
 router.get('/acordaos/relatores', function(req, res, next) {
   Acordao.getRelatores()
     .then(data => {
@@ -36,6 +37,7 @@ router.get('/acordaos/relatores', function(req, res, next) {
     })
 });
 
+
 router.get('/acordaos/:id', function(req, res, next) {
   Acordao.getAcordao(req.params.id)
     .then(data => {
@@ -43,6 +45,28 @@ router.get('/acordaos/:id', function(req, res, next) {
     })
     .catch(error => {
       res.status(522).json({error: error, message: "Erro na obtenção do acordão"})
+    })
+});
+
+
+router.post('/acordaos', function(req, res, next) {
+  Acordao.addAcordao(req.body)
+    .then(data => {
+      res.status(200).json(data)
+    })
+    .catch(error => {
+      res.status(523).json({error: error, message: "Erro na criação do acordão"})
+    })
+});
+
+
+router.delete('/acordaos/:id', function(req, res, next) {
+  Acordao.deleteAcordao(req.params.id)
+    .then(data => {
+      res.status(200).json(data)
+    })
+    .catch(error => {
+      res.status(524).json({error: error, message: "Erro na deleção do acordão"})
     })
 });
 

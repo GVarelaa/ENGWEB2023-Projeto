@@ -35,3 +35,27 @@ module.exports.getRelatores = () => {
             })
 }
 
+module.exports.addAcordao = acordao => {
+    acordao._id = Acordao.find().count()
+    
+    return Acordao
+            .create(acordao)
+            .then(response => {
+                return response
+            })
+            .catch(error => {
+                return error
+            })
+}
+
+module.exports.deleteAcordao = id => {
+    return Acordao
+            .deleteOne({_id:id})
+            .then(response => {
+                return response
+            })
+            .catch(error => {
+                return error
+            })
+}
+
