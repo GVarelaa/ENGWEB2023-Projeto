@@ -1,0 +1,1 @@
+module.exports.apiAccessPoint = "http://localhost:8071/acordaos"

@@ -13,6 +13,16 @@ router.get('/acordaos', function(req, res, next) {
     })
 });
 
+router.get('/acordaos/relatores', function(req, res, next) {
+  Acordao.getRelatores()
+    .then(data => {
+      res.status(200).json(data)
+    })
+    .catch(error => {
+      res.status(523).json({error: error, message: "Erro na obtenção de relatores"})
+    })
+});
+
 router.get('/acordaos/:id', function(req, res, next) {
   Acordao.getAcordao(req.params.id)
     .then(data => {
