@@ -4,7 +4,10 @@ var Acordao = require('../controllers/acordao')
 
 /* GET home page. */
 router.get('/acordaos', function(req, res, next) {
-  Acordao.list()
+  var skip = req.query.skip == undefined ? 0 : req.query.skip
+  var limit = req.query.limit == undefined ? 0 : req.query.limit
+
+  Acordao.list(skip, limit)
     .then(data => {
       res.status(200).json(data)
     })
