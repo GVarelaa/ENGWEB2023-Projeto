@@ -4,9 +4,9 @@ var passportLocalMongoose = require('passport-local-mongoose');
 var userSchema = new mongoose.Schema({ // Acrescentar depois
     username: String,
     password: String,
-    /*name: String,
+    //name: String,
     level: String,
-    active: Boolean,*/
+    //active: Boolean,
     dateCreated: String
   });
 

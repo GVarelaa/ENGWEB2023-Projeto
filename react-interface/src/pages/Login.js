@@ -18,7 +18,7 @@ function Login() {
         <div style={{ background: 'linear-gradient(to right, rgba(250,244,49,1), rgba(237,204,6,1))' }}>
           <Container>
             <Row className="vh-100 d-flex align-items-center justify-content-center">
-              <Col md={8} lg={6} xs={12}>
+              <Col md={8} lg={5} xs={8}>
                 <Card className="shadow-lg">
                   <Card.Body>
                     <div className="mb-3 mt-md-4">
