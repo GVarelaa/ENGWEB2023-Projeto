@@ -1,14 +1,16 @@
 import { Link } from "react-router-dom";
 import { useState } from 'react';
 import { Col, Button, Row, Container, Card, Form, FloatingLabel } from "react-bootstrap";
+//var axios = require('axios')
 
 function Login() {
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    alert(`The name you entered was: ${name}`)
+    
+
   }
 
   return (
@@ -25,11 +27,11 @@ function Login() {
 
                       <Form onSubmit={handleSubmit}>
                         <FloatingLabel className="mb-3 form-outline" label="Username">
-                          <Form.Control type="text" placeholder="Username"/>
+                          <Form.Control type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}/>
                         </FloatingLabel>
 
                         <FloatingLabel  className="mb-3 form-outline" label="Password">
-                          <Form.Control type="password" placeholder="Password" />
+                          <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
                         </FloatingLabel>
                       </Form>
 
@@ -56,18 +58,5 @@ function Login() {
   );
 }
 
-/*
-        <div> className="form"</div>
-
-        <form onSubmit={handleSubmit}>
-          <fieldset>
-            <label>Username</label>
-            <input type="text" name="username" value={name} onChange={(e) => setName(e.target.value)}/>
-            <label>Password</label>
-            <input type="text" name="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-            <input type="submit"/>
-          </fieldset>
-        </form>
-*/
 
 export default Login;
