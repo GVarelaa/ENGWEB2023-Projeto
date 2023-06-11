@@ -7,8 +7,9 @@ var jwt = require('jsonwebtoken')
 
 var User = require('../controllers/user')
 
-/* GET users listing. */
+
 router.get('/', function(req, res) {
+  console.log("aqiiiiiiii")
   User.list()
     .then(data => res.status(200).jsonp(data))
     .catch(error => res.status(500).jsonp({error: error, message: "Erro na obtenção dos utilizadores"}))
@@ -56,6 +57,7 @@ router.post('/login', passport.authenticate('local'), function(req, res) {
 
 router.post('/register', function(req, res) {
   var date = new Date().toISOString().substring(0,19)
+  console.log("register")
   userModel.register(new userModel({username: req.body.username, level: req.body.level, dataCreated: date}),
                       req.body.password,
                       function(err, user){

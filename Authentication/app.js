@@ -1,11 +1,11 @@
 var createError = require('http-errors');
 var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var passport = require('passport')
 var LocalStrategy = require('passport-local').Strategy
+
+var mongoose = require('mongoose');
 
 mongoose.connect('mongodb://127.0.0.1/ProjetoEngWeb', 
       { useNewUrlParser: true,
@@ -13,11 +13,16 @@ mongoose.connect('mongodb://127.0.0.1/ProjetoEngWeb',
         serverSelectionTimeoutMS: 5000});
   
 const db = mongoose.connection;
-
 db.on('error', console.error.bind(console, 'Erro de conexão ao MongoDB...'));
 db.once('open', function() {
   console.log("Conexão ao MongoDB realizada com sucesso...")
 });
+
+// passport config
+var User = require('./models/user')
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 var usersRouter = require('./routes/users');
 
@@ -26,10 +31,11 @@ var app = express();
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/users', usersRouter);
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use('/', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -44,7 +50,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.jsonp({error: err});
 });
 
 module.exports = app;
