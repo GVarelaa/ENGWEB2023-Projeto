@@ -1,16 +1,32 @@
 import { Link } from "react-router-dom";
 import { useState } from 'react';
 import { Col, Button, Row, Container, Card, Form, FloatingLabel } from "react-bootstrap";
-//var axios = require('axios')
+import axios from 'axios';
+
+var env = require('../config/env')
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (event) => {
-    event.preventDefault();
     
+    console.log(username)
+    console.log(password)
+    axios.post('http://localhost:8072/login', {username:username, password:password})
+      .then(response => {
+        const token = response.data.token
 
+        localStorage.setItem('token', token)
+        //console.log("sucesso")
+        //window.location.href = '/crl'
+        //setAuthToken
+      })
+      .catch(error => {
+        console.log(error)
+      }) 
+
+      event.preventDefault();
   }
 
   return (
@@ -33,11 +49,11 @@ function Login() {
                         <FloatingLabel  className="mb-3 form-outline" label="Password">
                           <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
                         </FloatingLabel>
-                      </Form>
 
-                      <div className="d-flex justify-content-center">
-                        <Button type="submit" variant="outline-warning">Login</Button>
-                      </div>
+                        <div className="d-flex justify-content-center">
+                          <Button type="submit" variant="outline-warning">Login</Button>
+                        </div>
+                      </Form>
 
                       <div className="mt-3">
                         <p className="mb-0  text-center">
