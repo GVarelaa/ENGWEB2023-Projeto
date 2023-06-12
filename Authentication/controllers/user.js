@@ -1,10 +1,32 @@
-var User = require("../models/user")
+// Controlador para o modelo User
 
+var User = require('../models/user')
 
+// Devolve a lista de Users
 module.exports.list = () => {
     return User
             .find()
-            .sort('username')
+            .sort('name')
+            .then(resposta => {
+                return resposta
+            })
+            .catch(erro => {
+                return erro
+            })
+}
+
+module.exports.getUser = id => {
+    return User.findOne({_id:id})
+            .then(resposta => {
+                return resposta
+            })
+            .catch(erro => {
+                return erro
+            })
+}
+
+module.exports.addUser = u => {
+    return User.create(u)
             .then(resposta => {
                 return resposta
             })
@@ -14,63 +36,43 @@ module.exports.list = () => {
 }
 
 
-module.exports.getUser = id => {
-    return User
-            .findOne({_id: id})
-            .then(response => {
-                return response
+module.exports.updateUser = (id, info) => {
+    return User.updateOne({_id:id}, info)
+            .then(resposta => {
+                return resposta
             })
-            .catch(error => {
-                return error
-            })
-}
-
-
-module.exports.addUser = user => {
-    user["id"] = User.find().count()
-    return User
-            .create(user)
-            .then(response => {
-                return response
-            })
-            .catch(error => {
-                return error
+            .catch(erro => {
+                return erro
             })
 }
 
-
-module.exports.updateUser = user => {
-    return User
-            .updateOne({_id: user._id}, user)
-            .then(response => {
-                return response
+module.exports.updateUserStatus = (id, status) => {
+    return User.updateOne({_id:id}, {active: status})
+            .then(resposta => {
+                return resposta
             })
-            .catch(error => {
-                return error
+            .catch(erro => {
+                return erro
             })
 }
 
+module.exports.updateUserPassword = (id, pwd) => {
+    return User.updateOne({_id:id}, pwd)
+            .then(resposta => {
+                return resposta
+            })
+            .catch(erro => {
+                return erro
+            })
+}
 
 module.exports.deleteUser = id => {
-    return User
-            .deleteOne({_id: id})
-            .then(response => {
-                return response
+    return User.deleteOne({_id:id})
+            .then(resposta => {
+                return resposta
             })
-            .catch(error => {
-                return error
-            })
-}
-
-
-module.exports.getTotalRecords = () => {
-    return User
-            .find()
-            .count()
-            .then(response => {
-                return response
-            })
-            .catch(error => {
-                return error
+            .catch(erro => {
+                return erro
             })
 }
+ 

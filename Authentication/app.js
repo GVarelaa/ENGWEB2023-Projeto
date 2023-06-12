@@ -1,6 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
 var logger = require('morgan');
+var cors = require('cors')
 
 var passport = require('passport')
 var LocalStrategy = require('passport-local').Strategy
@@ -19,7 +20,7 @@ db.once('open', function() {
 });
 
 // passport config
-var User = require('./models/user')
+var User = require('./models/user');
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -28,6 +29,7 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
