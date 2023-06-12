@@ -11,37 +11,43 @@ function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   //const [filiacao, setFiliacao] = useState("");
-  const [nivel, setNivel] = useState("Consumidor");
+  const [nivel, setNivel] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-const handleSubmit = (event) => {
-  event.preventDefault();
-  let nivel;
-
-  if (nivel === 'Consumidor') nivel = 1;
-  else if (nivel === 'Produtor') nivel = 2;
-  
-  axios.post('http://localhost:8072/register', {
-      nome: nome,
-      email: email,
-      username: username,
-      password: password,
-      nivel: nivel,
-    })
-    .then(response => {
-      const token = response.data.token;
-      localStorage.setItem('token', token);
-      setIsSubmitted(true);
-      // setAuthToken
-    })
-    .catch(error => {
-      setUsername('');
-      setPassword('');
-      setNome('');
-      setEmail('');
-      console.log(error);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    
+    axios.post('http://localhost:8072/register', {
+        nome: nome,
+        email: email,
+        username: username,
+        password: password,
+        nivel: nivel,
+      })
+      .then(response => {
+        const token = response.data.token;
+        localStorage.setItem('token', token);
+        setIsSubmitted(true);
+        // setAuthToken
+      })
+      .catch(error => {
+        setUsername('');
+        setPassword('');
+        setNome('');
+        setEmail('');
+        console.log(error);
     });
-};
+  };
+
+  const handleNivel = (e) => {
+    if (e === 'Consumidor') {
+        setNivel(1);
+      } else if (e === 'Produtor') {
+        setNivel(2);
+      } else {
+        setNivel(null);
+      }
+  }
 
   const registerForm = (
         <div style={{ background: 'linear-gradient(to right, rgba(250,244,49,1), rgba(237,204,6,1))' }}>
@@ -73,9 +79,9 @@ const handleSubmit = (event) => {
 
                         <div className="d-flex align-items-center mb-3">
                             <label className="form-label me-2">Nível:</label>
-                            <Dropdown onSelect={(e) => setNivel(e)}>
+                            <Dropdown onSelect={handleNivel}>
                             <Dropdown.Toggle variant="outline-primary" id="dropdown-nivel" style={{backgroundColor: 'white', color: 'black', borderColor: '#ced4da'}}>
-                                {nivel || 'Selecione'}
+                                {nivel === 1 ? 'Consumidor' : nivel === 2 ? 'Produtor' : null}
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
                                 <Dropdown.Item eventKey="Consumidor">Consumidor</Dropdown.Item>
