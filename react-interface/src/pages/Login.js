@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { useState } from 'react';
-import { Col, Button, Row, Container, Card, Form, FloatingLabel } from "react-bootstrap";
+import { Col, Button, Row, Container, Card, Form, FloatingLabel } from 'react-bootstrap';
 import axios from 'axios';
 
 var env = require('../config/env')
@@ -12,9 +12,6 @@ function Login() {
   const [isInvalid, setIsInvalid] = useState(false);
 
   const handleSubmit = (event) => {
-    
-    console.log(username)
-    console.log(password)
     axios.post('http://localhost:8072/login', {username:username, password:password})
       .then(response => {
         const token = response.data.token

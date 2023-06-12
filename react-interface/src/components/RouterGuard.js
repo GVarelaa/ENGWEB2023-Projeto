@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Navigate } from 'react-router-dom';
 
-const RouterGuard = ({children}) => {
+function RouterGuard({children}) {
  
     function hasJWT() {
         let flag = false;
