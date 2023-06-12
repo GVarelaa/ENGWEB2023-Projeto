@@ -12,7 +12,7 @@ function Login() {
   const [isInvalid, setIsInvalid] = useState(false);
 
   const handleSubmit = (event) => {
-    axios.post('http://localhost:8072/login', {username:username, password:password})
+    axios.post(env.authAcessPoint + '/login', {username:username, password:password})
       .then(response => {
         const token = response.data.token
 

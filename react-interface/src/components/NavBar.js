@@ -1,23 +1,30 @@
-import { Navbar, Nav, Container, NavDropdown} from 'react-bootstrap';
-import { Person, Star } from 'react-bootstrap-icons';
+import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart, faUser } from '@fortawesome/free-solid-svg-icons';
 
 function NavBar() {
   return (
     <>
-      <Navbar bg="dark" variant="dark" expand="lg" style={{'--bs-navbar-padding-y': '1rem'}}>
-        <Container style={{'max-width': '95%'}}>
-          <Navbar.Brand href="#home">Navbar</Navbar.Brand>
+      <Navbar bg="dark" variant="dark" expand="lg" style={{ '--bs-navbar-padding-y': '1rem' }}>
+        <Container style={{ 'max-width': '95%' }}>
+          <Navbar.Brand href="#home">Acordãos</Navbar.Brand>
           <Navbar.Collapse>
-            <Nav className="me-auto">
+            <Nav >
               <Nav.Link href="#home">Home</Nav.Link>
-              <Nav.Link href="#features">Features</Nav.Link>
-              <Nav.Link href="#pricing">Pricing</Nav.Link>
+              <Nav.Link href="#about">About</Nav.Link>
+              <Nav.Link href="#services">Services</Nav.Link>
             </Nav>
 
-            <Nav>
-              <Nav.Link href="#home"><Star className="me-3" size={30}/></Nav.Link>
-              <NavDropdown title= {<Person size={30}/>}>
+            <Nav className='ms-auto'>
+              <Nav.Link href="#favorites" className='me-3 pe-5'>
+                <FontAwesomeIcon icon={faHeart} size='lg'/>
+              </Nav.Link>
 
+              <NavDropdown className='pe-5 me-5' title={<FontAwesomeIcon icon={faUser} size='lg'/>} id="account-dropdown">
+                <NavDropdown.Item href="#profile">Profile</NavDropdown.Item>
+                <NavDropdown.Item href="#settings">Settings</NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item href="#logout">Logout</NavDropdown.Item>
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>
