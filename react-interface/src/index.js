@@ -1,17 +1,17 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
-import Home from "./pages/Home";
-import Blogs from "./pages/Blogs";
-import Contact from "./pages/Contact";
 import NoPage from "./pages/NoPage";
+import RouterGuard from "./components/RouterGuard"
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />}/>
+        <Route path="/" element={<RouterGuard> <NoPage/> </RouterGuard>}/>
+        <Route path="/login" element={<Login />}/>
+        <Route path="*" element={<NoPage/>}/>  // Proteger esta merda
       </Routes>
     </BrowserRouter>
   );

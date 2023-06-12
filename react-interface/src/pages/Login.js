@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Col, Button, Row, Container, Card, Form, FloatingLabel } from "react-bootstrap";
 import axios from 'axios';
@@ -8,6 +8,8 @@ var env = require('../config/env')
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isInvalid, setIsInvalid] = useState(false);
 
   const handleSubmit = (event) => {
     
@@ -18,19 +20,20 @@ function Login() {
         const token = response.data.token
 
         localStorage.setItem('token', token)
-        //console.log("sucesso")
-        //window.location.href = '/crl'
+        setIsSubmitted(true);
         //setAuthToken
       })
       .catch(error => {
+        setUsername("");
+        setPassword("");
+        setIsInvalid(true);
         console.log(error)
       }) 
 
-      event.preventDefault();
+      event.preventDefault()
   }
 
-  return (
-      <>
+  const loginForm = (
         <div style={{ background: 'linear-gradient(to right, rgba(250,244,49,1), rgba(237,204,6,1))' }}>
           <Container>
             <Row className="vh-100 d-flex align-items-center justify-content-center">
@@ -49,6 +52,10 @@ function Login() {
                         <FloatingLabel  className="mb-3 form-outline" label="Password">
                           <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
                         </FloatingLabel>
+
+                        {isInvalid && 
+                          <p className="mb-0  text-center mb-3 text-warning">Os dados introduzidos estão incorretos.</p>
+                        }
 
                         <div className="d-flex justify-content-center">
                           <Button type="submit" variant="outline-warning">Login</Button>
@@ -70,6 +77,11 @@ function Login() {
             </Row>
           </Container>
         </div>
+  );
+
+  return (
+      <>
+        {isSubmitted ? <Navigate to="/"/> : loginForm}
       </>
   );
 }
