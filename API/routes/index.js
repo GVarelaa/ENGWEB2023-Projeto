@@ -3,7 +3,7 @@ var router = express.Router();
 var Acordao = require('../controllers/acordao')
 
 /* GET home page. */
-router.get('/acordaos', fsdfsdf, function(req, res, next) {
+router.get('/acordaos', function(req, res, next) {
   var skip = 0
   var limit = 0
 
