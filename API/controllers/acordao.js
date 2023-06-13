@@ -24,6 +24,21 @@ module.exports.getAcordao = id => {
             })
 }
 
+
+module.exports.getAcordaosNumber = () => {
+    return Acordao
+            .find()
+            .count()
+            .then(response => {
+                return response
+            })
+            .catch(error => {
+                return error
+            })
+}
+
+
+
 module.exports.getRelatores = () => {
     return Acordao
             .distinct("Relator")

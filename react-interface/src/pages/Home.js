@@ -1,34 +1,66 @@
 import { useState, useEffect} from 'react'
 import NavBar from '../components/NavBar';
 import { Container, Accordion, ListGroup, ListGroupItem, Pagination } from 'react-bootstrap';
+import { PaginationControl } from 'react-bootstrap-pagination-control';
 import axios from 'axios';
 var env = require('../config/env')
 
 
 function Home() {
   const [data, setData] = useState([]);
-  var nItems = 100;
+  const [page, setPage] = useState(1);
+  const [pagesNumber, setPagesNumber] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(env.apiAcessPoint + `?skip=0&limit=${nItems}`);
+        const response = await axios.get(env.apiAcessPoint + '?skip=0&limit=100');
         setData(response.data);
       } catch (error) {
         console.log(error);
       }
     };
 
+    const fetchPagesNumber = async () => {
+      try {
+        const response = await axios.get(env.apiAcessPoint + '/number');
+        setPagesNumber(response.data)
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchPagesNumber();
     fetchData();
   }, []);
 
-  console.log(data)
+
+  const handleChangePage = async (page) => {
+    setPage(page)
+
+    const skip = (page-1) * 100;
+
+    try {
+      const response = await axios.get(env.apiAcessPoint + `?skip=${skip}&limit=100`);
+      setData(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
 
   return (
     <>
       <NavBar/>
-      <Container>
-        <Accordion>
+      <Container className='mt-4'>
+        <PaginationControl  page={page}  
+                              between={4}
+                              total={pagesNumber}
+                              limit={100}
+                              changePage={handleChangePage}
+                              ellipsis={1}/>
+
+        <Accordion className='mb-4'>
           {data.map((obj, index) => {
             return (
               <Accordion.Item eventKey={index}>
@@ -43,23 +75,12 @@ function Home() {
             )
           })}
         </Accordion>
-          <Pagination>
-            <Pagination.First />
-            <Pagination.Prev />
-            <Pagination.Item>{1}</Pagination.Item>
-            <Pagination.Ellipsis />
-
-            <Pagination.Item>{10}</Pagination.Item>
-            <Pagination.Item>{11}</Pagination.Item>
-            <Pagination.Item active>{12}</Pagination.Item>
-            <Pagination.Item>{13}</Pagination.Item>
-            <Pagination.Item disabled>{14}</Pagination.Item>
-
-            <Pagination.Ellipsis />
-            <Pagination.Item>{20}</Pagination.Item>
-            <Pagination.Next />
-            <Pagination.Last />
-          </Pagination>
+        <PaginationControl  page={page}  
+                            between={4}
+                            total={pagesNumber}
+                            limit={100}
+                            changePage={handleChangePage}
+                            ellipsis={1}/>
       </Container>
     </>
   );
