@@ -1,13 +1,18 @@
 import React from 'react';
-import { Route, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
+import jwt_decode from 'jwt-decode'
 
 function RouterGuard({children}) {
  
     function hasJWT() {
         let flag = false;
-  
-        //check user has JWT token
-        localStorage.getItem("token") ? flag=true : flag=false
+        
+        var token = localStorage.getItem('token');
+        if(token){
+            var decodedToken = jwt_decode(token);
+            if(Date.now() >= decodedToken.exp * 1000) flag = false;
+            else flag = true;
+        }
        
         return flag
     }

@@ -1,6 +1,7 @@
 import { Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Col, Button, Row, Container, Card, Form, FloatingLabel } from 'react-bootstrap';
+import ParticleLayout from '../components/ParticleLayout'
 import axios from 'axios';
 
 var env = require('../config/env')
@@ -31,7 +32,8 @@ function Login() {
   }
 
   const loginForm = (
-        <div style={{ background: 'linear-gradient(to right, rgba(250,244,49,1), rgba(237,204,6,1))' }}>
+        <>
+          <ParticleLayout/>
           <Container>
             <Row className="vh-100 d-flex align-items-center justify-content-center">
               <Col md={8} lg={5} xs={8}>
@@ -51,18 +53,18 @@ function Login() {
                         </FloatingLabel>
 
                         {isInvalid && 
-                          <p className="mb-0  text-center mb-3 text-warning">Os dados introduzidos estão incorretos.</p>
+                          <p className="mb-0  text-center mb-3 text-dark">Os dados introduzidos estão incorretos.</p>
                         }
 
                         <div className="d-flex justify-content-center">
-                          <Button type="submit" variant="outline-warning">Login</Button>
+                          <Button type="submit" variant="outline-dark">Login</Button>
                         </div>
                       </Form>
 
                       <div className="mt-3">
                         <p className="mb-0  text-center">
                           Não possui conta? {" "}
-                          <a href="/register" className="text-warning fw-bold">
+                          <a href="/register" className="text-dark fw-bold">
                             Registar
                           </a>
                         </p>
@@ -73,7 +75,7 @@ function Login() {
               </Col>
             </Row>
           </Container>
-        </div>
+        </>
   );
 
   return (

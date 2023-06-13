@@ -17,7 +17,7 @@ function Register() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    axios.post('http://localhost:8072/register', {
+    axios.post(env.authAcessPoint + '/register', {
       nome: nome,
       email: email,
       username: username,

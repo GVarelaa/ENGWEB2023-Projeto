@@ -1,10 +1,10 @@
 import { useState, useEffect} from 'react'
 import NavBar from '../components/NavBar';
-import { Container, Accordion, ListGroup, ListGroupItem, Pagination } from 'react-bootstrap';
+import { Container, Accordion, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { PaginationControl } from 'react-bootstrap-pagination-control';
 import axios from 'axios';
-var env = require('../config/env')
 
+var env = require('../config/env')
 
 function Home() {
   const [data, setData] = useState([]);
@@ -30,8 +30,8 @@ function Home() {
       }
     };
 
-    fetchPagesNumber();
     fetchData();
+    fetchPagesNumber();
   }, []);
 
 
