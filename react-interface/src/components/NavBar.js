@@ -3,6 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faUser } from '@fortawesome/free-solid-svg-icons';
 
 function NavBar() {
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+  }
+
   return (
     <>
       <Navbar bg="dark" variant="dark" expand="lg" style={{ '--bs-navbar-padding-y': '1rem' }}>
@@ -24,7 +28,7 @@ function NavBar() {
                 <NavDropdown.Item href="#profile">Profile</NavDropdown.Item>
                 <NavDropdown.Item href="#settings">Settings</NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item href="#logout">Logout</NavDropdown.Item>
+                <NavDropdown.Item href="/" onClick={handleLogout}>Logout</NavDropdown.Item>
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>

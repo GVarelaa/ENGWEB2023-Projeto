@@ -54,11 +54,11 @@ function Home() {
       <NavBar/>
       <Container className='mt-4'>
         <PaginationControl  page={page}  
-                              between={4}
-                              total={pagesNumber}
-                              limit={100}
-                              changePage={handleChangePage}
-                              ellipsis={1}/>
+                            between={4}
+                            total={pagesNumber}
+                            limit={100}
+                            changePage={handleChangePage}
+                            ellipsis={1}/>
 
         <Accordion className='mb-4'>
           {data.map((obj, index) => {
