@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var cors = require('cors')
 
 var mongoose = require('mongoose');
 var mongoDB = 'mongodb://127.0.0.1/ProjetoEngWeb';
@@ -17,6 +18,7 @@ var indexRouter = require('./routes/index');
 
 var app = express();
 
+app.use(cors());
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
