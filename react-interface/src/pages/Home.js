@@ -1,6 +1,8 @@
 import { useState, useEffect} from 'react'
 import NavBar from '../components/NavBar';
-import { Container, Accordion, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Container, Accordion, ListGroup, ListGroupItem, Button } from 'react-bootstrap';
+import { Eye } from 'react-bootstrap-icons'
 import { PaginationControl } from 'react-bootstrap-pagination-control';
 import axios from 'axios';
 
@@ -64,7 +66,10 @@ function Home() {
           {data.map((obj, index) => {
             return (
               <Accordion.Item eventKey={index}>
-                <Accordion.Header><b>Processo:</b>{obj.Processo}</Accordion.Header>
+                <Accordion.Header>
+                  <Container><b>Processo:</b>{obj.Processo}</Container>
+                  <Container className='d-flex justify-content-end px-4'> <Link to={obj._id}> <Eye size={20} color='black'/> </Link> </Container>
+                </Accordion.Header>
                 <Accordion.Body>
                   <ListGroup>
                     <ListGroupItem><b>Data:</b>{obj.Data}</ListGroupItem>
