@@ -15,6 +15,7 @@ function Record(){
             try{
                 const response = await axios.get(env.apiAcessPoint + `/${params.id}`)
                 if(response.data) setRecords([response.data])
+                else setRecords("NoPage")
             }
             catch (error){
                 console.log(error)
@@ -24,13 +25,14 @@ function Record(){
         fetchData();
     }, []);
 
+    console.log(records)
 
     return (
         <>
             <NavBar/>
             <Container className="my-4">
                 <ListGroup>
-                    {records ? Object.keys(records[0]).map((key) => {return (<ListGroupItem><b>{key}:</b>{records[0][key]}</ListGroupItem>)}) : <NoPage/>}
+                    {records && (records === "NoPage" ? <NoPage/> : Object.keys(records[0]).map((key) => {return (<ListGroupItem><b>{key}:</b>{records[0][key]}</ListGroupItem>)}))}
                 </ListGroup>
             </Container>
         </>
