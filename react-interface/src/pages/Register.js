@@ -1,21 +1,55 @@
-import { Navigate } from 'react-router-dom';
-import { useState } from 'react';
-import { Col, Button, Row, Container, Card, Form, FloatingLabel, Dropdown } from 'react-bootstrap';
-import axios from 'axios';
+import { Navigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Col, Button, Row, Container, Card, Form, FloatingLabel, Dropdown } from 'react-bootstrap'
+import { CheckCircleFill, ExclamationTriangleFill } from 'react-bootstrap-icons'
+import ParticleLayout from '../components/ParticleLayout'
+import axios from 'axios'
 
 var env = require('../config/env')
 
 function Register() {
-  const [nome, setNome] = useState("");
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  //const [filiacao, setFiliacao] = useState("");
-  const [nivel, setNivel] = useState(1);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [nome, setNome] = useState("")
+  const [email, setEmail] = useState("")
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+  //const [filiacao, setFiliacao] = useState("")
+  const [nivel, setNivel] = useState(1)
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [emailExists, setEmailExists] = useState(false) // Track if email already exists
+  const [usernameExists, setUsernameExists] = useState(false)
+
+  useEffect(() => {
+    if (email) checkAccountExists(1)
+    else setEmailExists(false)
+
+    if (username) checkAccountExists(2)
+    else setUsernameExists(false)
+  }, [email, username])
+
+  const checkAccountExists = (type) => {
+    if (type === 1){
+      axios.get(env.authAcessPoint + '/check-email/' + email)
+        .then(response => {
+          console.log(response)
+          if (response.data != null) setEmailExists(true)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+    else if (type === 2){
+      axios.get(env.authAcessPoint + '/check-username/' + username)
+        .then(response => {
+          if (response.data != null) setUsernameExists(true)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+  }
 
   const handleSubmit = (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     axios.post(env.authAcessPoint + '/register', {
       nome: nome,
@@ -25,22 +59,23 @@ function Register() {
       nivel: nivel,
     })
       .then(response => {
-        const token = response.data.token;
-        localStorage.setItem('token', token);
-        setIsSubmitted(true);
+        const token = response.data.token
+        localStorage.setItem('token', token)
+        setIsSubmitted(true)
         // setAuthToken
       })
       .catch(error => {
-        setUsername('');
-        setPassword('');
-        setNome('');
-        setEmail('');
-        console.log(error);
-      });
-  };
+        setUsername('')
+        setPassword('')
+        setNome('')
+        setEmail('')
+        console.log(error)
+      })
+  }
 
   const registerForm = (
-    <div style={{ background: 'linear-gradient(to right, rgba(250,244,49,1), rgba(237,204,6,1))' }}>
+    <>
+      <ParticleLayout/>
       <Container>
         <Row className="vh-100 d-flex align-items-center justify-content-center">
           <Col md={8} lg={5} xs={8}>
@@ -58,10 +93,21 @@ function Register() {
                     <FloatingLabel className="mb-3 form-outline" label="Email">
                       <Form.Control type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                     </FloatingLabel>
+                    {emailExists ? (
+                      <div className="error-message">
+                        <i ExclamationTriangleFill></i>
+                        Já existe uma conta com esse e-mail!
+                      </div>
+                    ) : (
+                      <div className="validation-message">
+                        <i CheckCircleFill></i>
+                      </div>
+                    )}
 
                     <FloatingLabel className="mb-3 form-outline" label="Username">
                       <Form.Control type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
                     </FloatingLabel>
+                    {usernameExists && <p>O username já está a ser utilizado!</p>}
 
                     <FloatingLabel className="mb-3 form-outline" label="Password">
                       <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
@@ -81,14 +127,14 @@ function Register() {
                     </div>
 
                     <div className="d-flex justify-content-center">
-                      <Button type="submit" variant="outline-warning">Registar</Button>
+                      <Button type="submit" variant="outline-dark">Registar</Button>
                     </div>
                   </Form>
 
                   <div className="mt-3">
                     <p className="mb-0  text-center">
                       Já possui conta? {" "}
-                      <a href="/login" className="text-warning fw-bold">
+                      <a href="/login" className="text-dark fw-bold">
                         Login
                       </a>
                     </p>
@@ -99,15 +145,15 @@ function Register() {
           </Col>
         </Row>
       </Container>
-    </div>
-  );
+    </>
+  )
 
   return (
     <>
       {isSubmitted ? <Navigate to="/" /> : registerForm}
     </>
-  );
+  )
 }
 
 
-export default Register;
+export default Register

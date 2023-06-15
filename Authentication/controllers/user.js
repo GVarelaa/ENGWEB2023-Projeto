@@ -30,8 +30,9 @@ module.exports.getUser = id => {
 
 module.exports.checkEmail = (email) => {
     return User
-            .findOne({email: email}, {email:1, _id:0})
+            .findOne({email: email})
             .then(response => {
+                if (response != null) response = {email: response.email}
                 return response
             })
             .catch(error => {

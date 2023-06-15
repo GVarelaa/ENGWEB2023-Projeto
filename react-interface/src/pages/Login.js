@@ -1,16 +1,16 @@
-import { Navigate } from 'react-router-dom';
-import { useState } from 'react';
-import { Col, Button, Row, Container, Card, Form, FloatingLabel } from 'react-bootstrap';
+import { Navigate } from 'react-router-dom'
+import { useState } from 'react'
+import { Col, Button, Row, Container, Card, Form, FloatingLabel } from 'react-bootstrap'
 import ParticleLayout from '../components/ParticleLayout'
-import axios from 'axios';
+import axios from 'axios'
 
 var env = require('../config/env')
 
 function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isInvalid, setIsInvalid] = useState(false);
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isInvalid, setIsInvalid] = useState(false)
 
   const handleSubmit = (event) => {
     axios.post(env.authAcessPoint + '/login', {username:username, password:password})
@@ -18,13 +18,13 @@ function Login() {
         const token = response.data.token
 
         localStorage.setItem('token', token)
-        setIsSubmitted(true);
+        setIsSubmitted(true)
         //setAuthToken
       })
       .catch(error => {
-        setUsername("");
-        setPassword("");
-        setIsInvalid(true);
+        setUsername("")
+        setPassword("")
+        setIsInvalid(true)
         console.log(error)
       }) 
 
@@ -76,14 +76,14 @@ function Login() {
             </Row>
           </Container>
         </>
-  );
+  )
 
   return (
       <>
         {isSubmitted ? <Navigate to="/"/> : loginForm}
       </>
-  );
+  )
 }
 
 
-export default Login;
+export default Login
