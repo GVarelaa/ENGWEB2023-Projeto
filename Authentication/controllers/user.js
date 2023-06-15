@@ -7,72 +7,125 @@ module.exports.list = () => {
     return User
             .find()
             .sort('name')
-            .then(resposta => {
-                return resposta
+            .then(response => {
+                return response
             })
-            .catch(erro => {
-                return erro
+            .catch(error => {
+                return error
             })
 }
 
+
 module.exports.getUser = id => {
-    return User.findOne({_id:id})
-            .then(resposta => {
-                return resposta
+    return User
+            .findOne({_id:id})
+            .then(response => {
+                return response
             })
-            .catch(erro => {
-                return erro
+            .catch(error => {
+                return error
             })
 }
+
+
+module.exports.checkEmail = (email) => {
+    return User
+            .findOne({email: email}, {email:1, _id:0})
+            .then(response => {
+                return response
+            })
+            .catch(error => {
+                return error
+            })
+}
+
+
+module.exports.checkUsername = (username) => {
+    return User
+            .findOne({username: username}, {username:1, _id:0})
+            .then(response => {
+                return response
+            })
+            .catch(error => {
+                return error
+            })
+}
+
+
+module.exports.getFavorites = id => {
+    return User
+            .findOne({_id:id}, {favorites: 1, _id:0})
+            .then(response => {
+                return response
+            })
+            .catch(error => {
+                return error
+            })
+}
+
 
 module.exports.addUser = u => {
     return User.create(u)
-            .then(resposta => {
-                return resposta
+            .then(response => {
+                return response
             })
-            .catch(erro => {
-                return erro
+            .catch(error => {
+                return error
             })
 }
 
 
 module.exports.updateUser = (id, info) => {
     return User.updateOne({_id:id}, info)
-            .then(resposta => {
-                return resposta
+            .then(response => {
+                return response
             })
-            .catch(erro => {
-                return erro
+            .catch(error => {
+                return error
             })
 }
 
+
+module.exports.updateFavorite = (id, favorite) => {
+    return User
+        	.updateOne({_id: id}, {$push : {favorites: favorite}})
+            .then(response => {
+                return response
+            })
+            .catch(error => {
+                return error
+            })
+}
+
+
 module.exports.updateUserStatus = (id, status) => {
     return User.updateOne({_id:id}, {active: status})
-            .then(resposta => {
-                return resposta
+            .then(response => {
+                return response
             })
-            .catch(erro => {
-                return erro
+            .catch(error => {
+                return error
             })
 }
 
 module.exports.updateUserPassword = (id, pwd) => {
     return User.updateOne({_id:id}, pwd)
-            .then(resposta => {
-                return resposta
+            .then(response => {
+                return response
             })
-            .catch(erro => {
-                return erro
+            .catch(error => {
+                return error
             })
 }
 
+
 module.exports.deleteUser = id => {
     return User.deleteOne({_id:id})
-            .then(resposta => {
-                return resposta
+            .then(response => {
+                return response
             })
-            .catch(erro => {
-                return erro
+            .catch(error => {
+                return error
             })
 }
  

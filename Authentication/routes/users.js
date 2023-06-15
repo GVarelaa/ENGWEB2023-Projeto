@@ -14,11 +14,33 @@ router.get('/', function(req, res) {
 });
 
 
+router.get('/check-email/:email', function(req, res){
+  User.checkEmail(req.params.email)
+    .then(data => res.status(200).jsonp(data))
+    .catch(error => res.status(500).jsonp({error: error, message: "Erro na obtenção do email"}))
+});
+
+
+router.get('/check-username/:username', function(req, res){
+  User.checkUsername(req.params.username)
+    .then(data => res.status(200).jsonp(data))
+    .catch(error => res.status(500).jsonp({error: error, message: "Erro na obtenção do username"}))
+});
+
+
+router.get('/:id/favorites', function(req, res){
+  User.getFavorites(req.params.id)
+    .then(data => res.status(200).jsonp(data))
+    .catch(error => res.status(505).jsonp({error: error, message: "Erro na obtenção dos favorites de um utilizador"}))
+});
+
+
 router.get('/:id', function(req, res) {
   User.getUser(req.params.id)
     .then(data => res.status(200).jsonp(data))
     .catch(error => res.status(501).jsonp({error: error, message: "Erro na obtenção do utilizador"}))
 });
+
 
 
 router.post('/', function(req, res) {
@@ -48,7 +70,6 @@ router.post('/register', function(req, res) {
                           })
                         }  
                       })  
-
 })
 
 
@@ -76,5 +97,13 @@ router.post('/login', passport.authenticate('local'), function(req, res) {
             else res.status(201).jsonp({token: token})
           })
 });
+
+
+router.post('/:id/favorites', function(req, res){
+  User.addFavorites(req.params.id, req.body.favorite)
+    .then(data => res.status(200).jsonp(data))
+    .catch(error => res.status(506).jsonp({error: error, message: "Erro na adição de um favorito"}))
+});
+
 
 module.exports = router;
