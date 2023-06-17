@@ -32,7 +32,6 @@ module.exports.checkEmail = (email) => {
     return User
             .findOne({email: email})
             .then(response => {
-                if (response != null) response = {email: response.email}
                 return response
             })
             .catch(error => {
@@ -55,11 +54,12 @@ module.exports.checkUsername = (username) => {
 
 module.exports.getFavorites = id => {
     return User
-            .findOne({_id:id}, {favorites: 1, _id:0})
+            .findOne({_id:id}, {favorites: 1})
             .then(response => {
                 return response
             })
             .catch(error => {
+                console.log(error)
                 return error
             })
 }

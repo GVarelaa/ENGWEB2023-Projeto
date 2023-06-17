@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import NoPage from "./pages/NoPage";
 import Home from "./pages/Home";
 import Record from "./pages/Record"
+import Favorites from "./pages/Favorites"
 import RouterGuard from "./components/RouterGuard"
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -14,6 +15,7 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>
+          <Route path="/favorites" element={<RouterGuard> <Favorites/> </RouterGuard>}/>
           <Route path="/" element={<RouterGuard> <Home/> </RouterGuard>}/>
           <Route path="/:id" element={<RouterGuard> <Record/> </RouterGuard>}/>
           <Route path="*" element={<NoPage/>}/>  // Proteger esta merda

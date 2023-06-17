@@ -20,7 +20,7 @@ function NavBar() {
             </Nav>
 
             <Nav className='ms-auto'>
-              <Nav.Link href="#favorites" className='me-3 pe-3'>
+              <Nav.Link href="/favorites" className='me-3 pe-3'>
                 <FontAwesomeIcon icon={faHeart} size='lg'/>
               </Nav.Link>
 

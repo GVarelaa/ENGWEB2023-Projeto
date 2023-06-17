@@ -1,12 +1,12 @@
 import { useState, useEffect} from 'react'
-import NavBar from '../components/NavBar';
 import { Link } from 'react-router-dom';
 import { Container, Accordion, ListGroup, ListGroupItem } from 'react-bootstrap';
-import { Eye, Pencil, Trash3 } from 'react-bootstrap-icons'
+import { Eye, Pencil, Trash3, Heart } from 'react-bootstrap-icons'
 import { PaginationControl } from 'react-bootstrap-pagination-control';
+import NavBar from '../components/NavBar';
 import axios from 'axios';
+import env from '../config/env'
 
-var env = require('../config/env')
 
 function Home() {
   const [data, setData] = useState([]);
@@ -39,7 +39,6 @@ function Home() {
 
   const handleChangePage = async (page) => {
     setPage(page)
-
     const skip = (page-1) * 100;
 
     try {
@@ -48,6 +47,11 @@ function Home() {
     } catch (error) {
       console.log(error);
     }
+  }
+
+
+  const handleFavorite = () => {
+    
   }
 
 
@@ -70,6 +74,7 @@ function Home() {
                   <Container><b>Processo:</b>{obj.Processo}</Container>
                   <Container className='d-flex justify-content-end px-3'> 
                     <Link to={obj._id}> <Eye size={20} color='black' className='mx-3'/> </Link> 
+                    <Link to="#"> <Heart size={20} color='black' className='mx-3' onClick={handleFavorite} /> </Link>
                     <Link to="#"> <Pencil size={20} color='black' className='mx-3'/> </Link> 
                     <Link to="#"> <Trash3 size={20} color='black' className='mx-3'/> </Link> 
                   </Container>
@@ -94,25 +99,6 @@ function Home() {
     </>
   );
 }
-
-/*
-      <NavBar />
-      <Container>
-        <Table>
-          <thead>
-            <tr>
-              <th scope='col'>Data Sessão</th>
-              <th scope='col'>Nº Processo</th>
-              <th scope='col'>Relator</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-          </tbody>
-        </Table>
-      </Container>
-*/
 
 
 export default Home;

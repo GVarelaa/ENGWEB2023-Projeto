@@ -52,16 +52,22 @@ function Register() {
     event.preventDefault()
 
     axios.post(env.authAcessPoint + '/register', {
-      nome: nome,
+      name: nome,
       email: email,
       username: username,
       password: password,
-      nivel: nivel,
+      level: nivel,
     })
       .then(response => {
         const token = response.data.token
-        localStorage.setItem('token', token)
-        setIsSubmitted(true)
+
+        if(token!=null){
+          localStorage.setItem('token', token)
+          setIsSubmitted(true)
+        }
+        else{
+          // falhou
+        }
         // setAuthToken
       })
       .catch(error => {

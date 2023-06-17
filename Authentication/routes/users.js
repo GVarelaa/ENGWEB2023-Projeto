@@ -52,12 +52,13 @@ router.post('/', function(req, res) {
 
 router.post('/register', function(req, res) {
   var date = new Date().toISOString().substring(0,19)
-  console.log("register")
-  userModel.register(new userModel({username: req.body.username, level: req.body.level, dataCreated: date}),
+  console.log(req.body)
+  userModel.register(new userModel({_id: req.body.username, username: req.body.username, email: req.body.email, name: req.body.name, level: req.body.level, dataCreated: date}),
                       req.body.password,
                       function(err, user){
-                        if (err) 
+                        if (err) {
                           res.jsonp({error: err, message: "Register error: " + err})
+                        }
                         else{
                           passport.authenticate("local")(req, res, function(){
                             jwt.sign({ username: req.user.username, level: req.user.level, sub: 'Acordaos EngWeb2023'}, 
