@@ -1,57 +1,65 @@
 import { useState, useEffect} from 'react'
-import { Link } from 'react-router-dom';
-import { Container, Accordion, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Link } from 'react-router-dom'
+import { Container, Accordion, ListGroup, ListGroupItem } from 'react-bootstrap'
 import { Eye, Pencil, Trash3, Heart } from 'react-bootstrap-icons'
-import { PaginationControl } from 'react-bootstrap-pagination-control';
-import NavBar from '../components/NavBar';
-import axios from 'axios';
+import { PaginationControl } from 'react-bootstrap-pagination-control'
+import NavBar from '../components/NavBar'
+import axios from 'axios'
 import env from '../config/env'
+import jwt_decode from 'jwt-decode'
 
 
 function Home() {
-  const [data, setData] = useState([]);
-  const [page, setPage] = useState(1);
-  const [pagesNumber, setPagesNumber] = useState(0);
+  const [data, setData] = useState([])
+  const [page, setPage] = useState(1)
+  const [pagesNumber, setPagesNumber] = useState(0)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(env.apiAcessPoint + '?skip=0&limit=100');
-        setData(response.data);
+        const response = await axios.get(env.apiAcessPoint + '?skip=0&limit=100')
+        setData(response.data)
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     };
 
     const fetchPagesNumber = async () => {
       try {
-        const response = await axios.get(env.apiAcessPoint + '/number');
+        const response = await axios.get(env.apiAcessPoint + '/number')
         setPagesNumber(response.data)
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     };
 
-    fetchData();
-    fetchPagesNumber();
+    fetchData()
+    fetchPagesNumber()
   }, []);
 
 
   const handleChangePage = async (page) => {
     setPage(page)
-    const skip = (page-1) * 100;
+    const skip = (page-1) * 100
 
     try {
-      const response = await axios.get(env.apiAcessPoint + `?skip=${skip}&limit=100`);
-      setData(response.data);
+      const response = await axios.get(env.apiAcessPoint + `?skip=${skip}&limit=100`)
+      setData(response.data)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 
 
-  const handleFavorite = () => {
-    
+  const handleFavorite = async (event, id) => {
+    console.log("entrei")
+    var decodedToken = jwt_decode(localStorage.getItem('token'))
+
+    try {
+      await axios.post(env.authAcessPoint + `/${decodedToken.username}/favorites`, {favorite: id})
+    } catch (error) {
+      console.log(error)
+    }
   }
 
 
@@ -74,7 +82,7 @@ function Home() {
                   <Container><b>Processo:</b>{obj.Processo}</Container>
                   <Container className='d-flex justify-content-end px-3'> 
                     <Link to={obj._id}> <Eye size={20} color='black' className='mx-3'/> </Link> 
-                    <Link to="#"> <Heart size={20} color='black' className='mx-3' onClick={handleFavorite} /> </Link>
+                    <Link to="#"> <Heart size={20} color='black' className='mx-3' onClick={(event) => handleFavorite(event, obj._id)} /> </Link>
                     <Link to="#"> <Pencil size={20} color='black' className='mx-3'/> </Link> 
                     <Link to="#"> <Trash3 size={20} color='black' className='mx-3'/> </Link> 
                   </Container>

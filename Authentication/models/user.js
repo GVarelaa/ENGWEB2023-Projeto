@@ -7,6 +7,7 @@ var userSchema = new mongoose.Schema({
     email: String,
     password: String,
     level: String,
+    favorites: [String],
     dateCreated: String
   });
 

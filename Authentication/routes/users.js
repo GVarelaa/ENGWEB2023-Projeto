@@ -101,7 +101,7 @@ router.post('/login', passport.authenticate('local'), function(req, res) {
 
 
 router.post('/:id/favorites', function(req, res){
-  User.addFavorites(req.params.id, req.body.favorite)
+  User.updateFavorite(req.params.id, req.body.favorite)
     .then(data => res.status(200).jsonp(data))
     .catch(error => res.status(506).jsonp({error: error, message: "Erro na adição de um favorito"}))
 });
