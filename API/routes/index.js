@@ -16,7 +16,7 @@ router.get('/acordaos', function(req, res, next) {
     limit = req.query.limit
     delete req.query.limit
   }
-
+  
   Acordao.list(req.query, skip, limit)
     .then(data => res.status(200).json(data))
     .catch(error => res.status(521).json({error: error, message: "Erro na obtenção da lista de acordãos"}))

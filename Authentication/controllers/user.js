@@ -89,7 +89,7 @@ module.exports.updateUser = (id, info) => {
 
 module.exports.updateFavorite = (id, favorite) => {
     return User
-        	.updateOne({_id: id}, {$push : {favorites: favorite}})
+        	.updateOne({_id: id}, {$addToSet : {favorites: favorite}})
             .then(response => {
                 return response
             })
