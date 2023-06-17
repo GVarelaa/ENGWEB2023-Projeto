@@ -19,7 +19,6 @@ function Register() {
   const [usernameExists, setUsernameExists] = useState(false)
 
   useEffect(() => {
-    console.log("tou")
     if (email) checkAccountExists(1)
     else if (username) checkAccountExists(2)
   }, [email, username])
@@ -28,7 +27,6 @@ function Register() {
     if (type === 1){
       axios.get(env.authAcessPoint + '/check-email/' + email)
         .then(response => {
-          console.log(response)
           if (response.data != null) setEmailExists(true)
           else setEmailExists(false)
         })
@@ -95,8 +93,7 @@ function Register() {
                     { emailExists ? (
                       <FloatingLabel className="mb-3 form-outline" label="Email">
                         <Form.Control isInvalid type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                        <Form.Control.Feedback type="invalid"> Já existe uma conta com esse e-mail!
-                        </Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid"> Já existe uma conta com esse e-mail! </Form.Control.Feedback>
                       </FloatingLabel>
                     ) : (
                       <FloatingLabel className="mb-3 form-outline" label="Email">
@@ -107,8 +104,7 @@ function Register() {
                     { usernameExists ? (
                       <FloatingLabel className="mb-3 form-outline" label="Username">
                         <Form.Control isInvalid type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-                        <Form.Control.Feedback type="invalid"> O username já está a ser utilizado!
-                        </Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid"> O username já está a ser utilizado! </Form.Control.Feedback>
                       </FloatingLabel>
                     ) : (
                       <FloatingLabel className="mb-3 form-outline" label="Username">
