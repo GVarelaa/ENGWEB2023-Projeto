@@ -42,7 +42,7 @@ module.exports.checkEmail = (email) => {
 
 module.exports.checkUsername = (username) => {
     return User
-            .findOne({username: username}, {username:1, _id:0})
+            .findOne({username: username})
             .then(response => {
                 return response
             })

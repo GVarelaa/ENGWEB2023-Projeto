@@ -12,6 +12,15 @@ function Login() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isInvalid, setIsInvalid] = useState(false)
 
+  const handleGoogleAuth = async () => {
+    try {
+      const response = await axios.get('http://localhost:8072/google');
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
   const handleSubmit = (event) => {
     axios.post(env.authAcessPoint + '/login', {username:username, password:password})
       .then(response => {
@@ -59,6 +68,9 @@ function Login() {
                         <div className="d-flex justify-content-center">
                           <Button type="submit" variant="outline-dark">Login</Button>
                         </div>
+
+                        <button onClick={handleGoogleAuth}>Authenticate with Google</button>
+
                       </Form>
 
                       <div className="mt-3">
@@ -69,6 +81,7 @@ function Login() {
                           </a>
                         </p>
                       </div>
+
                     </div>
                   </Card.Body>
                 </Card>

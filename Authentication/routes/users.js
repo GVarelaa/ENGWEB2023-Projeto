@@ -27,8 +27,13 @@ router.get('/check-username/:username', function(req, res){
     .catch(error => res.status(500).jsonp({error: error, message: "Erro na obtenção do username"}))
 });
 
+router.get("/google", passport.authenticate("google", {scope: ["profile"]}))
 
-router.get('/:id/favorites', function(req, res){
+router.get("/google/callback", passport.authenticate("google", { failureRedirect: "http://localhost:3000/login" }), (req, res) => {
+  res.redirect("http://localhost:3000")
+})
+
+router.get('/:id/favorites', function(req, res){  
   User.getFavorites(req.params.id)
     .then(data => res.status(200).jsonp(data))
     .catch(error => res.status(505).jsonp({error: error, message: "Erro na obtenção dos favorites de um utilizador"}))

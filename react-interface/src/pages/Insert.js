@@ -34,7 +34,7 @@ function Insert(){
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    axios.post(env.authAcessPoint + '/acordaos', {
+    axios.post(env.apiAcessPoint, {
       Processo: processo,
       Relator: relator,
       Descritores: descritores,

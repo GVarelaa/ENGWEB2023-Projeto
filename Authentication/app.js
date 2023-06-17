@@ -5,6 +5,8 @@ var cors = require('cors')
 
 var passport = require('passport')
 var LocalStrategy = require('passport-local').Strategy
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
+var FacebookStrategy = require('passport-facebook');
 
 var mongoose = require('mongoose');
 
@@ -22,6 +24,21 @@ db.once('open', function() {
 // passport config
 var User = require('./models/user');
 passport.use(new LocalStrategy(User.authenticate()));
+
+const GOOGLE_CLIENT_ID = "815138057920-qek265olb70qlad9i5jg5q428vkrv447.apps.googleusercontent.com"
+const GOOGLE_CLIENT_SECRET = "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"
+
+passport.use(new GoogleStrategy({
+  clientID: GOOGLE_CLIENT_ID,
+  clientSecret: GOOGLE_CLIENT_SECRET,
+  callbackURL: "/auth/google/callback"
+}, (accessToken, refreshToken, profile, cb) => {
+  User.findOrCreate({ googleId: profile.id }, (err, user) => {
+    return cb(err, user)
+  })
+}
+))
+
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 

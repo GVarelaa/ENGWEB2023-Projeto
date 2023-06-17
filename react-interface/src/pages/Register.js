@@ -12,18 +12,16 @@ function Register() {
   const [email, setEmail] = useState("")
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  //const [filiacao, setFiliacao] = useState("")
+  const [filiacao, setFiliacao] = useState("")
   const [nivel, setNivel] = useState(1)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [emailExists, setEmailExists] = useState(false) // Track if email already exists
   const [usernameExists, setUsernameExists] = useState(false)
 
   useEffect(() => {
+    console.log("tou")
     if (email) checkAccountExists(1)
-    else setEmailExists(false)
-
-    if (username) checkAccountExists(2)
-    else setUsernameExists(false)
+    else if (username) checkAccountExists(2)
   }, [email, username])
 
   const checkAccountExists = (type) => {
@@ -32,6 +30,7 @@ function Register() {
         .then(response => {
           console.log(response)
           if (response.data != null) setEmailExists(true)
+          else setEmailExists(false)
         })
         .catch(error => {
           console.log(error)
@@ -41,6 +40,7 @@ function Register() {
       axios.get(env.authAcessPoint + '/check-username/' + username)
         .then(response => {
           if (response.data != null) setUsernameExists(true)
+          else setUsernameExists(false)
         })
         .catch(error => {
           console.log(error)
@@ -71,10 +71,6 @@ function Register() {
         // setAuthToken
       })
       .catch(error => {
-        setUsername('')
-        setPassword('')
-        setNome('')
-        setEmail('')
         console.log(error)
       })
   }
@@ -96,27 +92,36 @@ function Register() {
                       <Form.Control type="text" placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} />
                     </FloatingLabel>
 
-                    <FloatingLabel className="mb-3 form-outline" label="Email">
-                      <Form.Control type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    </FloatingLabel>
-                    {emailExists ? (
-                      <div className="error-message">
-                        <i ExclamationTriangleFill></i>
-                        Já existe uma conta com esse e-mail!
-                      </div>
+                    { emailExists ? (
+                      <FloatingLabel className="mb-3 form-outline" label="Email">
+                        <Form.Control isInvalid type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                        <Form.Control.Feedback type="invalid"> Já existe uma conta com esse e-mail!
+                        </Form.Control.Feedback>
+                      </FloatingLabel>
                     ) : (
-                      <div className="validation-message">
-                        <i CheckCircleFill></i>
-                      </div>
-                    )}
+                      <FloatingLabel className="mb-3 form-outline" label="Email">
+                        <Form.Control type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                      </FloatingLabel>
+                    ) }
 
-                    <FloatingLabel className="mb-3 form-outline" label="Username">
-                      <Form.Control type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-                    </FloatingLabel>
-                    {usernameExists && <p>O username já está a ser utilizado!</p>}
+                    { usernameExists ? (
+                      <FloatingLabel className="mb-3 form-outline" label="Username">
+                        <Form.Control isInvalid type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                        <Form.Control.Feedback type="invalid"> O username já está a ser utilizado!
+                        </Form.Control.Feedback>
+                      </FloatingLabel>
+                    ) : (
+                      <FloatingLabel className="mb-3 form-outline" label="Username">
+                        <Form.Control type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                      </FloatingLabel>
+                    ) }
 
                     <FloatingLabel className="mb-3 form-outline" label="Password">
                       <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    </FloatingLabel>
+
+                    <FloatingLabel className="mb-3 form-outline" label="Filiação">
+                      <Form.Control type="text" placeholder="Filiação" value={filiacao} onChange={(e) => setFiliacao(e.target.value)} />
                     </FloatingLabel>
 
                     <div className="d-flex align-items-center mb-3">
