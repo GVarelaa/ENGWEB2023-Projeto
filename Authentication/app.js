@@ -5,8 +5,7 @@ var cors = require('cors')
 
 var passport = require('passport')
 var LocalStrategy = require('passport-local').Strategy
-var GoogleStrategy = require('passport-google-oauth20').Strategy;
-var FacebookStrategy = require('passport-facebook');
+var FacebookStrategy = require('passport-facebook').Strategy
 require('dotenv').config()
 
 var mongoose = require('mongoose');
@@ -27,69 +26,47 @@ db.once('open', function () {
 // passport config
 var User = require('./models/user');
 passport.use(new LocalStrategy(User.authenticate()));
-
-
-/*const GOOGLE_CLIENT_ID = "815138057920-qek265olb70qlad9i5jg5q428vkrv447.apps.googleusercontent.com"
-const GOOGLE_CLIENT_SECRET = "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"
-
-passport.use(new GoogleStrategy({
-  clientID: GOOGLE_CLIENT_ID,
-  clientSecret: GOOGLE_CLIENT_SECRET,
-  callbackURL: "http://localhost:3000/login/google/callback",
-  passReqToCallback: true
-},
-  function (request, accessToken, refreshToken, profile, done) {
-    User.findOrCreate({ googleId: profile.id }, function (err, user) {
-      return done(err, user);
-    });
-  }
-));*/
-
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 passport.use(new FacebookStrategy({
-  clientID: process.env.FACEBOOK_APP_ID,
-  clientSecret: process.env.FACEBOOK_APP_SECRET,
-  callbackURL: "http://localhost:8072/login/facebook/callback"
-},
-  function (accessToken, refreshToken, profile, cb) {
-    console.log(profile)
-    User.findOne({_id: profile.id})
-      .then(response => {
-        console.log(response)
-        // Já existe
-        if(response){
-          console.log("entrei aqui")
-          return cb(null, response)
-        }
-        else{
-          var user = new User({
-              _id: profile.id,
-              profileId: profile.id,
-              name: "pocrl",
-              email: "pocrl",
-              password: "pocrl",
-              level: "pocrl",
-              favorites: [],
-              dateCreated: "pocrl"
-          })
+  clientID: "801873144911281",
+  clientSecret: "28625f356a0022764f56cd48f3385ddd",
+  callbackURL: "http://localhost:8072/callback",
+  state: true
+}, function verify(accessToken, refreshToken, profile, cb){
+  console.log("entrei")
+  User.findOne({facebookID: profile.id})
+    .then(response => {
+      if(response){
+        return cb(null, response)
+      }
+      else{
+        const user = new User({
+          username: profile.id,
+          name: profile.displayName,
+          surname: "",
+          email: "",
+          filiation: "",
+          level: "1",
+          favorites: [],
+          dateCreated: new Date().toISOString().substring(0,19),
+          facebookID: profile.id
+        })
 
-          User.create(user)
-            .then(response => {
-              return cb(null, user)
-            })
-            .catch(error => {
-              console.log(error)
-              return cb(error, null)
-            })
-        }
-      })
-      .catch(error => {
-        return cb(error, null)
-      })
-  }
-));
+        User.create(user)
+          .then(response => {
+            return cb(null, user)
+          })
+          .catch(error => {
+            return cb(error)
+          })
+      }
+    })
+    .catch(error => {
+      return cb(error)
+    })
+}))
 
 
 var usersRouter = require('./routes/users');
@@ -105,6 +82,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/', usersRouter);
+
+app.get('/login/facebook', passport.authenticate('facebook'));
+app.get('/callback',
+  passport.authenticate('facebook', { failureRedirect: '/login', failureMessage: true }),
+  function(req, res) {
+    res.redirect('/');
+  });
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

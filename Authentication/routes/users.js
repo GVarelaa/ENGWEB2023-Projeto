@@ -7,6 +7,7 @@ var jwt = require('jsonwebtoken')
 
 var User = require('../controllers/user')
 
+
 router.get('/', function(req, res) {
   User.list()
     .then(data => res.status(200).jsonp(data))
@@ -27,16 +28,6 @@ router.get('/check-username/:username', function(req, res){
     .catch(error => res.status(500).jsonp({error: error, message: "Erro na obtenção do username"}))
 });
 
-
-router.get("/login/facebook", passport.authenticate('facebook'));
-
-
-// RETURN URL
-router.get("/login/facebook/callback", function(req, res, next){
-  passport.authenticate('facebook', function(err, user, info){
-    console.log("autenticado")
-  })
-});
 
 
 router.get('/:id/favorites', function(req, res){  
