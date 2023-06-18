@@ -12,7 +12,8 @@ function Profile() {
   const [nome, setNome] = useState('');
   const [apelido, setApelido] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [passwordAtual, setPasswordAtual] = useState('');
+  const [passwordNova, setPasswordNova] = useState('');
   const [filiacao, setFiliacao] = useState('')
   const [nivel, setNivel] = useState('');
   const [emailExists, setEmailExists] = useState(false)
@@ -27,7 +28,6 @@ function Profile() {
           setUsername(response.data.username)
           setNome(response.data.name)
           setApelido(response.data.surname)
-          setPassword(response.data.password)
           setEmail(response.data.email)
           setFiliacao(response.data.filiation)
           setNivel(response.data.level)
@@ -44,11 +44,18 @@ function Profile() {
   const handleSubmit = (event) => {
     event.preventDefault()
 
+    if (passwordAtual != null && passwordNova != null){
+      axios.post(env.authAcessPoint + '/changepassword', {
+        username: username,
+        oldpassword: passwordAtual,
+        newpassword: passwordNova
+      })
+    }
+
     axios.put(env.authAcessPoint + '/' + username, {
       name: nome,
       surname: apelido,
       username: username,
-      password: password,
       filiation: filiacao
     })
       .then( response => {})
@@ -113,8 +120,15 @@ function Profile() {
                   <Row className="gx-3 mb-3">
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label className="small mb-1"> Password </Form.Label>
-                        <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                        <Form.Label className="small mb-1"> Password Atual </Form.Label>
+                        <Form.Control type="password" placeholder="Password Atual" onChange={(e) => setPasswordAtual(e.target.value)} />
+                      </Form.Group>
+                    </Col>
+
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
+                        <Form.Label className="small mb-1"> Nova Password </Form.Label>
+                        <Form.Control type="password" placeholder="Nova Password" onChange={(e) => setPasswordNova(e.target.value)} />
                       </Form.Group>
                     </Col>
                   </Row>

@@ -84,6 +84,13 @@ router.post('/register', function(req, res) {
 })
 
 
+router.get('/changepassword', function (req, res) {
+  res.sendFile('changepassword.html', {
+      root: __dirname
+  })
+})
+
+
 router.put('/:id', function(req, res) {
   User.updateUser(req.body.username, req.body)
     .then(data => res.status(200).jsonp(data))
@@ -108,6 +115,22 @@ router.post('/login', passport.authenticate('local'), function(req, res) {
             else res.status(201).jsonp({token: token})
           })
 });
+
+/*
+router.post('/changepassword', function (req, res) {
+  User.getUser(req.body.username)
+    .then(data => {
+      user.changePassword(req.body.oldpassword, req.body.newpassword, function (error) {
+        if (error) res.send(error);
+        else{
+          res.send('successfully change password')
+        }
+      })
+    })
+    .catch(error => {
+      res.send(error);
+    })
+})*/
 
 
 router.post('/:id/favorites', function(req, res){
