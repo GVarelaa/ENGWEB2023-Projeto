@@ -7,17 +7,20 @@ var passport = require('passport')
 var LocalStrategy = require('passport-local').Strategy
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var FacebookStrategy = require('passport-facebook');
+require('dotenv').config()
 
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://127.0.0.1/ProjetoEngWeb', 
-      { useNewUrlParser: true,
-        useUnifiedTopology: true,
-        serverSelectionTimeoutMS: 5000});
-  
+mongoose.connect('mongodb://127.0.0.1/ProjetoEngWeb',
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 5000
+  });
+
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Erro de conexão ao MongoDB...'));
-db.once('open', function() {
+db.once('open', function () {
   console.log("Conexão ao MongoDB realizada com sucesso...")
 });
 
@@ -25,19 +28,50 @@ db.once('open', function() {
 var User = require('./models/user');
 passport.use(new LocalStrategy(User.authenticate()));
 
+passport.use(new FacebookStrategy({
+  clientID: process.env.FACEBOOK_APP_ID,
+  clientSecret: process.env.FACEBOOK_APP_SECRET,
+  callbackURL: process.env.AUTH_ACESS_POINT + '/login/facebook/callback'
+},
+  function (accessToken, refreshToken, profile, cb) {
+    console.log(profile)
+    console.log("olaaaaaaaa")
+    User.findOne({profileId: profile.id})
+      .then(response => {
+        // Já existe
+        if(response){
+          return cb(null, response)
+        }
+        else{
+          var user = {
+              //_id : response.id
+          }
+
+          User.create(user)
+        }
+      })
+      .catch(error => {
+        cb(error, null)
+      })
+  }
+));
+
+
 const GOOGLE_CLIENT_ID = "815138057920-qek265olb70qlad9i5jg5q428vkrv447.apps.googleusercontent.com"
 const GOOGLE_CLIENT_SECRET = "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"
 
 passport.use(new GoogleStrategy({
   clientID: GOOGLE_CLIENT_ID,
   clientSecret: GOOGLE_CLIENT_SECRET,
-  callbackURL: "/auth/google/callback"
-}, (accessToken, refreshToken, profile, cb) => {
-  User.findOrCreate({ googleId: profile.id }, (err, user) => {
-    return cb(err, user)
-  })
-}
-))
+  callbackURL: "http://localhost:3000/login/google/callback",
+  passReqToCallback: true
+},
+  function (request, accessToken, refreshToken, profile, done) {
+    User.findOrCreate({ googleId: profile.id }, function (err, user) {
+      return done(err, user);
+    });
+  }
+));
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -57,19 +91,19 @@ app.use(passport.session());
 app.use('/', usersRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
   res.status(err.status || 500);
-  res.jsonp({error: err});
+  res.jsonp({ error: err });
 });
 
 module.exports = app;

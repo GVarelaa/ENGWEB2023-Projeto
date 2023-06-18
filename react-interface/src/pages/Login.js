@@ -1,10 +1,10 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { Col, Button, Row, Container, Card, Form, FloatingLabel } from 'react-bootstrap'
 import ParticleLayout from '../components/ParticleLayout'
 import axios from 'axios'
+import env from '../config/env'
 
-var env = require('../config/env')
 
 function Login() {
   const [username, setUsername] = useState("")
@@ -12,13 +12,9 @@ function Login() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isInvalid, setIsInvalid] = useState(false)
 
-  const handleGoogleAuth = async () => {
-    try {
-      const response = await axios.get('http://localhost:8072/google');
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
+
+  const handleFacebookAuth = () => {
+    window.location.href = env.authAcessPoint + "/login/facebook"
   };
   
   const handleSubmit = (event) => {
@@ -69,9 +65,9 @@ function Login() {
                           <Button type="submit" variant="outline-dark">Login</Button>
                         </div>
 
-                        <button onClick={handleGoogleAuth}>Authenticate with Google</button>
-
                       </Form>
+
+                      <Button onClick={handleFacebookAuth}>Authenticate with Facebook</Button>
 
                       <div className="mt-3">
                         <p className="mb-0  text-center">
