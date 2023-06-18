@@ -18,7 +18,7 @@ module.exports.list = () => {
 
 module.exports.getUser = id => {
     return User
-            .findOne({_id:id})
+            .findOne({username:id})
             .then(response => {
                 return response
             })
@@ -54,7 +54,7 @@ module.exports.checkUsername = (username) => {
 
 module.exports.getFavorites = id => {
     return User
-            .findOne({_id:id}, {favorites: 1})
+            .findOne({username:id}, {favorites: 1})
             .then(response => {
                 return response
             })
@@ -77,7 +77,7 @@ module.exports.addUser = u => {
 
 
 module.exports.updateUser = (id, info) => {
-    return User.updateOne({_id:id}, info)
+    return User.updateOne({username:id}, info)
             .then(response => {
                 return response
             })
@@ -89,7 +89,7 @@ module.exports.updateUser = (id, info) => {
 
 module.exports.updateFavorite = (id, favorite) => {
     return User
-        	.updateOne({_id: id}, {$addToSet : {favorites: favorite}})
+        	.updateOne({username: id}, {$addToSet : {favorites: favorite}})
             .then(response => {
                 return response
             })
@@ -99,8 +99,8 @@ module.exports.updateFavorite = (id, favorite) => {
 }
 
 
-module.exports.updateUserStatus = (id, status) => {
-    return User.updateOne({_id:id}, {active: status})
+module.exports.updateAccess = (id, date) => {
+    return User.updateOne({username: id}, {lastAccess: date})
             .then(response => {
                 return response
             })
@@ -110,7 +110,7 @@ module.exports.updateUserStatus = (id, status) => {
 }
 
 module.exports.updateUserPassword = (id, pwd) => {
-    return User.updateOne({_id:id}, pwd)
+    return User.updateOne({username: id}, pwd)
             .then(response => {
                 return response
             })
@@ -121,7 +121,7 @@ module.exports.updateUserPassword = (id, pwd) => {
 
 
 module.exports.deleteUser = id => {
-    return User.deleteOne({_id:id})
+    return User.deleteOne({username:id})
             .then(response => {
                 return response
             })

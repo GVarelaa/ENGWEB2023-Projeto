@@ -21,7 +21,7 @@ function Profile() {
   useEffect(() => {
     const fetchData = async () => {
       var decodedToken = jwt_decode(localStorage.getItem('token'));
-
+      console.log(decodedToken)
       try {
         const response = await axios.get(env.authAcessPoint + `/${decodedToken.username}`)
         if (response.data) {
@@ -50,6 +50,8 @@ function Profile() {
         oldpassword: passwordAtual,
         newpassword: passwordNova
       })
+      .then(response => {}) // alertar
+      .catch(error => { console.log(error) })
     }
 
     axios.put(env.authAcessPoint + '/' + username, {
@@ -58,7 +60,7 @@ function Profile() {
       username: username,
       filiation: filiacao
     })
-      .then( response => {})
+      .then(response => {})
       .catch(error => { console.log(error) })
   }
 

@@ -10,6 +10,7 @@ var userSchema = new mongoose.Schema({
     level: String,
     favorites: [String],
     dateCreated: String,
+    lastAccess: String,
     facebookID: String,
     googleID: String
   });
