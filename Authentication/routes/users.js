@@ -27,19 +27,23 @@ router.get('/check-username/:username', function(req, res){
     .catch(error => res.status(500).jsonp({error: error, message: "Erro na obtenção do username"}))
 });
 
-router.get("/login/facebook", passport.authenticate('facebook', {scope: ['email', 'user_location']}));
+
+router.get("/login/facebook", passport.authenticate('facebook'));
+
 
 // RETURN URL
-router.get("/login/facebook/callback",  passport.authenticate('facebook', { failureRedirect: 'http://localhost:3000/login', failureMessage: true }), function(req, res){
+router.get("/login/facebook/callback", passport.authenticate('facebook', { failureRedirect: 'http://localhost:3000/login', failureMessage: true }), function(req, res){
+  console.log("entreiiiiiiiiiii")
   res.redirect('http://localhost:3000');
 });
+
 
 router.get('/:id/favorites', function(req, res){  
   User.getFavorites(req.params.id)
     .then(data => res.status(200).jsonp(data))
     .catch(error => res.status(505).jsonp({error: error, message: "Erro na obtenção dos favorites de um utilizador"}))
 });
-
+    
 
 router.get('/:id', function(req, res) {
   User.getUser(req.params.id)

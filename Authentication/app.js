@@ -31,33 +31,41 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.use(new FacebookStrategy({
   clientID: process.env.FACEBOOK_APP_ID,
   clientSecret: process.env.FACEBOOK_APP_SECRET,
-  callbackURL: process.env.AUTH_ACESS_POINT + '/login/facebook/callback'
+  callbackURL: "http://localhost:8072/login/facebook/callback"
 },
   function (accessToken, refreshToken, profile, cb) {
     console.log(profile)
-    console.log("olaaaaaaaa")
-    User.findOne({profileId: profile.id})
+    User.findOne({_id: profile.id})
       .then(response => {
+        console.log(response)
         // Já existe
         if(response){
+          console.log("entrei aqui")
           return cb(null, response)
         }
         else{
           var user = {
-              //_id : response.id
+              _id : profile.id,
+              name: profile.displayName
           }
 
           User.create(user)
+            .then(response => {
+              return cb(null, user)
+            })
+            .catch(error => {
+              return cb(error)
+            })
         }
       })
       .catch(error => {
-        cb(error, null)
+        return cb(error)
       })
   }
 ));
 
 
-const GOOGLE_CLIENT_ID = "815138057920-qek265olb70qlad9i5jg5q428vkrv447.apps.googleusercontent.com"
+/*const GOOGLE_CLIENT_ID = "815138057920-qek265olb70qlad9i5jg5q428vkrv447.apps.googleusercontent.com"
 const GOOGLE_CLIENT_SECRET = "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"
 
 passport.use(new GoogleStrategy({
@@ -71,7 +79,7 @@ passport.use(new GoogleStrategy({
       return done(err, user);
     });
   }
-));
+));*/
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
