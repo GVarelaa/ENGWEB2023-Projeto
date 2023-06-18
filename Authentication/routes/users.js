@@ -85,7 +85,7 @@ router.post('/register', function(req, res) {
 
 
 router.put('/:id', function(req, res) {
-  User.updateUser(req.body)
+  User.updateUser(req.body.username, req.body)
     .then(data => res.status(200).jsonp(data))
     .catch(error => res.status(503).jsonp({error: error, message: "Erro na atualização do utilizador"}))
 });

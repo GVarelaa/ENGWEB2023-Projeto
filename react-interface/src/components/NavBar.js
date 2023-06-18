@@ -25,7 +25,7 @@ function NavBar() {
               </Nav.Link>
 
               <NavDropdown className='pe-5 me-5' title={<FontAwesomeIcon icon={faUser} size='lg'/>} id="account-dropdown">
-                <NavDropdown.Item href="#profile">Profile</NavDropdown.Item>
+                <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
                 <NavDropdown.Item href="#settings">Settings</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="/" onClick={handleLogout}>Logout</NavDropdown.Item>

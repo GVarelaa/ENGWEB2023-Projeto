@@ -9,11 +9,12 @@ var env = require('../config/env')
 
 function Register() {
   const [nome, setNome] = useState("")
+  const [apelido, setApelido] = useState("")
   const [email, setEmail] = useState("")
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [filiacao, setFiliacao] = useState("")
-  const [nivel, setNivel] = useState(1)
+  const [nivel, setNivel] = useState("Consumidor")
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [emailExists, setEmailExists] = useState(false) // Track if email already exists
   const [usernameExists, setUsernameExists] = useState(false)
@@ -51,9 +52,11 @@ function Register() {
 
     axios.post(env.authAcessPoint + '/register', {
       name: nome,
+      surname: apelido,
       email: email,
       username: username,
       password: password,
+      filiation: filiacao,
       level: nivel,
     })
       .then(response => {
@@ -90,6 +93,10 @@ function Register() {
                       <Form.Control type="text" placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} />
                     </FloatingLabel>
 
+                    <FloatingLabel className="mb-3 form-outline" label="Apelido">
+                      <Form.Control type="text" placeholder="Apelido" value={apelido} onChange={(e) => setApelido(e.target.value)} />
+                    </FloatingLabel>
+
                     { emailExists ? (
                       <FloatingLabel className="mb-3 form-outline" label="Email">
                         <Form.Control isInvalid type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -124,11 +131,11 @@ function Register() {
                       <label className="form-label me-2">Nível:</label>
                       <Dropdown>
                         <Dropdown.Toggle variant="outline-primary" id="dropdown-nivel" style={{ backgroundColor: 'white', color: 'black', borderColor: '#ced4da' }}>
-                          {nivel === 1 ? 'Consumidor' : nivel === 2 ? 'Produtor' : null}
+                          {nivel === "Consumidor" ? 'Consumidor' : nivel === "Produtor" ? 'Produtor' : null}
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                          <Dropdown.Item onClick={() => setNivel(1)}>Consumidor</Dropdown.Item>
-                          <Dropdown.Item onClick={() => setNivel(2)}>Produtor</Dropdown.Item>
+                          <Dropdown.Item onClick={() => setNivel("Consumidor")}>Consumidor</Dropdown.Item>
+                          <Dropdown.Item onClick={() => setNivel("Produtor")}>Produtor</Dropdown.Item>
                         </Dropdown.Menu>
                       </Dropdown>
                     </div>
