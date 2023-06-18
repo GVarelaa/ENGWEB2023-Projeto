@@ -32,9 +32,10 @@ router.get("/login/facebook", passport.authenticate('facebook'));
 
 
 // RETURN URL
-router.get("/login/facebook/callback", passport.authenticate('facebook', { failureRedirect: 'http://localhost:3000/login', failureMessage: true }), function(req, res){
-  console.log("entreiiiiiiiiiii")
-  res.redirect('http://localhost:3000');
+router.get("/login/facebook/callback", function(req, res, next){
+  passport.authenticate('facebook', function(err, user, info){
+    console.log("autenticado")
+  })
 });
 
 

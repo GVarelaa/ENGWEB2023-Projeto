@@ -28,42 +28,6 @@ db.once('open', function () {
 var User = require('./models/user');
 passport.use(new LocalStrategy(User.authenticate()));
 
-passport.use(new FacebookStrategy({
-  clientID: process.env.FACEBOOK_APP_ID,
-  clientSecret: process.env.FACEBOOK_APP_SECRET,
-  callbackURL: "http://localhost:8072/login/facebook/callback"
-},
-  function (accessToken, refreshToken, profile, cb) {
-    console.log(profile)
-    User.findOne({_id: profile.id})
-      .then(response => {
-        console.log(response)
-        // Já existe
-        if(response){
-          console.log("entrei aqui")
-          return cb(null, response)
-        }
-        else{
-          var user = {
-              _id : profile.id,
-              name: profile.displayName
-          }
-
-          User.create(user)
-            .then(response => {
-              return cb(null, user)
-            })
-            .catch(error => {
-              return cb(error)
-            })
-        }
-      })
-      .catch(error => {
-        return cb(error)
-      })
-  }
-));
-
 
 /*const GOOGLE_CLIENT_ID = "815138057920-qek265olb70qlad9i5jg5q428vkrv447.apps.googleusercontent.com"
 const GOOGLE_CLIENT_SECRET = "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"
@@ -83,6 +47,50 @@ passport.use(new GoogleStrategy({
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+passport.use(new FacebookStrategy({
+  clientID: process.env.FACEBOOK_APP_ID,
+  clientSecret: process.env.FACEBOOK_APP_SECRET,
+  callbackURL: "http://localhost:8072/login/facebook/callback"
+},
+  function (accessToken, refreshToken, profile, cb) {
+    console.log(profile)
+    User.findOne({_id: profile.id})
+      .then(response => {
+        console.log(response)
+        // Já existe
+        if(response){
+          console.log("entrei aqui")
+          return cb(null, response)
+        }
+        else{
+          var user = new User({
+              _id: profile.id,
+              profileId: profile.id,
+              name: "pocrl",
+              email: "pocrl",
+              password: "pocrl",
+              level: "pocrl",
+              favorites: [],
+              dateCreated: "pocrl"
+          })
+
+          User.create(user)
+            .then(response => {
+              return cb(null, user)
+            })
+            .catch(error => {
+              console.log(error)
+              return cb(error, null)
+            })
+        }
+      })
+      .catch(error => {
+        return cb(error, null)
+      })
+  }
+));
+
 
 var usersRouter = require('./routes/users');
 
