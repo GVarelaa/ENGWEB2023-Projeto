@@ -2,7 +2,7 @@ import { useState, useEffect} from 'react'
 import { Link } from 'react-router-dom';
 import { Container, Accordion, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { Eye, Pencil, Trash3, Heart } from 'react-bootstrap-icons'
-import { PaginationControl } from 'react-bootstrap-pagination-control';
+import { Pagination } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify'
 import NavBar from '../components/NavBar';
 import axios from 'axios';
@@ -14,6 +14,7 @@ function Favorites() {
   //const [favorites, setFavorites] = useState([])
   const [data, setData] = useState([])
   const [page, setPage] = useState(1);
+  const [pagesNumber, setPagesNumber] = useState(0)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,6 +37,7 @@ function Favorites() {
   
         try{
           const response = await axios.get(env.apiAccessPoint + queryString);
+          setPagesNumber(Math.ceil(response.data.length / 25))
           setData(response.data)
         } catch (error){
           toast.error('Não foi possível obter a lista de favoritos!', {
@@ -52,6 +54,22 @@ function Favorites() {
   const handleFavorite = () => {
 
   }
+
+  
+  const handleChangePage = async (event, page) => {
+    setPage(page)
+    const skip = (page - 1) * 100
+
+    try {
+      const response = await axios.get(env.apiAccessPoint + `?skip=${skip}&limit=25`)
+      setData(response.data)
+      window.scrollTo(0, 0);
+    } catch (error) {
+      toast.error('Não foi possível obter a lista de acórdãos!', {
+        position: toast.POSITION.TOP_CENTER
+      })
+    }
+  }
   
 
   return (
@@ -59,13 +77,6 @@ function Favorites() {
       <ToastContainer/>
       <NavBar/>
       <Container className='mt-4'>
-        <PaginationControl  page={page}  
-                            between={4}
-                            total={data.length}
-                            limit={100}
-                            changePage={(page) => {setPage(page)}}
-                            ellipsis={1}/>
-
         <Accordion className='mb-4'>
           {data.map((obj, index) => {
             return (
@@ -89,12 +100,10 @@ function Favorites() {
             )
           })}
         </Accordion>
-        <PaginationControl  page={page}  
-                            between={4}
-                            total={data.length}
-                            limit={100}
-                            changePage={(page) => {setPage(page)}}
-                            ellipsis={1}/>
+        
+        <Container className='d-flex justify-content-center mb-4'>
+          <Pagination page={page} onChange={handleChangePage} count={pagesNumber} shape="rounded"/>
+        </Container>
       </Container>
     </>
   );

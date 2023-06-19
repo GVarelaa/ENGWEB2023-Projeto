@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Container, Accordion, ListGroup, ListGroupItem, Modal, Button } from 'react-bootstrap'
 import { Eye, Pencil, Trash3, Heart } from 'react-bootstrap-icons'
-import { PaginationControl } from 'react-bootstrap-pagination-control'
+import { Pagination } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify'
 import NavBar from '../components/NavBar'
 import axios from 'axios'
@@ -20,7 +20,7 @@ function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(env.apiAccessPoint + '?skip=0&limit=100')
+        const response = await axios.get(env.apiAccessPoint + '?skip=0&limit=25')
         setData(response.data)
       } catch (error) {
         toast.error('Não foi possível obter a lista de acórdãos!', {
@@ -32,7 +32,7 @@ function Home() {
     const fetchPagesNumber = async () => {
       try {
         const response = await axios.get(env.apiAccessPoint + '/number')
-        setPagesNumber(response.data)
+        setPagesNumber(Math.ceil(response.data / 25))
       } catch (error) {
         toast.error('Não foi possível obter a lista de acórdãos!', {
           position: toast.POSITION.TOP_CENTER
@@ -45,12 +45,12 @@ function Home() {
   }, []);
 
 
-  const handleChangePage = async (page) => {
+  const handleChangePage = async (event, page) => {
     setPage(page)
     const skip = (page - 1) * 100
 
     try {
-      const response = await axios.get(env.apiAccessPoint + `?skip=${skip}&limit=100`)
+      const response = await axios.get(env.apiAccessPoint + `?skip=${skip}&limit=25`)
       setData(response.data)
       window.scrollTo(0, 0);
     } catch (error) {
@@ -114,13 +114,6 @@ function Home() {
       <ToastContainer />
       <NavBar />
       <Container className='mt-4'>
-        <PaginationControl page={page}
-          between={4}
-          total={pagesNumber}
-          limit={100}
-          changePage={handleChangePage}
-          ellipsis={1} />
-
         <Accordion className='mb-4'>
           {data.map((obj, index) => {
             return (
@@ -161,16 +154,20 @@ function Home() {
             )
           })}
         </Accordion>
-        <PaginationControl page={page}
-          between={4}
-          total={pagesNumber}
-          limit={100}
-          changePage={handleChangePage}
-          ellipsis={1} />
+
+        <Container className='d-flex justify-content-center mb-4'>
+          <Pagination page={page} onChange={handleChangePage} count={pagesNumber} shape="rounded" />
+        </Container>
       </Container>
     </>
   );
 }
 
+/*        <PaginationControl page={page}
+          between={4}
+          total={pagesNumber}
+          limit={100}
+          changePage={handleChangePage}
+          ellipsis={1} />*/
 
 export default Home;
