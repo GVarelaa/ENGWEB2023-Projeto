@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Container, Accordion, ListGroup, ListGroupItem } from 'react-bootstrap'
-import { Eye, Pencil, Trash3, Heart, TelephoneMinus } from 'react-bootstrap-icons'
+import { Container, Accordion, ListGroup, ListGroupItem, Modal, Button } from 'react-bootstrap'
+import { Eye, Pencil, Trash3, Heart } from 'react-bootstrap-icons'
 import { PaginationControl } from 'react-bootstrap-pagination-control'
 import { ToastContainer, toast } from 'react-toastify'
 import NavBar from '../components/NavBar'
@@ -14,6 +14,8 @@ function Home() {
   const [data, setData] = useState([])
   const [page, setPage] = useState(1)
   const [pagesNumber, setPagesNumber] = useState(0)
+  const [showModal, setShowModal] = useState(false);
+  const [deleteItemID, setDeleteItemID] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,25 +77,37 @@ function Home() {
   }
 
 
+  const handleShowModal = (event, id) => {
+    setDeleteItemID(id)
+    setShowModal(true)
+  }
+
+
+  const handleHideModal = () => {
+    setShowModal(false)
+    setDeleteItemID(null)
+  }
+
+
   const handleDelete = async (event, id) => {
     try {
       await axios.delete(env.apiAccessPoint + `/${id}`)
 
       setData(oldState => {
         return oldState.filter((item) => item._id !== id)
-      })      
+      })
 
       toast.success('O acórdão foi removido com sucesso!', {
         position: toast.POSITION.TOP_CENTER
       })
     } catch (error) {
-      toast.error('Não foi possível remover o acordão!', {
+      toast.error('Não foi possível remover o acórdão!', {
         position: toast.POSITION.TOP_CENTER
       })
     }
-  }
 
-  console.log(data)
+    handleHideModal();
+  }
 
   return (
     <>
@@ -117,7 +131,19 @@ function Home() {
                     <Link to={obj._id}> <Eye size={20} color='black' className='mx-3' /> </Link>
                     <Link to="#"> <Heart size={20} color='black' className='mx-3' onClick={(event) => handleFavorite(event, obj._id)} /> </Link>
                     <Link to={"/edit/" + obj._id}> <Pencil size={20} color='black' className='mx-3' /> </Link>
-                    <Link> <Trash3 size={20} color='black' className='mx-3' onClick={(event) => handleDelete(event, obj._id)} /> </Link>
+                    <Link><Trash3 size={20} color='black' className='mx-3' onClick={(event) => handleShowModal(event, obj._id)} /></Link>
+                    <Modal show={showModal} onHide={handleHideModal}>
+                      <Modal.Header closeButton>
+                        <Modal.Title>Confirmação de Remoção</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                        <div className="alert alert-danger">Tem a certeza que pretende remover este acórdão?</div>
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button variant="default" onClick={handleHideModal}>Cancelar</Button>
+                        <Button variant="danger" onClick={(event) => handleDelete(event, deleteItemID)}>Remover</Button>
+                      </Modal.Footer>
+                    </Modal>
                   </Container>
                 </Accordion.Header>
                 <Accordion.Body>
@@ -126,7 +152,7 @@ function Home() {
                     <ListGroupItem><b>Relator: </b>{obj.Relator}</ListGroupItem>
                     <ListGroupItem><b>Descritores: </b>
                       <ListGroup className='list-group-flush'>
-                        {obj.Descritores.map((content) => {return(<ListGroupItem>{content}</ListGroupItem>)})}
+                        {obj.Descritores.map((content) => { return (<ListGroupItem>{content}</ListGroupItem>) })}
                       </ListGroup>
                     </ListGroupItem>
                   </ListGroup>
