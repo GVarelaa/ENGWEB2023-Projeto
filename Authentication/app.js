@@ -82,13 +82,12 @@ passport.use(new GoogleStrategy({
     console.log("A verificar....")
     User.findOne({googleID: profile.id})
       .then(user => {
-        console.log(profile)
         if(user){
           return cb(null, user)
         }
         else{
           const newUser = new User({
-            username: profile.id,
+            username: profile.emails[0].value || profile.id,
             name: profile.name.givenName || profile.displayName || "",
             surname: profile.name.familyName || "",
             email: "",
