@@ -18,7 +18,7 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>
-          <Route path="/profile" element={<Profile/>}/>
+          <Route path="/profile" element={<RouterGuard> <Profile/> </RouterGuard>}/>
           <Route path="/favorites" element={<RouterGuard> <Favorites/> </RouterGuard>}/>
           <Route path="/" element={<RouterGuard> <Home/> </RouterGuard>}/>
           <Route path="/:id" element={<RouterGuard> <Record/> </RouterGuard>}/>

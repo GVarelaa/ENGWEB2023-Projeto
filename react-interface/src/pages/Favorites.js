@@ -1,4 +1,4 @@
-import { useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import { Container, Accordion, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { Eye, Pencil, Trash3, Heart } from 'react-bootstrap-icons'
@@ -20,26 +20,26 @@ function Favorites() {
     const fetchData = async () => {
       var favorites = []
       var decodedToken = jwt_decode(localStorage.getItem('token'));
-      try{
-        const response = await axios.get(env.authAccessPoint + `/${decodedToken.username}` +  "/favorites");
+      try {
+        const response = await axios.get(env.authAccessPoint + `/${decodedToken.username}` + "/favorites");
         favorites = response.data.favorites
-      } catch (error){
+      } catch (error) {
         toast.error('Não foi possível obter a lista de favoritos!', {
           position: toast.POSITION.TOP_CENTER
         })
       }
 
-      if(favorites.length > 0){
+      if (favorites.length > 0) {
         var queryString = "?"
-        for(var i=0; i<favorites.length; i++){
+        for (var i = 0; i < favorites.length; i++) {
           queryString += "_id=" + favorites[i] + "&"
         }
-  
-        try{
+
+        try {
           const response = await axios.get(env.apiAccessPoint + queryString);
           setPagesNumber(Math.ceil(response.data.length / 25))
           setData(response.data)
-        } catch (error){
+        } catch (error) {
           toast.error('Não foi possível obter a lista de favoritos!', {
             position: toast.POSITION.TOP_CENTER
           })
@@ -55,27 +55,17 @@ function Favorites() {
 
   }
 
-  
+
   const handleChangePage = async (event, page) => {
     setPage(page)
-    const skip = (page - 1) * 100
-
-    try {
-      const response = await axios.get(env.apiAccessPoint + `?skip=${skip}&limit=25`)
-      setData(response.data)
-      window.scrollTo(0, 0);
-    } catch (error) {
-      toast.error('Não foi possível obter a lista de acórdãos!', {
-        position: toast.POSITION.TOP_CENTER
-      })
-    }
+    window.scrollTo(0, 0);
   }
-  
+
 
   return (
     <>
-      <ToastContainer/>
-      <NavBar/>
+      <ToastContainer />
+      <NavBar />
       <Container className='mt-4'>
         <Accordion className='mb-4'>
           {data.map((obj, index) => {
@@ -83,11 +73,11 @@ function Favorites() {
               <Accordion.Item eventKey={index}>
                 <Accordion.Header>
                   <Container><b>Processo:</b>{obj.Processo}</Container>
-                  <Container className='d-flex justify-content-end px-3'> 
-                    <Link to={obj._id}> <Eye size={20} color='black' className='mx-3'/> </Link> 
+                  <Container className='d-flex justify-content-end px-3'>
+                    <Link to={obj._id}> <Eye size={20} color='black' className='mx-3' /> </Link>
                     <Link to="#"> <Heart size={20} color='black' className='mx-3' onClick={handleFavorite} /> </Link>
-                    <Link to="#"> <Pencil size={20} color='black' className='mx-3'/> </Link> 
-                    <Link to="#"> <Trash3 size={20} color='black' className='mx-3'/> </Link> 
+                    <Link to="#"> <Pencil size={20} color='black' className='mx-3' /> </Link>
+                    <Link to="#"> <Trash3 size={20} color='black' className='mx-3' /> </Link>
                   </Container>
                 </Accordion.Header>
                 <Accordion.Body>
@@ -100,9 +90,9 @@ function Favorites() {
             )
           })}
         </Accordion>
-        
+
         <Container className='d-flex justify-content-center mb-4'>
-          <Pagination page={page} onChange={handleChangePage} count={pagesNumber} shape="rounded"/>
+          <Pagination page={page} onChange={handleChangePage} count={pagesNumber} shape="rounded" />
         </Container>
       </Container>
     </>
