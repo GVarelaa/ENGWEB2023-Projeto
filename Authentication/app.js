@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cors = require('cors')
 var passport = require('passport')
 var LocalStrategy = require('passport-local').Strategy
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var FacebookStrategy = require('passport-facebook')
 require('dotenv').config()
 
@@ -54,6 +55,49 @@ passport.use(new FacebookStrategy({
             dateCreated: new Date().toISOString().substring(0, 19),
             lastAccess: "",
             facebookID: profile.id
+          })
+
+          User.create(newUser)
+            .then(response => {
+              return cb(null, newUser)
+            })
+            .catch(error => {
+              return cb(error)
+            })
+        }
+      })
+      .catch(error => {
+        return cb(error)
+      })
+  }
+));
+
+
+passport.use(new GoogleStrategy({
+  clientID: "220359416942-mojpsoa6cmjo794k3ik34qbfsc5smldv.apps.googleusercontent.com",
+  clientSecret: "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",
+  callbackURL: "http://localhost:8072/login/google/callback"
+},
+  function (accessToken, refreshToken, profile, cb) {
+    console.log("A verificar....")
+    User.findOne({googleID: profile.id})
+      .then(user => {
+        console.log(profile)
+        if(user){
+          return cb(null, user)
+        }
+        else{
+          const newUser = new User({
+            username: profile.id,
+            name: profile.name.givenName || profile.displayName || "",
+            surname: profile.name.familyName || "",
+            email: "",
+            filiation: "",
+            level: "Consumidor",
+            favorites: [],
+            dateCreated: new Date().toISOString().substring(0, 19),
+            lastAccess: "",
+            googleID: profile.id
           })
 
           User.create(newUser)

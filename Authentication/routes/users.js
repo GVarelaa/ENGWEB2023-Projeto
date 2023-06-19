@@ -29,24 +29,24 @@ router.get('/check-username/:username', function (req, res) {
 });
 
 
-router.get('/login/facebook', function(req, res){
-  const returnUrl = req.query.returnUrl; 
+router.get('/login/facebook', function (req, res) {
+  const returnUrl = req.query.returnUrl;
   req.session.returnUrl = returnUrl;
 
   passport.authenticate('facebook')(req, res);
 });
 
 
-router.get('/login/facebook/callback', function(req, res, next) {
-    passport.authenticate('facebook', function(err, user, info, status){
-      User.updateAccess(new Date().toISOString().substring(0, 19))
+router.get('/login/facebook/callback', function (req, res, next) {
+  passport.authenticate('facebook', function (err, user, info, status) {
+    User.updateAccess(user.username, new Date().toISOString().substring(0, 19))
       .then(response => {
         jwt.sign({ username: user.username, level: user.level, sub: 'Acordaos EngWeb2023' },
           "Acordaos2023",
           { expiresIn: 3600 },
           function (e, token) {
-            if (e) res.status(500).jsonp({ error: "Erro na geração do token: " + error })
-            else{
+            if (e) res.status(500).jsonp({ error: "Erro na geração do token: " + e })
+            else {
               res.cookie('token', token)
               res.redirect(req.session.returnUrl)
             }
@@ -55,8 +55,41 @@ router.get('/login/facebook/callback', function(req, res, next) {
       .catch(error => {
         res.status(500).jsonp({ error: "Erro a atualizar o último acesso: " + error })
       })
-    })(req, res, next)  
-  });
+  })(req, res, next)
+});
+
+
+router.get('/login/google', function (req, res) {
+  const returnUrl = req.query.returnUrl;
+  req.session.returnUrl = returnUrl;
+
+  passport.authenticate('google', { scope: ['profile', 'email'] })(req, res);
+});
+
+
+router.get('/login/google/callback', function (req, res, next) {
+  passport.authenticate('google', function (err, user, info, status) {
+    if(user) var username = user.username
+    else var username = ""
+    User.updateAccess(username, new Date().toISOString().substring(0, 19))
+      .then(response => {
+        jwt.sign({ username: user.username, level: user.level, sub: 'Acordaos EngWeb2023' },
+          "Acordaos2023",
+          { expiresIn: 3600 },
+          function (e, token) {
+            if (e) res.status(500).jsonp({ error: "Erro na geração do token: " + e })
+            else {
+              res.cookie('token', token)
+              res.redirect(req.session.returnUrl)
+            }
+          })
+      })
+      .catch(error => {
+        res.status(500).jsonp({ error: "Erro a atualizar o último acesso: " + error })
+      })
+  })(req, res, next)
+});
+
 
 
 router.get('/:id/favorites', function (req, res) {
@@ -82,14 +115,16 @@ router.post('/', function (req, res) {
 
 router.post('/register', function (req, res) {
   console.log(req.body)
-  userModel.register(new userModel({username: req.body.username, 
-                                    email: req.body.email, 
-                                    name: req.body.name, 
-                                    surname: req.body.surname, 
-                                    filiation: req.body.filiation, 
-                                    level: req.body.level, 
-                                    dateCreated: new Date().toISOString().substring(0, 19), 
-                                    lastAccess: new Date().toISOString().substring(0, 19) }),
+  userModel.register(new userModel({
+    username: req.body.username,
+    email: req.body.email,
+    name: req.body.name,
+    surname: req.body.surname,
+    filiation: req.body.filiation,
+    level: req.body.level,
+    dateCreated: new Date().toISOString().substring(0, 19),
+    lastAccess: new Date().toISOString().substring(0, 19)
+  }),
     req.body.password,
     function (err, user) {
       if (err) {
@@ -125,7 +160,7 @@ router.delete('/:id', function (req, res) {
 
 
 router.post('/login', passport.authenticate('local'), function (req, res) {
-  User.updateAccess(new Date().toISOString().substring(0, 19))
+  User.updateAccess(req.user.username, new Date().toISOString().substring(0, 19))
     .then(response => {
       jwt.sign({ username: req.user.username, level: req.user.level, sub: 'Acordaos EngWeb2023' },
         "Acordaos2023",

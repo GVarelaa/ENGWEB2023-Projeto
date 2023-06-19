@@ -19,7 +19,7 @@ function Login() {
   };
 
   const handleGoogleAuth = () => {
-    console.log("teste")
+    window.location.href = env.authAccessPoint + "/login/google?returnUrl=" + env.interfaceAccessPoint
   };
   
   const handleSubmit = (event) => {
