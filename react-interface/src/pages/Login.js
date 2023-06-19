@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate, Link } from 'react-router-dom'
 import { useState } from 'react'
 import { Col, Button, Row, Container, Card, Form, FloatingLabel } from 'react-bootstrap'
 import { Facebook, Google } from 'react-bootstrap-icons'
@@ -82,8 +82,8 @@ function Login() {
                       </div>
 
                       <div className='d-flex justify-content-center mt-3'> 
-                        <Facebook size={30} className='mx-2' onClick={(e) => handleFacebookAuth()} />
-                        <Google size={30} onClick={(e) => handleGoogleAuth()} />
+                        <Link><Facebook size={30} color='outline-dark' className='mx-2' onClick={(e) => handleFacebookAuth()} /></Link>
+                        <Link><Google size={30} color='outline-dark' className='mx-2' onClick={(e) => handleGoogleAuth()} /></Link>
                       </div>
 
                     </div>
