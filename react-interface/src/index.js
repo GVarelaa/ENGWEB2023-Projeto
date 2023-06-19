@@ -10,6 +10,7 @@ import Profile from "./pages/Profile"
 import Favorites from "./pages/Favorites"
 import RouterGuard from "./components/RouterGuard"
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'react-toastify/dist/ReactToastify.css'
 
 export default function App() {
   return (

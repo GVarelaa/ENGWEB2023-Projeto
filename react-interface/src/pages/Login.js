@@ -1,7 +1,8 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate, Link } from 'react-router-dom'
 import { useState } from 'react'
 import { Col, Button, Row, Container, Card, Form, FloatingLabel } from 'react-bootstrap'
 import { Facebook, Google } from 'react-bootstrap-icons'
+import { ToastContainer, toast } from 'react-toastify'
 import ParticleLayout from '../components/ParticleLayout'
 import axios from 'axios'
 import env from '../config/env'
@@ -11,7 +12,6 @@ function Login() {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
-  const [isInvalid, setIsInvalid] = useState(false)
 
 
   const handleFacebookAuth = () => {
@@ -26,16 +26,14 @@ function Login() {
     axios.post(env.authAccessPoint + '/login', {username:username, password:password})
       .then(response => {
         const token = response.data.token
-
         localStorage.setItem('token', token)
+
         setIsSubmitted(true)
-        //setAuthToken
       })
       .catch(error => {
-        setUsername("")
-        setPassword("")
-        setIsInvalid(true)
-        console.log(error)
+        toast.error('Os dados introduzidos são inválidos!', {
+          position: toast.POSITION.TOP_CENTER
+        })
       }) 
 
       event.preventDefault()
@@ -43,6 +41,7 @@ function Login() {
 
   const loginForm = (
         <>
+          <ToastContainer/>
           <ParticleLayout/>
           <Container>
             <Row className="vh-100 d-flex align-items-center justify-content-center">
@@ -62,10 +61,6 @@ function Login() {
                           <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
                         </FloatingLabel>
 
-                        {isInvalid && 
-                          <p className="mb-0  text-center mb-3 text-dark">Os dados introduzidos estão incorretos.</p>
-                        }
-
                         <div className="d-flex justify-content-center">
                           <Button type="submit" variant="outline-dark">Iniciar Sessão</Button>
                         </div>
@@ -82,8 +77,8 @@ function Login() {
                       </div>
 
                       <div className='d-flex justify-content-center mt-3'> 
-                        <Facebook size={30} className='mx-2' onClick={(e) => handleFacebookAuth()} />
-                        <Google size={30} onClick={(e) => handleGoogleAuth()} />
+                        <Link><Facebook size={30} color='outline-dark' className='mx-2' onClick={(e) => handleFacebookAuth()} /></Link>
+                        <Link><Google size={30} color='outline-dark' className='mx-2' onClick={(e) => handleGoogleAuth()} /></Link>
                       </div>
 
                     </div>

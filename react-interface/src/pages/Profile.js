@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, FormControl, Image, Card, Button} from 'react-bootstrap'
-import { Pencil } from 'react-bootstrap-icons'
+import React, { useState, useEffect } from 'react'
+import { Container, Row, Col, Form, Card, Button} from 'react-bootstrap'
+import { ToastContainer, toast } from 'react-toastify'
 import NavBar from '../components/NavBar'
+import './Profile.css'
 import axios from 'axios'
-import env from '../config/env'
 import jwt_decode from 'jwt-decode'
-import './Profile.css';
+import env from '../config/env'
 
 function Profile() {
   const [username, setUsername] = useState('')
@@ -34,7 +34,9 @@ function Profile() {
         }
       }
       catch (error) {
-        console.log(error)
+        toast.error('Não foi obter as informações do utilizador!', {
+          position: toast.POSITION.TOP_CENTER
+        })
       }
     }
 
@@ -50,8 +52,16 @@ function Profile() {
         oldpassword: passwordAtual,
         newpassword: passwordNova
       })
-      .then(response => {}) // alertar
-      .catch(error => { console.log(error) })
+      .then(response => {
+        toast.success('A password foi alterada com sucesso!', {
+          position: toast.POSITION.TOP_CENTER,
+        })
+      })
+      .catch(error => {
+        toast.error('Não foi possível alterar a password!', {
+          position: toast.POSITION.TOP_CENTER
+        })
+      })
     }
 
     axios.put(env.authAccessPoint + '/' + username, {
@@ -60,12 +70,21 @@ function Profile() {
       username: username,
       filiation: filiacao
     })
-      .then(response => {})
-      .catch(error => { console.log(error) })
+      .then(response => {
+        toast.success('As alterações foram efetuadas com sucesso!', {
+          position: toast.POSITION.TOP_CENTER,
+        })
+      })
+      .catch(error => {
+        toast.error('Não foi possível efetuar as alterações!', {
+          position: toast.POSITION.TOP_CENTER
+        })
+      })
   }
 
   return (
     <>
+      <ToastContainer/>
       <NavBar/>
       <Container>
         <hr className="mt-4 mb-4" />

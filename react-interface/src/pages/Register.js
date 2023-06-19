@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { Col, Button, Row, Container, Card, Form, FloatingLabel, Dropdown } from 'react-bootstrap'
-import { CheckCircleFill, ExclamationTriangleFill } from 'react-bootstrap-icons'
+import { ToastContainer, toast } from 'react-toastify'
 import ParticleLayout from '../components/ParticleLayout'
 import axios from 'axios'
 
@@ -31,9 +31,7 @@ function Register() {
           if (response.data != null) setEmailExists(true)
           else setEmailExists(false)
         })
-        .catch(error => {
-          console.log(error)
-        })
+        .catch(error => {})
     }
     else if (type === 2){
       axios.get(env.authAccessPoint + '/check-username/' + username)
@@ -41,9 +39,7 @@ function Register() {
           if (response.data != null) setUsernameExists(true)
           else setUsernameExists(false)
         })
-        .catch(error => {
-          console.log(error)
-        })
+        .catch(error => {})
     }
   }
 
@@ -64,20 +60,29 @@ function Register() {
 
         if(token!=null){
           localStorage.setItem('token', token)
-          setIsSubmitted(true)
+
+          toast.success('O registo foi efetuado com sucesso!', {
+            position: toast.POSITION.TOP_CENTER
+          })
+
+          setIsSubmitted(true) 
         }
         else{
-          // falhou
+          toast.error('Não foi possível efetuar o registo!', {
+            position: toast.POSITION.TOP_CENTER
+          })
         }
-        // setAuthToken
       })
       .catch(error => {
-        console.log(error)
+        toast.error('Não foi possível efetuar o registo!', {
+          position: toast.POSITION.TOP_CENTER
+        })
       })
   }
 
   const registerForm = (
     <>
+      <ToastContainer/>
       <ParticleLayout/>
       <Container>
         <Row className="vh-100 d-flex align-items-center justify-content-center">
