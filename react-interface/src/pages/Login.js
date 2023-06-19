@@ -1,6 +1,7 @@
 import { Navigate } from 'react-router-dom'
 import { useState } from 'react'
 import { Col, Button, Row, Container, Card, Form, FloatingLabel } from 'react-bootstrap'
+import { Facebook, Google } from 'react-bootstrap-icons'
 import ParticleLayout from '../components/ParticleLayout'
 import axios from 'axios'
 import env from '../config/env'
@@ -15,6 +16,10 @@ function Login() {
 
   const handleFacebookAuth = () => {
     window.location.href = env.authAccessPoint + "/login/facebook?returnUrl=" + env.interfaceAccessPoint
+  };
+
+  const handleGoogleAuth = () => {
+    console.log("teste")
   };
   
   const handleSubmit = (event) => {
@@ -45,7 +50,7 @@ function Login() {
                 <Card className="shadow-lg">
                   <Card.Body>
                     <div className="mb-3 mt-md-4">
-                      <h2 className="fw-bold mb-2">Acordãos</h2>
+                      <h2 className="fw-bold mb-2">Iniciar Sessão</h2>
                       <p className=" mb-5">Por favor insira os seus dados para iniciar sessão.</p>
 
                       <Form onSubmit={handleSubmit}>
@@ -62,12 +67,10 @@ function Login() {
                         }
 
                         <div className="d-flex justify-content-center">
-                          <Button type="submit" variant="outline-dark">Login</Button>
+                          <Button type="submit" variant="outline-dark">Iniciar Sessão</Button>
                         </div>
 
                       </Form>
-
-                      <Button onClick={handleFacebookAuth}>Authenticate with Facebook</Button>
 
                       <div className="mt-3">
                         <p className="mb-0  text-center">
@@ -76,6 +79,11 @@ function Login() {
                             Registar
                           </a>
                         </p>
+                      </div>
+
+                      <div className='d-flex justify-content-center mt-3'> 
+                        <Facebook size={30} className='mx-2' onClick={(e) => handleFacebookAuth()} />
+                        <Google size={30} onClick={(e) => handleGoogleAuth()} />
                       </div>
 
                     </div>
