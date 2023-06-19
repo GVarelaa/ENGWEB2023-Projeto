@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Container, Accordion, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { Eye, Pencil, Trash3, Heart } from 'react-bootstrap-icons'
 import { PaginationControl } from 'react-bootstrap-pagination-control';
+import { ToastContainer, toast } from 'react-toastify'
 import NavBar from '../components/NavBar';
 import axios from 'axios';
 import env from '../config/env'
@@ -22,7 +23,9 @@ function Favorites() {
         const response = await axios.get(env.authAccessPoint + `/${decodedToken.username}` +  "/favorites");
         favorites = response.data.favorites
       } catch (error){
-        console.log(error)
+        toast.error('Não foi possível obter a lista de favoritos!', {
+          position: toast.POSITION.TOP_CENTER
+        })
       }
 
       if(favorites.length > 0){
@@ -35,7 +38,9 @@ function Favorites() {
           const response = await axios.get(env.apiAccessPoint + queryString);
           setData(response.data)
         } catch (error){
-          console.log(error)
+          toast.error('Não foi possível obter a lista de favoritos!', {
+            position: toast.POSITION.TOP_CENTER
+          })
         }
       }
     }
@@ -51,6 +56,7 @@ function Favorites() {
 
   return (
     <>
+      <ToastContainer/>
       <NavBar/>
       <Container className='mt-4'>
         <PaginationControl  page={page}  

@@ -16,9 +16,9 @@ module.exports.list = () => {
 }
 
 
-module.exports.getUser = id => {
+module.exports.getUser = username => {
     return User
-            .findOne({username:id})
+            .findOne({username: username})
             .then(response => {
                 return response
             })
@@ -52,9 +52,9 @@ module.exports.checkUsername = (username) => {
 }
 
 
-module.exports.getFavorites = id => {
+module.exports.getFavorites = username => {
     return User
-            .findOne({username:id}, {favorites: 1})
+            .findOne({username: username}, {favorites: 1})
             .then(response => {
                 return response
             })
@@ -76,8 +76,8 @@ module.exports.addUser = u => {
 }
 
 
-module.exports.updateUser = (id, info) => {
-    return User.updateOne({username:id}, info)
+module.exports.updateUser = (username, info) => {
+    return User.updateOne({username: username}, info)
             .then(response => {
                 return response
             })
@@ -87,9 +87,9 @@ module.exports.updateUser = (id, info) => {
 }
 
 
-module.exports.updateFavorite = (id, favorite) => {
+module.exports.updateFavorite = (username, favorite) => {
     return User
-        	.updateOne({username: id}, {$addToSet : {favorites: favorite}})
+        	.updateOne({username: username}, {$addToSet : {favorites: favorite}})
             .then(response => {
                 return response
             })
@@ -99,8 +99,8 @@ module.exports.updateFavorite = (id, favorite) => {
 }
 
 
-module.exports.updateAccess = (id, date) => {
-    return User.updateOne({username: id}, {lastAccess: date})
+module.exports.updateAccess = (username, date) => {
+    return User.updateOne({username: username}, {lastAccess: date})
             .then(response => {
                 return response
             })
@@ -109,8 +109,8 @@ module.exports.updateAccess = (id, date) => {
             })
 }
 
-module.exports.updateUserPassword = (id, pwd) => {
-    return User.updateOne({username: id}, pwd)
+module.exports.updateUserPassword = (username, pwd) => {
+    return User.updateOne({username: username}, pwd)
             .then(response => {
                 return response
             })
@@ -120,8 +120,8 @@ module.exports.updateUserPassword = (id, pwd) => {
 }
 
 
-module.exports.deleteUser = id => {
-    return User.deleteOne({username:id})
+module.exports.deleteUser = username => {
+    return User.deleteOne({username: username})
             .then(response => {
                 return response
             })

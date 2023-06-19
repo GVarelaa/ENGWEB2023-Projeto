@@ -1,6 +1,7 @@
 import NavBar from '../components/NavBar'
 import { useState } from 'react'
 import { Container, Button, Form, FloatingLabel } from 'react-bootstrap'
+import { ToastContainer, toast } from 'react-toastify'
 import axios from 'axios'
 
 var env = require('../config/env')
@@ -61,38 +62,20 @@ function Insert(){
       "Nº do Documento": n_doc
     })
       .then(response => {
-        // o q fazer??????
+        toast.success('O acórdão foi adicionado com sucesso!', {
+          position: toast.POSITION.TOP_CENTER
+        })
       })
       .catch(error => {
-        setProcesso("")
-        setRelator("")
-        setDescritores([])
-        setData("")
-        setVotacao("")
-        setSumario("")
-        setTextoIntegral("")
-        setTribunal("")
-        setDecisao("")
-        setMeioProcessual("")
-        setLegislacaoNacional("")
-        setLegislacaoComunitaria("")
-        setLegislacaoEstrangeira("")
-        setAreaTematica("")
-        setAreaTematica2("")
-        setReferencias("")
-        setJurispNacional("")
-        setJurispInternacional("")
-        setTribunalRecorrido("")
-        setProcTribunalRecorrido("")
-        setRefProcesso("")
-        setIndicacoesEventuais("")
-        setNConvencional("")
-        setNDoc("")
+        toast.error('Não foi possível adicionar o acórdão!', {
+          position: toast.POSITION.TOP_CENTER
+        })
       })
   }
 
   return (
     <>
+      <ToastContainer/>
       <NavBar/>
       <Container>
         <Form onSubmit={handleSubmit}>

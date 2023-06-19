@@ -177,13 +177,15 @@ router.post('/login', passport.authenticate('local'), function (req, res) {
 
 
 router.post('/changepassword', function (req, res) {
-  console.log(req.body.username)
   User.getUser(req.body.username)
     .then(user => {
       user.changePassword(req.body.oldpassword, req.body.newpassword, function (error) {
-        if (error) res.status(500).jsonp({ error: "Erro na alteração da password: " + error })
+        if (error){
+          console.log(error)
+          res.status(500).jsonp({ error: "Erro na alteração da password: " + error })
+        }
         else {
-          res.status(201).jsonp({ message: "successfully change password" })
+          res.status(201).jsonp()
         }
       })
     })

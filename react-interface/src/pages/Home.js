@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Container, Accordion, ListGroup, ListGroupItem } from 'react-bootstrap'
 import { Eye, Pencil, Trash3, Heart } from 'react-bootstrap-icons'
 import { PaginationControl } from 'react-bootstrap-pagination-control'
+import { ToastContainer, toast } from 'react-toastify'
 import NavBar from '../components/NavBar'
 import axios from 'axios'
 import env from '../config/env'
@@ -20,7 +21,9 @@ function Home() {
         const response = await axios.get(env.apiAccessPoint + '?skip=0&limit=100')
         setData(response.data)
       } catch (error) {
-        console.log(error)
+        toast.error('Não foi possível obter a lista de acórdãos!', {
+          position: toast.POSITION.TOP_CENTER
+        })
       }
     };
 
@@ -29,7 +32,9 @@ function Home() {
         const response = await axios.get(env.apiAccessPoint + '/number')
         setPagesNumber(response.data)
       } catch (error) {
-        console.log(error)
+        toast.error('Não foi possível obter a lista de acórdãos!', {
+          position: toast.POSITION.TOP_CENTER
+        })
       }
     };
 
@@ -46,25 +51,32 @@ function Home() {
       const response = await axios.get(env.apiAccessPoint + `?skip=${skip}&limit=100`)
       setData(response.data)
     } catch (error) {
-      console.log(error)
+      toast.error('Não foi possível obter a lista de acórdãos!', {
+        position: toast.POSITION.TOP_CENTER
+      })
     }
   }
 
 
   const handleFavorite = async (event, id) => {
-    console.log("entrei")
     var decodedToken = jwt_decode(localStorage.getItem('token'))
 
     try {
       await axios.post(env.authAccessPoint + `/${decodedToken.username}/favorites`, {favorite: id})
+      toast.success('O acórdão foi adicionado à lista de favoritos com sucesso!', {
+        position: toast.POSITION.TOP_CENTER
+      })
     } catch (error) {
-      console.log(error)
+      toast.error('Não foi adicionar o acórdão à lista de favoritos!', {
+        position: toast.POSITION.TOP_CENTER
+      })
     }
   }
 
 
   return (
     <>
+      <ToastContainer/>
       <NavBar/>
       <Container className='mt-4'>
         <PaginationControl  page={page}  
