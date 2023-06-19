@@ -13,12 +13,11 @@ function NavBar() {
     <>
       <Navbar bg="dark" variant="dark" expand="lg" style={{ '--bs-navbar-padding-y': '1rem' }}>
         <Container style={{ 'max-width': '95%' }}>
-          <Navbar.Brand href="#home">Acordãos</Navbar.Brand>
+          <Navbar.Brand href="/">Acordãos</Navbar.Brand>
           <Navbar.Collapse>
             <Nav >
-              <Nav.Link href="#home">Home</Nav.Link>
-              <Nav.Link href="#about">About</Nav.Link>
-              <Nav.Link href="#services">Services</Nav.Link>
+              <Nav.Link href="/">Home</Nav.Link>
+              <Nav.Link href="/about">About</Nav.Link>
             </Nav>
 
             <Nav className='ms-auto'>

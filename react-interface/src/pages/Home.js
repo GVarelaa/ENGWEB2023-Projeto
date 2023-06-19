@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Container, Accordion, ListGroup, ListGroupItem } from 'react-bootstrap'
-import { Eye, Pencil, Trash3, Heart } from 'react-bootstrap-icons'
+import { Eye, Pencil, Trash3, Heart, TelephoneMinus } from 'react-bootstrap-icons'
 import { PaginationControl } from 'react-bootstrap-pagination-control'
 import { ToastContainer, toast } from 'react-toastify'
 import NavBar from '../components/NavBar'
@@ -50,6 +50,7 @@ function Home() {
     try {
       const response = await axios.get(env.apiAccessPoint + `?skip=${skip}&limit=100`)
       setData(response.data)
+      window.scrollTo(0, 0);
     } catch (error) {
       toast.error('Não foi possível obter a lista de acórdãos!', {
         position: toast.POSITION.TOP_CENTER
@@ -62,7 +63,7 @@ function Home() {
     var decodedToken = jwt_decode(localStorage.getItem('token'))
 
     try {
-      await axios.post(env.authAccessPoint + `/${decodedToken.username}/favorites`, {favorite: id})
+      await axios.post(env.authAccessPoint + `/${decodedToken.username}/favorites`, { favorite: id })
       toast.success('O acórdão foi adicionado à lista de favoritos com sucesso!', {
         position: toast.POSITION.TOP_CENTER
       })
@@ -73,10 +74,15 @@ function Home() {
     }
   }
 
-  
+
   const handleDelete = async (event, id) => {
     try {
-      await axios.delete(env.authAccessPoint + `/${id}`)
+      await axios.delete(env.apiAccessPoint + `/${id}`)
+
+      setData(oldState => {
+        return oldState.filter((item) => item._id !== id)
+      })      
+
       toast.success('O acórdão foi removido com sucesso!', {
         position: toast.POSITION.TOP_CENTER
       })
@@ -87,11 +93,12 @@ function Home() {
     }
   }
 
+  console.log(data)
 
   return (
     <>
-      <ToastContainer/>
-      <NavBar/>
+      <ToastContainer />
+      <NavBar />
       <Container className='mt-4'>
         <PaginationControl page={page}
           between={4}
@@ -105,18 +112,23 @@ function Home() {
             return (
               <Accordion.Item eventKey={index}>
                 <Accordion.Header>
-                  <Container><b>Processo:</b>{obj.Processo}</Container>
+                  <Container><b>Processo: </b>{obj.Processo}</Container>
                   <Container className='d-flex justify-content-end px-3'>
                     <Link to={obj._id}> <Eye size={20} color='black' className='mx-3' /> </Link>
                     <Link to="#"> <Heart size={20} color='black' className='mx-3' onClick={(event) => handleFavorite(event, obj._id)} /> </Link>
-                    <Link to={"/edit/" + obj._id}> <Pencil size={20} color='black' className='mx-3'/> </Link>
+                    <Link to={"/edit/" + obj._id}> <Pencil size={20} color='black' className='mx-3' /> </Link>
                     <Link> <Trash3 size={20} color='black' className='mx-3' onClick={(event) => handleDelete(event, obj._id)} /> </Link>
                   </Container>
                 </Accordion.Header>
                 <Accordion.Body>
                   <ListGroup>
-                    <ListGroupItem><b>Data:</b>{obj.Data}</ListGroupItem>
-                    <ListGroupItem><b>Relator:</b>{obj.Relator}</ListGroupItem>
+                    <ListGroupItem><b>Data: </b>{obj.Data}</ListGroupItem>
+                    <ListGroupItem><b>Relator: </b>{obj.Relator}</ListGroupItem>
+                    <ListGroupItem><b>Descritores: </b>
+                      <ListGroup className='list-group-flush'>
+                        {obj.Descritores.map((content) => {return(<ListGroupItem>{content}</ListGroupItem>)})}
+                      </ListGroup>
+                    </ListGroupItem>
                   </ListGroup>
                 </Accordion.Body>
               </Accordion.Item>

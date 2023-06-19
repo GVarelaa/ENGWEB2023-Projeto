@@ -32,7 +32,7 @@ function Record(){
             <NavBar/>
             <Container className="my-4">
                 <ListGroup>
-                    {records && (records === "NoPage" ? <NoPage/> : Object.keys(records[0]).map((key) => {return (<ListGroupItem><b>{key}:</b>{records[0][key]}</ListGroupItem>)}))}
+                    {records && (records === "NoPage" ? <NoPage/> : Object.keys(records[0]).map((key) => {return (<ListGroupItem><b>{key}: </b>{records[0][key]}</ListGroupItem>)}))}
                 </ListGroup>
             </Container>
         </>
