@@ -1,4 +1,4 @@
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { useState } from 'react'
 import { Col, Button, Row, Container, Card, Form, FloatingLabel } from 'react-bootstrap'
 import ParticleLayout from '../components/ParticleLayout'
@@ -14,11 +14,11 @@ function Login() {
 
 
   const handleFacebookAuth = () => {
-    window.location.href = env.authAcessPoint + "/login/facebook"
+    window.location.href = env.authAccessPoint + "/login/facebook?returnUrl=" + env.interfaceAccessPoint
   };
   
   const handleSubmit = (event) => {
-    axios.post(env.authAcessPoint + '/login', {username:username, password:password})
+    axios.post(env.authAccessPoint + '/login', {username:username, password:password})
       .then(response => {
         const token = response.data.token
 

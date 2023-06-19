@@ -26,7 +26,7 @@ function Register() {
 
   const checkAccountExists = (type) => {
     if (type === 1){
-      axios.get(env.authAcessPoint + '/check-email/' + email)
+      axios.get(env.authAccessPoint + '/check-email/' + email)
         .then(response => {
           if (response.data != null) setEmailExists(true)
           else setEmailExists(false)
@@ -36,7 +36,7 @@ function Register() {
         })
     }
     else if (type === 2){
-      axios.get(env.authAcessPoint + '/check-username/' + username)
+      axios.get(env.authAccessPoint + '/check-username/' + username)
         .then(response => {
           if (response.data != null) setUsernameExists(true)
           else setUsernameExists(false)
@@ -50,7 +50,7 @@ function Register() {
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    axios.post(env.authAcessPoint + '/register', {
+    axios.post(env.authAccessPoint + '/register', {
       name: nome,
       surname: apelido,
       email: email,

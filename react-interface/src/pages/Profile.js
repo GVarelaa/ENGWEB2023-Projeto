@@ -23,7 +23,7 @@ function Profile() {
       var decodedToken = jwt_decode(localStorage.getItem('token'));
       console.log(decodedToken)
       try {
-        const response = await axios.get(env.authAcessPoint + `/${decodedToken.username}`)
+        const response = await axios.get(env.authAccessPoint + `/${decodedToken.username}`)
         if (response.data) {
           setUsername(response.data.username)
           setNome(response.data.name)
@@ -45,7 +45,7 @@ function Profile() {
     event.preventDefault()
 
     if (passwordAtual != null && passwordNova != null){
-      axios.post(env.authAcessPoint + '/changepassword', {
+      axios.post(env.authAccessPoint + '/changepassword', {
         username: username,
         oldpassword: passwordAtual,
         newpassword: passwordNova
@@ -54,7 +54,7 @@ function Profile() {
       .catch(error => { console.log(error) })
     }
 
-    axios.put(env.authAcessPoint + '/' + username, {
+    axios.put(env.authAccessPoint + '/' + username, {
       name: nome,
       surname: apelido,
       username: username,

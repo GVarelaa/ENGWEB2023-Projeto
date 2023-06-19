@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+var session = require('express-session')
 var logger = require('morgan');
 var cors = require('cors')
 var passport = require('passport')
@@ -37,7 +38,8 @@ passport.use(new FacebookStrategy({
     console.log("A verificar....")
     User.findOne({facebookID: profile.id})
       .then(user => {
-        if(response){
+        console.log(profile)
+        if(user){
           return cb(null, user)
         }
         else{
@@ -45,9 +47,22 @@ passport.use(new FacebookStrategy({
             username: profile.id,
             name: profile.displayName,
             surname: "",
+            email: "",
+            filiation: "",
+            level: "Consumidor",
+            favorites: [],
+            dateCreated: new Date().toISOString().substring(0, 19),
+            lastAccess: "",
+            facebookID: profile.id
           })
 
-          return cb(null, newUser)
+          User.create(newUser)
+            .then(response => {
+              return cb(null, newUser)
+            })
+            .catch(error => {
+              return cb(error)
+            })
         }
       })
       .catch(error => {
@@ -65,6 +80,11 @@ app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(session({
+  secret: 'olhafodasse',
+  resave: false,
+  saveUninitialized: true,
+}))
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/', usersRouter);

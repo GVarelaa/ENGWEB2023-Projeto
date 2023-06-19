@@ -29,13 +29,32 @@ router.get('/check-username/:username', function (req, res) {
 });
 
 
-router.get('/login/facebook', passport.authenticate('facebook'));
+router.get('/login/facebook', function(req, res){
+  const returnUrl = req.query.returnUrl; 
+  req.session.returnUrl = returnUrl;
+
+  passport.authenticate('facebook')(req, res);
+});
 
 
 router.get('/login/facebook/callback', function(req, res, next) {
     passport.authenticate('facebook', function(err, user, info, status){
-      console.log("Sucesso")
-      res.redirect('http://localhost:8070/sucesso');
+      User.updateAccess(new Date().toISOString().substring(0, 19))
+      .then(response => {
+        jwt.sign({ username: user.username, level: user.level, sub: 'Acordaos EngWeb2023' },
+          "Acordaos2023",
+          { expiresIn: 3600 },
+          function (e, token) {
+            if (e) res.status(500).jsonp({ error: "Erro na geração do token: " + error })
+            else{
+              res.cookie('token', token)
+              res.redirect(req.session.returnUrl)
+            }
+          })
+      })
+      .catch(error => {
+        res.status(500).jsonp({ error: "Erro a atualizar o último acesso: " + error })
+      })
     })(req, res, next)  
   });
 
@@ -82,7 +101,7 @@ router.post('/register', function (req, res) {
             "Acordaos2023",
             { expiresIn: 3600 },
             function (e, token) {
-              if (e) res.status(500).jsonp({ error: "Erro na geração do token: " + e })
+              if (e) res.status(500).jsonp({ error: "Erro na geração do token: " + error })
               else res.status(201).jsonp({ token: token })
             });
         })
@@ -129,7 +148,6 @@ router.post('/changepassword', function (req, res) {
       user.changePassword(req.body.oldpassword, req.body.newpassword, function (error) {
         if (error) res.status(500).jsonp({ error: "Erro na alteração da password: " + error })
         else {
-          console.log("entrei")
           res.status(201).jsonp({ message: "successfully change password" })
         }
       })

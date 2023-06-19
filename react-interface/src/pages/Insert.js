@@ -34,7 +34,7 @@ function Insert(){
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    axios.post(env.apiAcessPoint, {
+    axios.post(env.apiAccessPoint, {
       Processo: processo,
       Relator: relator,
       Descritores: descritores,

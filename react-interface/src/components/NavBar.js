@@ -1,10 +1,12 @@
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faUser } from '@fortawesome/free-solid-svg-icons';
+import Cookies from 'js-cookie'
 
 function NavBar() {
   const handleLogout = () => {
     localStorage.removeItem('token')
+    Cookies.remove('token')
   }
 
   return (

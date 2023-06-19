@@ -19,7 +19,7 @@ function Favorites() {
       var favorites = []
       var decodedToken = jwt_decode(localStorage.getItem('token'));
       try{
-        const response = await axios.get(env.authAcessPoint + `/${decodedToken.username}` +  "/favorites");
+        const response = await axios.get(env.authAccessPoint + `/${decodedToken.username}` +  "/favorites");
         favorites = response.data.favorites
       } catch (error){
         console.log(error)
@@ -32,7 +32,7 @@ function Favorites() {
         }
   
         try{
-          const response = await axios.get(env.apiAcessPoint + queryString);
+          const response = await axios.get(env.apiAccessPoint + queryString);
           setData(response.data)
         } catch (error){
           console.log(error)

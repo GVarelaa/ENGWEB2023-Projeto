@@ -17,7 +17,7 @@ function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(env.apiAcessPoint + '?skip=0&limit=100')
+        const response = await axios.get(env.apiAccessPoint + '?skip=0&limit=100')
         setData(response.data)
       } catch (error) {
         console.log(error)
@@ -26,7 +26,7 @@ function Home() {
 
     const fetchPagesNumber = async () => {
       try {
-        const response = await axios.get(env.apiAcessPoint + '/number')
+        const response = await axios.get(env.apiAccessPoint + '/number')
         setPagesNumber(response.data)
       } catch (error) {
         console.log(error)
@@ -43,7 +43,7 @@ function Home() {
     const skip = (page-1) * 100
 
     try {
-      const response = await axios.get(env.apiAcessPoint + `?skip=${skip}&limit=100`)
+      const response = await axios.get(env.apiAccessPoint + `?skip=${skip}&limit=100`)
       setData(response.data)
     } catch (error) {
       console.log(error)
@@ -56,7 +56,7 @@ function Home() {
     var decodedToken = jwt_decode(localStorage.getItem('token'))
 
     try {
-      await axios.post(env.authAcessPoint + `/${decodedToken.username}/favorites`, {favorite: id})
+      await axios.post(env.authAccessPoint + `/${decodedToken.username}/favorites`, {favorite: id})
     } catch (error) {
       console.log(error)
     }
