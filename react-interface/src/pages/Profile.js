@@ -17,6 +17,7 @@ function Profile() {
   const [filiacao, setFiliacao] = useState('')
   const [nivel, setNivel] = useState('');
   const [emailExists, setEmailExists] = useState(false)
+  const [changePassword, setChangePassword] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,13 +55,15 @@ function Profile() {
       })
       .then(response => {
         toast.success('A password foi alterada com sucesso!', {
-          position: toast.POSITION.TOP_CENTER,
+          position: toast.POSITION.TOP_CENTER
         })
+        setChangePassword(true)
       })
       .catch(error => {
         toast.error('Não foi possível alterar a password!', {
           position: toast.POSITION.TOP_CENTER
         })
+        setChangePassword(true)
       })
     }
 
@@ -71,9 +74,11 @@ function Profile() {
       filiation: filiacao
     })
       .then(response => {
-        toast.success('As alterações foram efetuadas com sucesso!', {
-          position: toast.POSITION.TOP_CENTER,
-        })
+        if (!changePassword){
+          toast.success('As alterações foram efetuadas com sucesso!', {
+            position: toast.POSITION.TOP_CENTER,
+          })
+        }
       })
       .catch(error => {
         toast.error('Não foi possível efetuar as alterações!', {
