@@ -1,4 +1,4 @@
-import { useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Container, Accordion, ListGroup, ListGroupItem } from 'react-bootstrap'
 import { Eye, Pencil, Trash3, Heart } from 'react-bootstrap-icons'
@@ -40,7 +40,7 @@ function Home() {
 
   const handleChangePage = async (page) => {
     setPage(page)
-    const skip = (page-1) * 100
+    const skip = (page - 1) * 100
 
     try {
       const response = await axios.get(env.apiAccessPoint + `?skip=${skip}&limit=100`)
@@ -52,11 +52,19 @@ function Home() {
 
 
   const handleFavorite = async (event, id) => {
-    console.log("entrei")
     var decodedToken = jwt_decode(localStorage.getItem('token'))
 
     try {
-      await axios.post(env.authAccessPoint + `/${decodedToken.username}/favorites`, {favorite: id})
+      await axios.post(env.authAccessPoint + `/${decodedToken.username}/favorites`, { favorite: id })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+  const handleDelete = async (event, id) => {
+    try {
+      await axios.delete(env.authAccessPoint + `/${id}`)
     } catch (error) {
       console.log(error)
     }
@@ -65,14 +73,14 @@ function Home() {
 
   return (
     <>
-      <NavBar/>
+      <NavBar />
       <Container className='mt-4'>
-        <PaginationControl  page={page}  
-                            between={4}
-                            total={pagesNumber}
-                            limit={100}
-                            changePage={handleChangePage}
-                            ellipsis={1}/>
+        <PaginationControl page={page}
+          between={4}
+          total={pagesNumber}
+          limit={100}
+          changePage={handleChangePage}
+          ellipsis={1} />
 
         <Accordion className='mb-4'>
           {data.map((obj, index) => {
@@ -80,11 +88,11 @@ function Home() {
               <Accordion.Item eventKey={index}>
                 <Accordion.Header>
                   <Container><b>Processo:</b>{obj.Processo}</Container>
-                  <Container className='d-flex justify-content-end px-3'> 
-                    <Link to={obj._id}> <Eye size={20} color='black' className='mx-3'/> </Link> 
+                  <Container className='d-flex justify-content-end px-3'>
+                    <Link to={obj._id}> <Eye size={20} color='black' className='mx-3' /> </Link>
                     <Link to="#"> <Heart size={20} color='black' className='mx-3' onClick={(event) => handleFavorite(event, obj._id)} /> </Link>
-                    <Link to="#"> <Pencil size={20} color='black' className='mx-3'/> </Link> 
-                    <Link to="#"> <Trash3 size={20} color='black' className='mx-3'/> </Link> 
+                    <Link to={"/edit/" + obj._id}> <Pencil size={20} color='black' className='mx-3'/> </Link>
+                    <Link> <Trash3 size={20} color='black' className='mx-3' onClick={(event) => handleDelete(event, obj._id)} /> </Link>
                   </Container>
                 </Accordion.Header>
                 <Accordion.Body>
@@ -97,12 +105,12 @@ function Home() {
             )
           })}
         </Accordion>
-        <PaginationControl  page={page}  
-                            between={4}
-                            total={pagesNumber}
-                            limit={100}
-                            changePage={handleChangePage}
-                            ellipsis={1}/>
+        <PaginationControl page={page}
+          between={4}
+          total={pagesNumber}
+          limit={100}
+          changePage={handleChangePage}
+          ellipsis={1} />
       </Container>
     </>
   );
