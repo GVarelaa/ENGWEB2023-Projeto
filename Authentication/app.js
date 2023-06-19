@@ -2,10 +2,9 @@ var createError = require('http-errors');
 var express = require('express');
 var logger = require('morgan');
 var cors = require('cors')
-
 var passport = require('passport')
 var LocalStrategy = require('passport-local').Strategy
-var FacebookStrategy = require('passport-facebook').Strategy
+var FacebookStrategy = require('passport-facebook')
 require('dotenv').config()
 
 var mongoose = require('mongoose');
@@ -32,41 +31,30 @@ passport.deserializeUser(User.deserializeUser());
 passport.use(new FacebookStrategy({
   clientID: "801873144911281",
   clientSecret: "28625f356a0022764f56cd48f3385ddd",
-  callbackURL: "http://localhost:8072/callback",
-  state: true
-}, function verify(accessToken, refreshToken, profile, cb){
-  console.log("entrei")
-  User.findOne({facebookID: profile.id})
-    .then(response => {
-      if(response){
-        return cb(null, response)
-      }
-      else{
-        const user = new User({
-          username: profile.id,
-          name: profile.displayName,
-          surname: "",
-          email: "",
-          filiation: "",
-          level: "1",
-          favorites: [],
-          dateCreated: new Date().toISOString().substring(0,19),
-          facebookID: profile.id
-        })
+  callbackURL: "http://localhost:8072/login/facebook/callback"
+},
+  function (accessToken, refreshToken, profile, cb) {
+    console.log("A verificar....")
+    User.findOne({facebookID: profile.id})
+      .then(user => {
+        if(response){
+          return cb(null, user)
+        }
+        else{
+          const newUser = new User({
+            username: profile.id,
+            name: profile.displayName,
+            surname: "",
+          })
 
-        User.create(user)
-          .then(response => {
-            return cb(null, user)
-          })
-          .catch(error => {
-            return cb(error)
-          })
-      }
-    })
-    .catch(error => {
-      return cb(error)
-    })
-}))
+          return cb(null, newUser)
+        }
+      })
+      .catch(error => {
+        return cb(error)
+      })
+  }
+));
 
 
 var usersRouter = require('./routes/users');
@@ -77,18 +65,10 @@ app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
 app.use(passport.initialize());
 app.use(passport.session());
-
 app.use('/', usersRouter);
 
-app.get('/login/facebook', passport.authenticate('facebook'));
-app.get('/callback',
-  passport.authenticate('facebook', { failureRedirect: '/login', failureMessage: true }),
-  function(req, res) {
-    res.redirect('/');
-  });
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

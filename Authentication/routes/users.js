@@ -29,6 +29,16 @@ router.get('/check-username/:username', function (req, res) {
 });
 
 
+router.get('/login/facebook', passport.authenticate('facebook'));
+
+
+router.get('/login/facebook/callback', function(req, res, next) {
+    passport.authenticate('facebook', function(err, user, info, status){
+      console.log("Sucesso")
+      res.redirect('http://localhost:8070/sucesso');
+    })(req, res, next)  
+  });
+
 
 router.get('/:id/favorites', function (req, res) {
   User.getFavorites(req.params.id)
