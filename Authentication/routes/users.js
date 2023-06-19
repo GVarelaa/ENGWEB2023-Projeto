@@ -114,7 +114,6 @@ router.post('/', function (req, res) {
 
 
 router.post('/register', function (req, res) {
-  console.log(req.body)
   userModel.register(new userModel({
     username: req.body.username,
     email: req.body.email,
@@ -180,13 +179,8 @@ router.post('/changepassword', function (req, res) {
   User.getUser(req.body.username)
     .then(user => {
       user.changePassword(req.body.oldpassword, req.body.newpassword, function (error) {
-        if (error){
-          console.log(error)
-          res.status(500).jsonp({ error: "Erro na alteração da password: " + error })
-        }
-        else {
-          res.status(201).jsonp()
-        }
+        if (error) res.status(500).jsonp({ error: "Erro na alteração da password: " + error })
+        else res.status(201).jsonp()
       })
     })
     .catch(error => {
