@@ -196,4 +196,11 @@ router.post('/:id/favorites', function (req, res) {
 });
 
 
+router.delete('/:user/favorites/:favorite', function (req, res) {
+  User.removeFavorite(req.params.user, req.params.favorite)
+    .then(data => res.status(200).jsonp(data))
+    .catch(error => res.status(506).jsonp({ error: error, message: "Erro na deleção de um favorito" }))
+});
+
+
 module.exports = router;

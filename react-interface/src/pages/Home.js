@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { Container, Accordion, ListGroup, ListGroupItem, Modal, Button } from 'react-bootstrap'
-import { Eye, Pencil, Trash3, Heart } from 'react-bootstrap-icons'
+import { Eye, Pencil, Trash3, Heart, HeartFill } from 'react-bootstrap-icons'
 import { Pagination } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify'
 import NavBar from '../components/NavBar'
@@ -12,6 +12,7 @@ import jwt_decode from 'jwt-decode'
 
 function Home() {
     const [data, setData] = useState([])
+    const [favorites, setFavorites] = useState([])
     const [page, setPage] = useState(1)
     const [pagesNumber, setPagesNumber] = useState(0)
     const [showModal, setShowModal] = useState(false);
@@ -40,8 +41,20 @@ function Home() {
             }
         };
 
+        const fetchFavorites = async () => {
+            try {
+                const response = await axios.get(env.authAccessPoint + `/${decodedToken.username}` + '/favorites')
+                setFavorites(response.data.favorites)
+            } catch (error) {
+                toast.error('Não foi possível obter a lista de favoritos!', {
+                    position: toast.POSITION.TOP_CENTER
+                })
+            }
+        };
+
         fetchData()
         fetchPagesNumber()
+        fetchFavorites()
     }, []);
 
 
@@ -71,12 +84,25 @@ function Home() {
 
     const handleFavorite = async (event, id) => {
         try {
-            await axios.post(env.authAccessPoint + `/${decodedToken.username}/favorites`, { favorite: id })
-            toast.success('O acórdão foi adicionado à lista de favoritos com sucesso!', {
-                position: toast.POSITION.TOP_CENTER
-            })
+            if(favorites.includes(id)){
+                await axios.delete(env.authAccessPoint + `/${decodedToken.username}/favorites/${id}`,)
+                setFavorites(current => {
+                    return current.filter((item) => item !== id)
+                })
+                toast.success('O acórdão foi removido da lista de favoritos com sucesso!', {
+                    position: toast.POSITION.TOP_CENTER
+                })
+            }
+            else{
+                await axios.post(env.authAccessPoint + `/${decodedToken.username}/favorites`, { favorite: id })
+                setFavorites(current => [...current, id])
+                toast.success('O acórdão foi adicionado à lista de favoritos com sucesso!', {
+                    position: toast.POSITION.TOP_CENTER
+                })
+            }
         } catch (error) {
-            toast.error('Não foi adicionar o acórdão à lista de favoritos!', {
+
+            toast.error('Não foi possível adicionar o acórdão à lista de favoritos!', {
                 position: toast.POSITION.TOP_CENTER
             })
         }
@@ -99,8 +125,8 @@ function Home() {
         try {
             await axios.delete(env.apiAccessPoint + `/${id}`)
 
-            setData(oldState => {
-                return oldState.filter((item) => item._id !== id)
+            setData(current => {
+                return current.filter((item) => item._id !== id)
             })
 
             toast.success('O acórdão foi removido com sucesso!', {
@@ -128,7 +154,10 @@ function Home() {
                                     <Container><b>Processo: </b>{obj.Processo}</Container>
                                     <Container className='d-flex justify-content-end px-3'>
                                         <Link to={obj._id}> <Eye size={20} color='black' className='mx-3' /> </Link>
-                                        <Link to="#"> <Heart size={20} color='black' className='mx-3' onClick={(event) => handleFavorite(event, obj._id)} /> </Link>
+                                        {favorites.includes(obj._id)
+                                            ? <Link> <HeartFill size={20} color='black' className='mx-3' onClick={(event) => handleFavorite(event, obj._id)} /> </Link>
+                                            : <Link> <Heart size={20} color='black' className='mx-3' onClick={(event) => handleFavorite(event, obj._id)} /> </Link>
+                                        }
                                         <Link to={"/edit/" + obj._id}> <Pencil size={20} color='black' className='mx-3' /> </Link>
                                         {decodedToken.level === 'admin' &&
                                             <>
