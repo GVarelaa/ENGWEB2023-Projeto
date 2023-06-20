@@ -14,7 +14,8 @@ db.on('open', function() {
     console.log("Conexão ao MongoDB realizada com sucesso...")
 })
 
-var indexRouter = require('./routes/index');
+var acordaosRouter = require('./routes/acordaosRouter');
+var tribunaisRouter = require('./routes/tribunaisRouter');
 
 var app = express();
 
@@ -29,7 +30,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+app.use('/acordaos', acordaosRouter);
+app.use('/tribunais', tribunaisRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -5,6 +5,7 @@ import { Pagination } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify'
 import NavBar from '../components/NavBar'
 import Accordions from '../components/Accordions'
+import Search from '../components/Search';
 import axios from 'axios'
 import env from '../config/env'
 import jwt_decode from 'jwt-decode'
@@ -85,6 +86,7 @@ function Home() {
             <ToastContainer />
             <NavBar />
             <Container className='mt-4'>
+                <Search setData={setData}/>
                 <Accordions data={data} setData={setData} favorites={favorites} setFavorites={setFavorites} token={decodedToken} />
                 <Container className='d-flex justify-content-center mb-4'>
                     <Pagination page={page} onChange={handleChangePage} count={pagesNumber} shape="rounded" />

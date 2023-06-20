@@ -13,6 +13,19 @@ module.exports.list = (query, skip, limit) => {
             })
 }
 
+
+module.exports.search = (text) => {
+    return Acordao
+            .find({$text : {$search : `\"${text}\"`}})
+            .then(response => {
+                return response
+            })
+            .catch(error => {
+                return error
+            })
+}
+
+
 module.exports.getAcordao = id => {
     return Acordao
             .findOne({_id: id})
