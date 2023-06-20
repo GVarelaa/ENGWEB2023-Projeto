@@ -13,7 +13,7 @@ function Record(){
     useEffect(() => {
         const fetchData = async () => {
             try{
-                const response = await axios.get(env.apiAccessPoint + `/${params.id}`)
+                const response = await axios.get(env.apiAcordaosAccessPoint + `/${params.id}`)
                 if(response.data) setRecords([response.data])
                 else setRecords("NoPage")
             }

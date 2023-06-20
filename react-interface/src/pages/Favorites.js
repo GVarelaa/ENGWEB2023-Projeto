@@ -41,7 +41,7 @@ function Favorites() {
                 }
 
                 try {
-                    const response = await axios.get(env.apiAccessPoint + queryString);
+                    const response = await axios.get(env.apiAcordaosAccessPoint + queryString);
                     setPagesNumber(Math.ceil(response.data.length / 25))
                     setData(response.data)
                 } catch (error) {

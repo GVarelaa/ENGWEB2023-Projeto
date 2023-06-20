@@ -38,7 +38,6 @@ module.exports.getAcordaosNumber = () => {
 }
 
 
-
 module.exports.getRelatores = () => {
     return Acordao
             .distinct("Relator")
@@ -49,6 +48,7 @@ module.exports.getRelatores = () => {
                 return error
             })
 }
+
 
 module.exports.addAcordao = acordao => {
     acordao._id = Acordao.find().count()
@@ -63,6 +63,7 @@ module.exports.addAcordao = acordao => {
             })
 }
 
+
 module.exports.deleteAcordao = id => {
     return Acordao
             .deleteOne({_id:id})
@@ -73,6 +74,7 @@ module.exports.deleteAcordao = id => {
                 return error
             })
 }
+
 
 module.exports.updateAcordao = acordao => {
     return Acordao

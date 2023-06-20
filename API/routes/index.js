@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Acordao = require('../controllers/acordao')
+var Tribunal = require('../controllers/tribunal')
 
 /* GET home page. */
 router.get('/acordaos', function(req, res, next) {
@@ -37,11 +38,25 @@ router.get('/acordaos/relatores', function(req, res, next) {
 });
 
 
+router.get('/tribunais', function(req, res, next) {
+  Tribunal.list()
+    .then(data => res.status(200).json(data))
+    .catch(error => res.status(523).json({error: error, message: "Erro na obtenção da lista de tribunais"}))
+})
+
+
 router.get('/acordaos/:id', function(req, res, next) {
   Acordao.getAcordao(req.params.id)
     .then(data => res.status(200).json(data))
     .catch(error => res.status(522).json({error: error, message: "Erro na obtenção do acordão"}))
 });
+
+
+router.get('/tribunais/:id/descritores', function(req, res, next) {
+  Tribunal.getDescritores(req.params.id)
+    .then( data => res.status(200).json(data))
+    .catch(error => res.status(522).json({error: error, message: "Erro na obtenção dos descritores"}))
+})
 
 
 router.post('/acordaos', function(req, res, next) {
@@ -58,10 +73,25 @@ router.delete('/acordaos/:id', function(req, res, next) {
 });
 
 
+router.delete('tribunais/:id', function(req, res, next) {
+  Tribunal.deleteAcordao(req.params.id)
+    .then(data => res.status(200).json(data))
+    .catch(error => res.status(524).json({error: error, message: "Erro na deleção do tribunal"}))
+})
+
+
 router.put('/acordaos/:id', function(req, res){
   Acordao.updateAcordao(req.body)
-    .then(dados => res.status(201).json(dados))
-    .catch(erro => res.status(525).json({erro: erro, mensagem: "Erro a atualizar acordão."}))
+    .then(data => res.status(201).json(data))
+    .catch(error => res.status(525).json({error: error, message: "Erro a atualizar acordão."}))
 })
+
+
+router.put('/tribunais/:id', function(req, res){
+  Tribunal.updateTribunal(req.body)
+    .then(data => res.status(201).json(data))
+    .catch(error => res.status(525).json({error: error, message: "Erro a atualizar tribunal."}))
+})
+
 
 module.exports = router;

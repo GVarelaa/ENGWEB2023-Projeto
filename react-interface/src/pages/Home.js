@@ -21,7 +21,7 @@ function Home() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(env.apiAccessPoint + '?skip=0&limit=25')
+                const response = await axios.get(env.apiAcordaosAccessPoint + '?skip=0&limit=25')
                 setData(response.data)
             } catch (error) {
                 toast.error('Não foi possível obter a lista de acórdãos!', {
@@ -32,7 +32,7 @@ function Home() {
 
         const fetchPagesNumber = async () => {
             try {
-                const response = await axios.get(env.apiAccessPoint + '/number')
+                const response = await axios.get(env.apiAcordaosAccessPoint + '/number')
                 setPagesNumber(Math.ceil(response.data / 25))
             } catch (error) {
                 toast.error('Não foi possível obter a lista de acórdãos!', {
@@ -71,7 +71,7 @@ function Home() {
         const skip = (page - 1) * 100
 
         try {
-            const response = await axios.get(env.apiAccessPoint + `?skip=${skip}&limit=25`)
+            const response = await axios.get(env.apiAcordaosAccessPoint + `?skip=${skip}&limit=25`)
             setData(response.data)
             window.scrollTo(0, 0);
         } catch (error) {
@@ -123,7 +123,7 @@ function Home() {
 
     const handleDelete = async (event, id) => {
         try {
-            await axios.delete(env.apiAccessPoint + `/${id}`)
+            await axios.delete(env.apiAcordaosAccessPoint + `/${id}`)
 
             setData(current => {
                 return current.filter((item) => item._id !== id)
