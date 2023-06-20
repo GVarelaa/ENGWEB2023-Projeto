@@ -1,42 +1,52 @@
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
+import { Navigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faUser } from '@fortawesome/free-solid-svg-icons';
+import jwt_decode from 'jwt-decode'
 import Cookies from 'js-cookie'
 
 function NavBar() {
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    Cookies.remove('token')
-  }
+    try {
+        var decodedToken = jwt_decode(localStorage.getItem('token'))
+    }
+    catch {
+        return (<Navigate to="/login" />)
+    }
 
-  return (
-    <>
-      <Navbar bg="dark" variant="dark" expand="lg" style={{ '--bs-navbar-padding-y': '1rem' }}>
-        <Container style={{ 'max-width': '95%' }}>
-          <Navbar.Brand href="/">Acordãos</Navbar.Brand>
-          <Navbar.Collapse>
-            <Nav >
-              <Nav.Link href="/">Home</Nav.Link>
-              <Nav.Link href="/about">About</Nav.Link>
-            </Nav>
+    const handleLogout = () => {
+        localStorage.removeItem('token')
+        Cookies.remove('token')
+    }
 
-            <Nav className='ms-auto'>
-              <Nav.Link href="/favorites" className='me-3 pe-3'>
-                <FontAwesomeIcon icon={faHeart} size='lg'/>
-              </Nav.Link>
+    return (
+        <>
+            <Navbar bg="dark" variant="dark" expand="lg" style={{ '--bs-navbar-padding-y': '1rem' }}>
+                <Container style={{ 'max-width': '95%' }}>
+                    <Navbar.Brand href="/">Acordãos</Navbar.Brand>
+                    <Navbar.Collapse>
+                        <Nav >
+                            <Nav.Link href="/">Início</Nav.Link>
+                            {decodedToken.level === 'admin' && <Nav.Link href="/dashboard">Dashboard</Nav.Link>}
+                            <Nav.Link href="/about">Acerca</Nav.Link>
+                        </Nav>
 
-              <NavDropdown className='pe-5 me-5' title={<FontAwesomeIcon icon={faUser} size='lg'/>} id="account-dropdown">
-                <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
-                <NavDropdown.Item href="#settings">Settings</NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="/" onClick={handleLogout}>Logout</NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-    </>
-  );
+                        <Nav className='ms-auto'>
+                            <Nav.Link href="/favorites" className='me-3 pe-3'>
+                                <FontAwesomeIcon icon={faHeart} size='lg' />
+                            </Nav.Link>
+
+                            <NavDropdown className='pe-5 me-5' title={<FontAwesomeIcon icon={faUser} size='lg' />} id="account-dropdown">
+                                <NavDropdown.Item href="/profile">Perfil</NavDropdown.Item>
+                                <NavDropdown.Item href="#settings">Definições</NavDropdown.Item>
+                                <NavDropdown.Divider />
+                                <NavDropdown.Item href="/" onClick={handleLogout}>Sair</NavDropdown.Item>
+                            </NavDropdown>
+                        </Nav>
+                    </Navbar.Collapse>
+                </Container>
+            </Navbar>
+        </>
+    );
 }
 
 export default NavBar;

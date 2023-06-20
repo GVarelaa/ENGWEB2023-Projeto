@@ -8,20 +8,30 @@ function RouterGuard({children}) {
     function hasJWT() {
         let flag = false;
         
-        var token = localStorage.getItem('token');
+        var token = localStorage.getItem('token')
+        var decodedToken
         if(token){
-            var decodedToken = jwt_decode(token);
-            if(Date.now() >= decodedToken.exp * 1000) flag = false;
-            else flag = true;
+            try{
+                decodedToken = jwt_decode(token)
+                if(Date.now() >= decodedToken.exp * 1000) flag = false
+                else flag = true
+            }
+            catch (error){
+                console.log(error)
+            }
         }
         else if(Cookies.get('token')){
             token = Cookies.get('token')
-
-            var decodedToken = jwt_decode(token);
-            if(Date.now() >= decodedToken.exp * 1000) flag = false;
-            else {
-                localStorage.setItem('token', token)
-                flag = true;
+            try{
+                decodedToken = jwt_decode(token)
+                if(Date.now() >= decodedToken.exp * 1000) flag = false
+                else {
+                    localStorage.setItem('token', token)
+                    flag = true
+                }
+            }
+            catch(error){
+                console.log(error)
             }
         }
        

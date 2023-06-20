@@ -135,7 +135,7 @@ router.post('/register', function (req, res) {
             "Acordaos2023",
             { expiresIn: 3600 },
             function (e, token) {
-              if (e) res.status(500).jsonp({ error: "Erro na geração do token: " + error })
+              if (e) res.status(500).jsonp({ error: "Erro na geração do token: " + e })
               else res.status(201).jsonp({ token: token })
             });
         })
