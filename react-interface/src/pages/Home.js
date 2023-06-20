@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
-import { Container } from 'react-bootstrap'
+import { Container, Card } from 'react-bootstrap'
 import { Pagination } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify'
 import NavBar from '../components/NavBar'
@@ -84,11 +84,18 @@ function Home() {
         <>
             <ToastContainer />
             <NavBar />
-            <Container className='mt-4'>
-                <Accordions data={data} setData={setData} favorites={favorites} setFavorites={setFavorites} token={decodedToken} />
-                <Container className='d-flex justify-content-center mb-4'>
-                    <Pagination page={page} onChange={handleChangePage} count={pagesNumber} shape="rounded" />
-                </Container>
+            <Container>
+                <hr className="mt-4 mb-4" />
+                <Card className='d-flex justify-content-center' style={{ 'box-shadow': '0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)' }} >
+                    <Card.Body>
+                        <Container className='mt-4'>
+                            <Accordions data={data} setData={setData} favorites={favorites} setFavorites={setFavorites} token={decodedToken} />
+                            <Container className='d-flex justify-content-center mb-4'>
+                                <Pagination className="mt-3" page={page} onChange={handleChangePage} count={pagesNumber} shape="rounded" />
+                            </Container>
+                        </Container>
+                    </Card.Body>
+                </Card>
             </Container>
         </>
     )
