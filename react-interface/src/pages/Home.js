@@ -85,17 +85,21 @@ function Home() {
     const handleFavorite = async (event, id) => {
         try {
             if(favorites.includes(id)){
-                await axios.delete(env.authAccessPoint + `/${decodedToken.username}/favorites/${id}`,)
+                await axios.delete(env.authAccessPoint + `/${decodedToken.username}/favorites/${id}`)
+
                 setFavorites(current => {
                     return current.filter((item) => item !== id)
                 })
+
                 toast.success('O acórdão foi removido da lista de favoritos com sucesso!', {
                     position: toast.POSITION.TOP_CENTER
                 })
             }
             else{
                 await axios.post(env.authAccessPoint + `/${decodedToken.username}/favorites`, { favorite: id })
+
                 setFavorites(current => [...current, id])
+                
                 toast.success('O acórdão foi adicionado à lista de favoritos com sucesso!', {
                     position: toast.POSITION.TOP_CENTER
                 })
