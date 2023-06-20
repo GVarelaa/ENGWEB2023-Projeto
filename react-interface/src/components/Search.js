@@ -21,19 +21,19 @@ function Search({ setData }) {
 
 
     return (
-        <Container className="mt-5">
+        <Container className="mt-3 mb-4">
             <Row>
                 <Col sm={4}>
                     <Form className="d-flex" onSubmit={handleSearch}>
                         <Form.Control
                             type="search"
-                            placeholder="Search"
+                            placeholder="Procurar"
                             className="me-2"
-                            aria-label="Search"
+                            aria-label="Procurar"
                             onChange={(e) => setSearch(e.target.value)}
                         />
                         <Button type="submit" variant="outline-dark">
-                            Search
+                            Procurar
                         </Button>
                     </Form>
                 </Col>
