@@ -1,7 +1,7 @@
 import { useParams, Link, Navigate } from "react-router-dom"
 import { useState, useEffect } from "react"
 import Button from '@mui/material/Button';
-import { Container, ListGroup, ListGroupItem, Card, Modal} from 'react-bootstrap'
+import { Container, ListGroup, ListGroupItem, Card, Modal } from 'react-bootstrap'
 import { Button as BootstrapButton } from 'react-bootstrap'
 import { Eye, Pencil, Trash3, Heart, HeartFill } from 'react-bootstrap-icons'
 import { ToastContainer, toast } from 'react-toastify'
@@ -13,7 +13,7 @@ import jwt_decode from 'jwt-decode'
 
 function Record() {
     var params = useParams();
-    const [records, setRecords] = useState(null);
+    const [record, setRecord] = useState(null);
     const [favorites, setFavorites] = useState([])
     const [showModal, setShowModal] = useState(false);
     const [deleteItemID, setDeleteItemID] = useState(null);
@@ -22,11 +22,11 @@ function Record() {
         const fetchData = async () => {
             try {
                 const response = await axios.get(env.apiAcordaosAccessPoint + `/${params.id}`)
-                if (response.data){
-                    console.log(response.data) 
-                    setRecords([response.data])
+                if (response.data) {
+                    console.log(response.data)
+                    setRecord([response.data])
                 }
-                else setRecords("NoPage")
+                else setRecord("NoPage")
             }
             catch (error) {
                 console.log(error)
@@ -106,7 +106,7 @@ function Record() {
                 position: toast.POSITION.TOP_CENTER
             })
 
-            return <Navigate to="/"/>
+            return <Navigate to="/" />
         } catch (error) {
             toast.error('Não foi possível remover o acórdão!', {
                 position: toast.POSITION.TOP_CENTER
@@ -118,7 +118,7 @@ function Record() {
 
     return (
         <>
-            <ToastContainer/>
+            <ToastContainer />
             <NavBar />
             <Container>
                 <hr className="mt-4 mb-4" />
@@ -153,7 +153,46 @@ function Record() {
                         </div>
                         <Container className="my-4">
                             <ListGroup>
-                                {records && (records === "NoPage" ? <NoPage /> : Object.keys(records[0]).map((key) => { return (<ListGroupItem><b>{key}: </b>{records[0][key]}</ListGroupItem>) }))}
+                                {record && (record === "NoPage" ? (
+                                    <NoPage />
+                                ) : (
+                                    Object.keys(record[0]).map((key1) => {
+                                        if (typeof record[0][key1] === "object") {
+                                            if (key1 === "Jurisprudências" || key1 === "Legislações") {
+                                                return (
+                                                    Object.keys(record[0][key1]).map((key2) => (
+                                                        key2 !== "_id" && (
+                                                            <ListGroupItem><b>{key2}: </b>
+                                                                <ListGroup className="list-group-flush">
+                                                                    {record[0][key1][key2].map((obj) => (
+                                                                        <ListGroupItem>{obj}</ListGroupItem>
+                                                                    ))}
+                                                                </ListGroup>
+                                                            </ListGroupItem>
+                                                        )
+                                                    ))
+                                                )
+                                              } else {
+                                                return (
+                                                    <ListGroupItem><b>{key1}: </b>
+                                                        <ListGroup className='list-group-flush'>
+                                                            {record[0][key1].map((obj) => (
+                                                                <ListGroupItem>{obj}</ListGroupItem>
+                                                            ))}
+                                                        </ListGroup>
+                                                    </ListGroupItem>
+                                                );
+                                            }
+                                        } else if (record[0][key1]) {
+                                            return (
+                                                <ListGroupItem>
+                                                    <b>{key1}: </b>
+                                                    {record[0][key1]}
+                                                </ListGroupItem>
+                                            );
+                                        }
+                                    })
+                                ))}
                             </ListGroup>
                         </Container>
                     </Card.Body>

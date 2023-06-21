@@ -1,17 +1,17 @@
 const mongoose = require("mongoose");
 
 var JurisprudenciasSchema = new mongoose.Schema({
-  "Jurisprudência Nacional": String,
-  "Jurisprudência Internacional": String,
-  "Jurisprudência Estrangeira": String,
-  "Jurisprudência Constitucional": String,
-  "Outra Jurisprudência": String,
+  "Jurisprudência Nacional": [String],
+  "Jurisprudência Internacional": [String],
+  "Jurisprudência Estrangeira": [String],
+  "Jurisprudência Constitucional": [String],
+  "Outra Jurisprudência": [String],
 });
 
 var LegislacoesSchema = new mongoose.Schema({
-  "Legislação Nacional": String,
-  "Legislação Comunitária": String,
-  "Legislação Estrangeira": String,
+  "Legislação Nacional": [String],
+  "Legislação Comunitária": [String],
+  "Legislação Estrangeira": [String],
 });
 
 var acordaoSchema = new mongoose.Schema({
