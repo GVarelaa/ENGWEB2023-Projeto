@@ -4,23 +4,7 @@ import axios from "axios"
 import env from "../config/env"
 
 
-function Search({ setData }) {
-    const [search, setSearch] = useState("")
-
-    const handleSearch = async (event) => {
-        event.preventDefault()
-
-        try {
-            const response = await axios.get(env.apiAcordaosAccessPoint + '?search=' + search)
-            setData(response.data)
-            console.log(response.data)
-        }
-        catch (error) {
-            console.log(error)
-        }
-    }
-
-
+function Search({ setSearch, handleSearch }) {
     return (
         <Container className="mt-3 mb-4">
             <Row>

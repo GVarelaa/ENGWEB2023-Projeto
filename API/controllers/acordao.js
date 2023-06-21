@@ -14,18 +14,6 @@ module.exports.list = (query, skip, limit) => {
 }
 
 
-module.exports.search = (text) => {
-    return Acordao
-            .find({$text : {$search : `\"${text}\"`}}).limit(25)
-            .then(response => {
-                return response
-            })
-            .catch(error => {
-                return error
-            })
-}
-
-
 module.exports.getAcordao = id => {
     return Acordao
             .findOne({_id: id})
@@ -38,11 +26,12 @@ module.exports.getAcordao = id => {
 }
 
 
-module.exports.getAcordaosNumber = () => {
+module.exports.getAcordaosNumber = (query) => {
     return Acordao
-            .find()
+            .find(query)
             .count()
             .then(response => {
+                console.log(response)
                 return response
             })
             .catch(error => {
