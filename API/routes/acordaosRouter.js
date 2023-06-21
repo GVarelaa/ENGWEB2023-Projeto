@@ -4,33 +4,37 @@ var Acordao = require('../controllers/acordao')
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
+  var skip = 0, limit = 0
+
+  if (req.query.skip) {
+    skip = req.query.skip
+    delete req.query.skip
+  }
+
+  if (req.query.limit) {
+    limit = req.query.limit
+    delete req.query.limit
+  }
+
   if (req.query.search) {
-    Acordao.search(req.query.search)
-      .then(data => res.status(200).json(data))
-      .catch(error => res.status(521).json({ error: error, message: "Erro na obtenção da lista de acordãos" }))
+    req.query["$text"] = { $search: `\"${req.query.search}\"` }
+    delete req.query.search
   }
-  else {
-    var skip = 0, limit = 0
 
-    if (req.query.skip) {
-      skip = req.query.skip
-      delete req.query.skip
-    }
+  Acordao.list(req.query, skip, limit)
+    .then(data => res.status(200).json(data))
+    .catch(error => res.status(521).json({ error: error, message: "Erro na obtenção da lista de acordãos" }))
 
-    if (req.query.limit) {
-      limit = req.query.limit
-      delete req.query.limit
-    }
-
-    Acordao.list(req.query, skip, limit)
-      .then(data => res.status(200).json(data))
-      .catch(error => res.status(521).json({ error: error, message: "Erro na obtenção da lista de acordãos" }))
-  }
 });
 
 
 router.get('/number', function (req, res, next) {
-  Acordao.getAcordaosNumber()
+  if (req.query.search) {
+    req.query["$text"] = { $search: `\"${req.query.search}\"` }
+    delete req.query.search
+  }
+
+  Acordao.getAcordaosNumber(req.query)
     .then(data => res.status(200).json(data))
     .catch(error => res.status(523).json({ error: error, message: "Erro na obtenção do número de acordãos" }))
 });
