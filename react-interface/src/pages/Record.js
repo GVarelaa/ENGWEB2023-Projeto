@@ -161,7 +161,7 @@ function Record() {
                                             if (key1 === "Jurisprudências" || key1 === "Legislações") {
                                                 return (
                                                     Object.keys(record[0][key1]).map((key2) => (
-                                                        key2 !== "_id" && (
+                                                        key2 !== "_id" && record[0][key1][key2].length > 0 && (
                                                             <ListGroupItem><b>{key2}: </b>
                                                                 <ListGroup className="list-group-flush">
                                                                     {record[0][key1][key2].map((obj) => (
@@ -172,7 +172,7 @@ function Record() {
                                                         )
                                                     ))
                                                 )
-                                              } else {
+                                            } else if (record[0][key1].length != 0) {
                                                 return (
                                                     <ListGroupItem><b>{key1}: </b>
                                                         <ListGroup className='list-group-flush'>
@@ -181,15 +181,15 @@ function Record() {
                                                             ))}
                                                         </ListGroup>
                                                     </ListGroupItem>
-                                                );
+                                                )
                                             }
-                                        } else if (record[0][key1]) {
+                                        } else if (record[0][key1] && key1 != "_id") {
                                             return (
                                                 <ListGroupItem>
                                                     <b>{key1}: </b>
                                                     {record[0][key1]}
                                                 </ListGroupItem>
-                                            );
+                                            )
                                         }
                                     })
                                 ))}
