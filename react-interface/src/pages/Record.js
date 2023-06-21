@@ -22,7 +22,10 @@ function Record() {
         const fetchData = async () => {
             try {
                 const response = await axios.get(env.apiAcordaosAccessPoint + `/${params.id}`)
-                if (response.data) setRecords([response.data])
+                if (response.data){
+                    console.log(response.data) 
+                    setRecords([response.data])
+                }
                 else setRecords("NoPage")
             }
             catch (error) {

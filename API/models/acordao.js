@@ -62,4 +62,6 @@ var acordaoSchema = new mongoose.Schema({
   Réu: [String],
 });
 
+acordaoSchema.index({ "$**" : "text" })
+
 module.exports = mongoose.model("acordao", acordaoSchema);

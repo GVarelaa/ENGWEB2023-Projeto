@@ -16,7 +16,7 @@ module.exports.list = (query, skip, limit) => {
 
 module.exports.search = (text) => {
     return Acordao
-            .find({$text : {$search : `\"${text}\"`}})
+            .find({$text : {$search : `\"${text}\"`}}).limit(25)
             .then(response => {
                 return response
             })

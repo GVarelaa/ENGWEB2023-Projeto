@@ -74,6 +74,8 @@ function Accordions({ data, setData, favorites, setFavorites, token }) {
         handleHideModal();
     }
 
+    console.log(data)
+
     return (
         <Accordion className='mb-4'>
             {data.map((obj, index) => {
