@@ -17,7 +17,6 @@ function Record() {
     const [favorites, setFavorites] = useState([])
     const [showModal, setShowModal] = useState(false);
     const [deleteItemID, setDeleteItemID] = useState(null);
-    const infoPrincipal = ["Processo", "tribunal", "Relator", "Data do Acordão", "Área Temática 1", "Área Temática 2", "Descritores", "Sumário"]
 
     useEffect(() => {
         const fetchData = async () => {

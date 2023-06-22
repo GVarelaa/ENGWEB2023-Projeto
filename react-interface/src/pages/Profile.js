@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Row, Col, Form, Card, Button } from 'react-bootstrap'
 import { Navigate } from 'react-router-dom';
+import Button from '@mui/material/Button';
+import { Container, Row, Col, Form, Card } from 'react-bootstrap'
+import { Check, Pencil } from 'react-bootstrap-icons'
 import { ToastContainer, toast } from 'react-toastify'
 import NavBar from '../components/NavBar'
 import './Profile.css'
@@ -17,9 +19,10 @@ function Profile() {
     const [passwordNova, setPasswordNova] = useState('');
     const [filiacao, setFiliacao] = useState('')
     const [nivel, setNivel] = useState('');
+    const [showPasswordInputs, setShowPasswordInputs] = useState(false);
     const [changePassword, setChangePassword] = useState(false)
 
-    
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -51,47 +54,69 @@ function Profile() {
     }, []);
 
 
+    const handlePassword = () => {
+        setShowPasswordInputs(true)
+    }
+
+
     const handleSubmit = (event) => {
         event.preventDefault()
 
-        if (passwordAtual != null && passwordNova != null) {
-            axios.post(env.authAccessPoint + '/changepassword', {
-                username: username,
-                oldpassword: passwordAtual,
-                newpassword: passwordNova
-            })
-                .then(response => {
-                    toast.success('A password foi alterada com sucesso!', {
-                        position: toast.POSITION.TOP_CENTER
-                    })
-                    setChangePassword(true)
+        if (showPasswordInputs){
+            if (passwordAtual != null && passwordNova != null) {
+                axios.post(env.authAccessPoint + '/changepassword', {
+                    username: username,
+                    oldpassword: passwordAtual,
+                    newpassword: passwordNova
                 })
-                .catch(error => {
-                    toast.error('Não foi possível alterar a password!', {
-                        position: toast.POSITION.TOP_CENTER
+                    .then(response => {
+                        toast.success('A password foi alterada com sucesso!', {
+                            position: toast.POSITION.TOP_CENTER
+                        })
+
+                        axios.put(env.authAccessPoint + '/' + username, {
+                            name: nome,
+                            surname: apelido,
+                            username: username,
+                            filiation: filiacao
+                        })
+                            .then(response => {
+                                toast.success('As alterações foram efetuadas com sucesso!', {
+                                    position: toast.POSITION.TOP_CENTER,
+                                })
+                            })
+                            .catch(error => {
+                                toast.error('Não foi possível efetuar as alterações!', {
+                                    position: toast.POSITION.TOP_CENTER
+                                })
+                            })
                     })
-                    setChangePassword(true)
-                })
+                    .catch(error => {
+                        toast.error('Não foi possível alterar a password!', {
+                            position: toast.POSITION.TOP_CENTER
+                        })
+                    })
+            }
         }
 
-        axios.put(env.authAccessPoint + '/' + username, {
-            name: nome,
-            surname: apelido,
-            username: username,
-            filiation: filiacao
-        })
-            .then(response => {
-                if (!changePassword) {
+        else{
+            axios.put(env.authAccessPoint + '/' + username, {
+                name: nome,
+                surname: apelido,
+                username: username,
+                filiation: filiacao
+            })
+                .then(response => {
                     toast.success('As alterações foram efetuadas com sucesso!', {
                         position: toast.POSITION.TOP_CENTER,
                     })
-                }
-            })
-            .catch(error => {
-                toast.error('Não foi possível efetuar as alterações!', {
-                    position: toast.POSITION.TOP_CENTER
                 })
-            })
+                .catch(error => {
+                    toast.error('Não foi possível efetuar as alterações!', {
+                        position: toast.POSITION.TOP_CENTER
+                    })
+                })
+        }
     }
 
     return (
@@ -123,14 +148,13 @@ function Profile() {
                                         <Col md={6}>
                                             <Form.Group className="mb-3">
                                                 <Form.Label className="small mb-1"> Username </Form.Label>
-                                                <div className="form-control-plaintext" style={{ marginLeft: '10px' }}>{username}</div>
+                                                <Form.Control disabled type="text" placeholder="Username" value={username} />
                                             </Form.Group>
                                         </Col>
                                         <Col md={6}>
                                             <Form.Group className="mb-3">
                                                 <Form.Label className="small mb-1"> Email </Form.Label>
-                                                { /* <Form.Control type="email" placeholder="Email" value={email} /> */}
-                                                <div className="form-control-plaintext" style={{ marginLeft: '10px' }}>{email}</div>
+                                                <Form.Control disabled type="email" placeholder="Email" value={email} />
                                             </Form.Group>
                                         </Col>
                                     </Row>
@@ -150,21 +174,32 @@ function Profile() {
                                         </Col>
                                     </Row>
 
-                                    <Row className="gx-3 mb-3">
-                                        <Col md={6}>
-                                            <Form.Group className="mb-3">
-                                                <Form.Label className="small mb-1"> Password Atual </Form.Label>
-                                                <Form.Control type="password" placeholder="Password Atual" onChange={(e) => setPasswordAtual(e.target.value)} />
-                                            </Form.Group>
-                                        </Col>
+                                    {!showPasswordInputs && (
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="small mb-1">Password:</Form.Label>
+                                            <div className="d-flex flex-column align-items-start">
+                                                <Button variant="outline-dark" startIcon={<Pencil />} onClick={handlePassword}>Editar Password</Button>
+                                            </div>
+                                        </Form.Group>
+                                    )}
 
-                                        <Col md={6}>
-                                            <Form.Group className="mb-3">
-                                                <Form.Label className="small mb-1"> Nova Password </Form.Label>
-                                                <Form.Control type="password" placeholder="Nova Password" onChange={(e) => setPasswordNova(e.target.value)} />
-                                            </Form.Group>
-                                        </Col>
-                                    </Row>
+                                    {showPasswordInputs && (
+                                        <Row className="gx-3 mb-3">
+                                            <Col md={6}>
+                                                <Form.Group className="mb-3">
+                                                    <Form.Label className="small mb-1">Password Atual</Form.Label>
+                                                    <Form.Control type="password" placeholder="Password Atual" onChange={(e) => setPasswordAtual(e.target.value)} />
+                                                </Form.Group>
+                                            </Col>
+
+                                            <Col md={6}>
+                                                <Form.Group className="mb-3">
+                                                    <Form.Label className="small mb-1">Nova Password</Form.Label>
+                                                    <Form.Control type="password" placeholder="Nova Password" onChange={(e) => setPasswordNova(e.target.value)} />
+                                                </Form.Group>
+                                            </Col>
+                                        </Row>
+                                    )}
 
                                     <Row className="gx-3 mb-3">
                                         <Col md={6}>
@@ -176,12 +211,14 @@ function Profile() {
                                         <Col md={6}>
                                             <Form.Group className="mb-3">
                                                 <Form.Label className="small mb-1"> Nível </Form.Label>
-                                                <div className="form-control-plaintext" style={{ marginLeft: '10px' }}>{nivel}</div>
+                                                <Form.Control disabled type="text" placeholder="Nível" value={nivel} />
                                             </Form.Group>
                                         </Col>
                                     </Row>
 
-                                    <Button variant="outline-dark" type="submit"> Salvar alterações </Button>
+                                    <div className="d-flex justify-content-end">
+                                        <Button type="submit" className="mx-2" variant="outline-dark" startIcon={<Check />}>Salvar Alterações</Button>
+                                    </div>
 
                                 </Form>
                             </Card.Body>

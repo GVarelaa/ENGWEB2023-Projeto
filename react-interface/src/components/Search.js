@@ -15,7 +15,7 @@ function Search({ setSearch, handleSearch }) {
                             aria-label="Procurar"
                             onChange={(e) => setSearch(e.target.value)}
                         />
-                        <Button className="mx-2" variant="outline-dark" startIcon={<SearchIcon />} type="submit">Procurar</Button>
+                        <Button type="submit" className="mx-2" variant="outline-dark" startIcon={<SearchIcon />} style={{ width: '50%' }} >Procurar</Button>
                     </Form>
                 </Col>
             </Row>
