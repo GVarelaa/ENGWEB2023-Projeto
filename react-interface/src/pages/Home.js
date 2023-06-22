@@ -113,18 +113,17 @@ function Home() {
         try {
             const response1 = await axios.get(
                 env.apiAcordaosAccessPoint + `/number?search=${search}`
-            );
-            console.log(response1.data);
+            )
             setPagesNumber(Math.ceil(response1.data / limit));
 
             const response2 = await axios.get(
-                env.apiAcordaosAccessPoint + `?search=${search}&skip=0&limit=${limit}`
-            );
+                env.apiAcordaosAccessPoint + `${search}&skip=0&limit=${limit}`
+            )
             setData(response2.data);
         } catch (error) {
             toast.error("Não foi possível obter a lista de acórdãos!", {
                 position: toast.POSITION.TOP_CENTER,
-            });
+            })
         }
     };
 
