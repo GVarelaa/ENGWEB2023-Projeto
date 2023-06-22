@@ -30,23 +30,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(function (req, res, next) {
-  var myToken;
-  if (req.query || req.query.token) myToken = req.query.token;
-  else if (req.body && req.body.token) myToken = req.body.token;
-  else myToken = false;
-  if (myToken) {
-    jwt.verify(myToken, "EngWeb2023", function (e, payload) {
-      if (e) {
-        res.status(401).jsonp({ error: e });
-      } else {
-        next();
-      }
-    });
-  } else {
-    res.status(401).jsonp({ error: "Token inexistente!" });
-  }
-});
 
 app.use('/acordaos', acordaosRouter);
 app.use('/tribunais', tribunaisRouter)
