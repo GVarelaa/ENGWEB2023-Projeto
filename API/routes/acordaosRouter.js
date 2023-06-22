@@ -6,7 +6,7 @@ var Acordao = require("../controllers/acordao");
 router.get("/", function (req, res, next) {
   var skip = 0,
     limit = 0;
-
+  console.log(req.body)
   if (req.query.skip) {
     skip = req.query.skip;
     delete req.query.skip;
