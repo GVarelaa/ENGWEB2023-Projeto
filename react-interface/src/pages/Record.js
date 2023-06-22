@@ -228,6 +228,33 @@ function Record() {
                                                 }
                                                 return null
                                             })
+                                        } else if (key === "Informação Auxiliar") {
+                                            return (
+                                                <Container className="my-4">
+                                                    <h4 style={{ 'margin-top' : '1.5rem' }}>Informação Auxiliar</h4>
+                                                    {Object.keys(record[0][key]).map((subKey) => {
+                                                        if (typeof subKey === Object && record[0][key][subKey].length > 0) {
+                                                            return (
+                                                                <ListGroupItem key={`${key}-${subKey}`}>
+                                                                    <b>{subKey}: </b>
+                                                                    <ListGroup className="list-group-flush">
+                                                                        {record[0][key][subKey].map((obj) => (
+                                                                            <ListGroupItem key={obj}>{obj}</ListGroupItem>
+                                                                        ))}
+                                                                    </ListGroup>
+                                                                </ListGroupItem>
+                                                            )
+                                                        } else {
+                                                            return (
+                                                                <ListGroupItem subKey={subKey}>
+                                                                    <b>{subKey}: </b>
+                                                                    {record[0][key][subKey]}
+                                                                </ListGroupItem>
+                                                            )
+                                                        }
+                                                    })}
+                                                </Container>
+                                            )
                                         } else if (record[0][key].length !== 0) {
                                             return (
                                                 <ListGroupItem key={key}>
