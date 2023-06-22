@@ -1,9 +1,9 @@
 import { useParams, Link, Navigate } from "react-router-dom"
-import { useState, useEffect } from "react"
+import { useState, useEffect, React } from "react"
 import Button from '@mui/material/Button';
 import { Container, ListGroup, ListGroupItem, Card, Modal } from 'react-bootstrap'
 import { Button as BootstrapButton } from 'react-bootstrap'
-import { Eye, Pencil, Trash3, Heart, HeartFill } from 'react-bootstrap-icons'
+import { Pencil, Trash3, Heart, HeartFill } from 'react-bootstrap-icons'
 import { ToastContainer, toast } from 'react-toastify'
 import NavBar from '../components/NavBar'
 import NoPage from "../pages/NoPage"
@@ -17,6 +17,7 @@ function Record() {
     const [favorites, setFavorites] = useState([])
     const [showModal, setShowModal] = useState(false);
     const [deleteItemID, setDeleteItemID] = useState(null);
+    const infoPrincipal = ["Processo", "tribunal", "Relator", "Data do Acordão", "Área Temática 1", "Área Temática 2", "Descritores", "Sumário"]
 
     useEffect(() => {
         const fetchData = async () => {
@@ -35,7 +36,7 @@ function Record() {
 
         const fetchFavorites = async () => {
             try {
-                const response = await axios.get(env.authAccessPoint + `/${decodedToken.username}` + '/favorites')
+                const response = await axios.get(`${env.authAccessPoint}/${decodedToken.username}/favorites`);
                 setFavorites(response.data.favorites)
             } catch (error) {
                 toast.error('Não foi possível obter a lista de favoritos!', {
@@ -151,48 +152,117 @@ function Record() {
                                 </>
                             )}
                         </div>
-                        <Container className="my-4">
+                        { /* INFORMAÇÃO PRINCIPAL */ }
+                        <Container className="my-4 mb-5">
+                            <h4>Informação Principal</h4>
                             <ListGroup>
                                 {record && (record === "NoPage" ? (
                                     <NoPage />
-                                ) : (
-                                    Object.keys(record[0]).map((key1) => {
-                                        if (typeof record[0][key1] === "object") {
-                                            if (key1 === "Jurisprudências" || key1 === "Legislações") {
-                                                return (
-                                                    Object.keys(record[0][key1]).map((key2) => (
-                                                        key2 !== "_id" && record[0][key1][key2].length > 0 && (
-                                                            <ListGroupItem><b>{key2}: </b>
-                                                                <ListGroup className="list-group-flush">
-                                                                    {record[0][key1][key2].map((obj) => (
-                                                                        <ListGroupItem>{obj}</ListGroupItem>
-                                                                    ))}
-                                                                </ListGroup>
-                                                            </ListGroupItem>
-                                                        )
-                                                    ))
-                                                )
-                                            } else if (record[0][key1].length != 0) {
-                                                return (
-                                                    <ListGroupItem><b>{key1}: </b>
-                                                        <ListGroup className='list-group-flush'>
-                                                            {record[0][key1].map((obj) => (
-                                                                <ListGroupItem>{obj}</ListGroupItem>
-                                                            ))}
-                                                        </ListGroup>
-                                                    </ListGroupItem>
-                                                )
-                                            }
-                                        } else if (record[0][key1] && key1 != "_id") {
+                                ) : [
+                                    record[0].Processo && (
+                                        <ListGroupItem><b>Processo: </b>{record[0].Processo}</ListGroupItem>
+                                    ),
+                                    record[0].tribunal && (
+                                        <ListGroupItem><b>Tribunal: </b>{record[0].tribunal}</ListGroupItem>
+                                    ),
+                                    record[0].Relator && (
+                                        <ListGroupItem><b>Relator: </b>{record[0].Relator}</ListGroupItem>
+                                    ),
+                                    record[0]["Data do Acordão"] && (
+                                        <ListGroupItem><b>Data: </b>{record[0]["Data do Acordão"]}</ListGroupItem>
+                                    ),
+                                    record[0]["Área Temática 1"].length !== 0 && (
+                                        <ListGroupItem key="area-tematica-1">
+                                            <b>Área Temática 1: </b>
+                                            <ListGroup className="list-group-flush">
+                                                {record[0]["Área Temática 1"].map((obj) => (
+                                                    <ListGroupItem key={obj}>{obj}</ListGroupItem>
+                                                ))}
+                                            </ListGroup>
+                                        </ListGroupItem>
+                                    ),
+                                    record[0]["Área Temática 2"].length !== 0 && (
+                                        <ListGroupItem>
+                                            <b>Área Temática 2: </b>
+                                            <ListGroup className="list-group-flush">
+                                                {record[0]["Área Temática 2"].map((obj) => (
+                                                    <ListGroupItem key={obj}>{obj}</ListGroupItem>
+                                                ))}
+                                            </ListGroup>
+                                        </ListGroupItem>
+                                    ),
+                                    record[0].Descritores.length !== 0 && (
+                                        <ListGroupItem>
+                                            <b>Descritores: </b>
+                                            <ListGroup className="list-group-flush">
+                                                {record[0].Descritores.map((obj) => (
+                                                    <ListGroupItem key={obj}>{obj}</ListGroupItem>
+                                                ))}
+                                            </ListGroup>
+                                        </ListGroupItem>
+                                    ),
+                                    record[0]["Sumário"] && (
+                                        <ListGroupItem><b>Sumário: </b>{record[0]["Sumário"]}</ListGroupItem>
+                                    )
+                                ])}
+                            </ListGroup>
+                        </Container>
+                        { /* OUTRAS INFORMAÇÕES */ }
+                        <Container className="my-4">
+                            <h4>Outras Informações</h4>
+                            <ListGroup>
+                                {record && record !== "NoPage" && Object.keys(record[0]).map((key) => {
+                                    if (typeof record[0][key] === "object") {
+                                        if (key === "Jurisprudências" || key === "Legislações") {
+                                            return Object.keys(record[0][key]).map((subKey) => {
+                                                if (subKey !== "_id" && record[0][key][subKey].length > 0) {
+                                                    return (
+                                                        <ListGroupItem key={`${key}-${subKey}`}>
+                                                            <b>{subKey}: </b>
+                                                            <ListGroup className="list-group-flush">
+                                                                {record[0][key][subKey].map((obj) => (
+                                                                    <ListGroupItem key={obj}>{obj}</ListGroupItem>
+                                                                ))}
+                                                            </ListGroup>
+                                                        </ListGroupItem>
+                                                    )
+                                                }
+                                                return null
+                                            })
+                                        } else if (record[0][key].length !== 0) {
                                             return (
-                                                <ListGroupItem>
-                                                    <b>{key1}: </b>
-                                                    {record[0][key1]}
+                                                <ListGroupItem key={key}>
+                                                    <b>{key}: </b>
+                                                    <ListGroup className="list-group-flush">
+                                                        {record[0][key].map((obj) => (
+                                                            <ListGroupItem key={obj}>{obj}</ListGroupItem>
+                                                        ))}
+                                                    </ListGroup>
                                                 </ListGroupItem>
                                             )
                                         }
-                                    })
-                                ))}
+                                    } else if (record[0][key] && key !== "_id") {
+                                        return (
+                                            <ListGroupItem key={key}>
+                                                <b>{key}: </b>
+                                                {record[0][key]}
+                                            </ListGroupItem>
+                                        )
+                                    }
+                                    return null
+                                }).filter((item) => {
+                                    const keysDisplayed = [
+                                        "Processo",
+                                        "tribunal",
+                                        "Relator",
+                                        "Data do Acordão",
+                                        "Área Temática 1",
+                                        "Área Temática 2",
+                                        "Descritores",
+                                        "Sumário"
+                                    ];
+                                    return !keysDisplayed.includes(item?.key);
+                                })}
                             </ListGroup>
                         </Container>
                     </Card.Body>

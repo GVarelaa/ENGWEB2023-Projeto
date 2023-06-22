@@ -110,7 +110,7 @@ function Accordions({ data, setData, favorites, setFavorites, token }) {
                         </Accordion.Header>
                         <Accordion.Body>
                             <ListGroup>
-                                <ListGroupItem><b>Data: </b>{obj.Data}</ListGroupItem>
+                                <ListGroupItem><b>Data: </b>{obj["Data do Acordão"]}</ListGroupItem>
                                 <ListGroupItem><b>Relator: </b>{obj.Relator}</ListGroupItem>
                                 <ListGroupItem><b>Descritores: </b>
                                     <ListGroup className='list-group-flush'>

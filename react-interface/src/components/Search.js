@@ -1,8 +1,6 @@
-import { useState } from "react";
-import { Button, Col, Container, FloatingLabel, Form, Row } from "react-bootstrap";
-import axios from "axios"
-import env from "../config/env"
-
+import Button from '@mui/material/Button';
+import { Col, Container, Form, Row } from "react-bootstrap";
+import { Search as SearchIcon } from 'react-bootstrap-icons'
 
 function Search({ setSearch, handleSearch }) {
     return (
@@ -17,9 +15,7 @@ function Search({ setSearch, handleSearch }) {
                             aria-label="Procurar"
                             onChange={(e) => setSearch(e.target.value)}
                         />
-                        <Button type="submit" variant="outline-dark">
-                            Procurar
-                        </Button>
+                        <Button className="mx-2" variant="outline-dark" startIcon={<SearchIcon />} type="submit">Procurar</Button>
                     </Form>
                 </Col>
             </Row>
