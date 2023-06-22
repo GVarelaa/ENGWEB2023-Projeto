@@ -22,12 +22,13 @@ function NavBar() {
         <>
             <Navbar bg="dark" variant="dark" expand="lg" style={{ '--bs-navbar-padding-y': '1rem' }}>
                 <Container style={{ 'max-width': '95%' }}>
-                    <Navbar.Brand href="/">Acordãos</Navbar.Brand>
+                    <Navbar.Brand href="/">Acórdãos</Navbar.Brand>
                     <Navbar.Collapse>
                         <Nav >
                             <Nav.Link href="/">Início</Nav.Link>
-                            {decodedToken.level === 'admin' && <Nav.Link href="/dashboard">Dashboard</Nav.Link>}
                             <Nav.Link href="/about">Acerca</Nav.Link>
+                            {decodedToken.level === 'admin' && <Nav.Link href="/dashboard">Dashboard</Nav.Link>}
+                            {(decodedToken.level === 'admin' || decodedToken.level === 'Produtor') && <Nav.Link href="/insert">Inserir Acórdão</Nav.Link>}
                         </Nav>
 
                         <Nav className='ms-auto'>

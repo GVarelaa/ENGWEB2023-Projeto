@@ -90,8 +90,8 @@ function Register() {
             <Card className="shadow-lg">
               <Card.Body>
                 <div className="mb-3 mt-md-4">
-                  <h2 className="fw-bold mb-2">Acordãos</h2>
-                  <p className=" mb-5">Por favor insira os seus dados para se registar.</p>
+                  <h2 className="fw-bold mb-2">Registar</h2>
+                  <p className=" mb-4">Insira os seus dados para efetuar o registo.</p>
 
                   <Form onSubmit={handleSubmit}>
                     <FloatingLabel className="mb-3 form-outline" label="Nome">
