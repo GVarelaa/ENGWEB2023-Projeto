@@ -28,7 +28,9 @@ function Record() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          env.apiAcordaosAccessPoint + `/${params.id}`
+          env.apiAcordaosAccessPoint +
+            `/${params.id}` +
+            `?token=${localStorage.token}`
         );
         if (response.data) {
           console.log(response.data);
@@ -42,7 +44,8 @@ function Record() {
     const fetchFavorites = async () => {
       try {
         const response = await axios.get(
-          `${env.authAccessPoint}/${decodedToken.username}/favorites`
+          `${env.authAccessPoint}/${decodedToken.username}/favorites` +
+            `?token=${localStorage.token}`
         );
         setFavorites(response.data.favorites);
       } catch (error) {
@@ -66,7 +69,9 @@ function Record() {
     try {
       if (favorites.includes(id)) {
         await axios.delete(
-          env.authAccessPoint + `/${decodedToken.username}/favorites/${id}`
+          env.authAccessPoint +
+            `/${decodedToken.username}/favorites/${id}` +
+            `?token=${localStorage.token}`
         );
 
         setFavorites((current) => {
@@ -81,7 +86,9 @@ function Record() {
         );
       } else {
         await axios.post(
-          env.authAccessPoint + `/${decodedToken.username}/favorites`,
+          env.authAccessPoint +
+            `/${decodedToken.username}/favorites` +
+            `?token=${localStorage.token}`,
           { favorite: id }
         );
 
@@ -116,7 +123,9 @@ function Record() {
 
   const handleDelete = async (event, id) => {
     try {
-      await axios.delete(env.apiAcordaosAccessPoint + `/${id}`);
+      await axios.delete(
+        env.apiAcordaosAccessPoint + `/${id}` + `?token=${localStorage.token}`
+      );
 
       toast.success("O acórdão foi removido com sucesso!", {
         position: toast.POSITION.TOP_CENTER,
@@ -312,33 +321,39 @@ function Record() {
                             return null;
                           });
                         } else if (key === "Informação Auxiliar") {
-                          return Object.keys(record[0][key]).map((subKey) => {
-                            if (
-                              typeof subKey === Object &&
-                              record[0][key][subKey].length > 0
-                            ) {
-                              return (
-                                <ListGroupItem key={`${key}-${subKey}`}>
-                                  <b>{subKey}: </b>
-                                  <ListGroup className="list-group-flush">
-                                    {record[0][key][subKey].map((obj) => (
-                                      <ListGroupItem key={obj}>
-                                        {obj}
-                                      </ListGroupItem>
-                                    ))}
-                                  </ListGroup>
-                                </ListGroupItem>
-                              );
-                            } else {
-                              return (
-                                <ListGroupItem subKey={subKey}>
-                                  <b>{subKey}: </b>
-                                  {record[0][key][subKey]}
-                                </ListGroupItem>
-                              );
-                            }
-                            return null;
-                          });
+                          return (
+                            <Container className="my-4">
+                              <h4 style={{ "margin-top": "1.5rem" }}>
+                                Informação Auxiliar
+                              </h4>
+                              {Object.keys(record[0][key]).map((subKey) => {
+                                if (
+                                  typeof subKey === Object &&
+                                  record[0][key][subKey].length > 0
+                                ) {
+                                  return (
+                                    <ListGroupItem key={`${key}-${subKey}`}>
+                                      <b>{subKey}: </b>
+                                      <ListGroup className="list-group-flush">
+                                        {record[0][key][subKey].map((obj) => (
+                                          <ListGroupItem key={obj}>
+                                            {obj}
+                                          </ListGroupItem>
+                                        ))}
+                                      </ListGroup>
+                                    </ListGroupItem>
+                                  );
+                                } else {
+                                  return (
+                                    <ListGroupItem subKey={subKey}>
+                                      <b>{subKey}: </b>
+                                      {record[0][key][subKey]}
+                                    </ListGroupItem>
+                                  );
+                                }
+                              })}
+                            </Container>
+                          );
                         } else if (record[0][key].length !== 0) {
                           return (
                             <ListGroupItem key={key}>
@@ -379,7 +394,103 @@ function Record() {
           </Card.Body>
         </Card>
       </Container>
+      {/* OUTRAS INFORMAÇÕES */}
+      <Container className="my-4">
+        <h4>Outras Informações</h4>
+        <ListGroup>
+          {record &&
+            record !== "NoPage" &&
+            Object.keys(record[0])
+              .map((key) => {
+                if (typeof record[0][key] === "object") {
+                  if (key === "Jurisprudências" || key === "Legislações") {
+                    return Object.keys(record[0][key]).map((subKey) => {
+                      if (
+                        subKey !== "_id" &&
+                        record[0][key][subKey].length > 0
+                      ) {
+                        return (
+                          <ListGroupItem key={`${key}-${subKey}`}>
+                            <b>{subKey}: </b>
+                            <ListGroup className="list-group-flush">
+                              {record[0][key][subKey].map((obj) => (
+                                <ListGroupItem key={obj}>{obj}</ListGroupItem>
+                              ))}
+                            </ListGroup>
+                          </ListGroupItem>
+                        );
+                      }
+                      return null;
+                    });
+                  } else if (key === "Informação Auxiliar") {
+                    return Object.keys(record[0][key]).map((subKey) => {
+                      if (
+                        typeof subKey === Object &&
+                        record[0][key][subKey].length > 0
+                      ) {
+                        return (
+                          <ListGroupItem key={`${key}-${subKey}`}>
+                            <b>{subKey}: </b>
+                            <ListGroup className="list-group-flush">
+                              {record[0][key][subKey].map((obj) => (
+                                <ListGroupItem key={obj}>{obj}</ListGroupItem>
+                              ))}
+                            </ListGroup>
+                          </ListGroupItem>
+                        );
+                      } else {
+                        return (
+                          <ListGroupItem subKey={subKey}>
+                            <b>{subKey}: </b>
+                            {record[0][key][subKey]}
+                          </ListGroupItem>
+                        );
+                      }
+                      return null;
+                    });
+                  } else if (record[0][key].length !== 0) {
+                    return (
+                      <ListGroupItem key={key}>
+                        <b>{key}: </b>
+                        <ListGroup className="list-group-flush">
+                          {record[0][key].map((obj) => (
+                            <ListGroupItem key={obj}>{obj}</ListGroupItem>
+                          ))}
+                        </ListGroup>
+                      </ListGroupItem>
+                    );
+                  }
+                } else if (record[0][key] && key !== "_id") {
+                  return (
+                    <ListGroupItem key={key}>
+                      <b>{key}: </b>
+                      {record[0][key]}
+                    </ListGroupItem>
+                  );
+                }
+                return null;
+              })
+              .filter((item) => {
+                const keysDisplayed = [
+                  "Processo",
+                  "tribunal",
+                  "Relator",
+                  "Data do Acordão",
+                  "Área Temática 1",
+                  "Área Temática 2",
+                  "Descritores",
+                  "Sumário",
+                ];
+                return !keysDisplayed.includes(item?.key);
+              })}
+        </ListGroup>
+      </Container>
+      //
     </>
+    //</Card.Body>
+    //</Card>
+    //</Container>
+    //</>
   );
 }
 

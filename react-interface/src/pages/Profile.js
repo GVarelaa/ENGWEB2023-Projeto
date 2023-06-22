@@ -20,7 +20,6 @@ function Profile() {
     const [filiacao, setFiliacao] = useState('')
     const [nivel, setNivel] = useState('');
     const [showPasswordInputs, setShowPasswordInputs] = useState(false);
-    const [changePassword, setChangePassword] = useState(false)
 
 
     useEffect(() => {
