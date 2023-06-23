@@ -32,7 +32,7 @@ function Profile() {
             }
 
             try {
-                const response = await axios.get(env.authAccessPoint + `/${decodedToken.username}`)
+                const response = await axios.get(env.authAccessPoint + `/${decodedToken.username}?token${localStorage.token}`)
                 if (response.data) {
                     setUsername(response.data.username)
                     setNome(response.data.name)
@@ -63,7 +63,7 @@ function Profile() {
 
         if (showPasswordInputs){
             if (passwordAtual != null && passwordNova != null) {
-                axios.post(env.authAccessPoint + '/changepassword', {
+                axios.post(env.authAccessPoint + `/changepassword?token=${localStorage.token}`, {
                     username: username,
                     oldpassword: passwordAtual,
                     newpassword: passwordNova
@@ -99,7 +99,7 @@ function Profile() {
         }
 
         else{
-            axios.put(env.authAccessPoint + '/' + username, {
+            axios.put(env.authAccessPoint + '/' + username + `?token${localStorage.token}`, {
                 name: nome,
                 surname: apelido,
                 username: username,

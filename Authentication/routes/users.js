@@ -2,13 +2,12 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport')
 var userModel = require('../models/user')
-var auth = require('../auth/auth')
+var verify = require('../verify/verify')
 var jwt = require('jsonwebtoken')
-
 var User = require('../controllers/user')
 
 
-router.get('/', function (req, res) {
+router.get('/', verify.adminAccess, function (req, res) {
   User.list()
     .then(data => res.status(200).jsonp(data))
     .catch(error => res.status(500).jsonp({ error: error, message: "Erro na obtenção dos utilizadores" }))
@@ -92,21 +91,21 @@ router.get('/login/google/callback', function (req, res, next) {
 
 
 
-router.get('/:id/favorites', function (req, res) {
+router.get('/:id/favorites', verify.userAccess, function (req, res) {
   User.getFavorites(req.params.id)
     .then(data => res.status(200).jsonp(data))
     .catch(error => res.status(505).jsonp({ error: error, message: "Erro na obtenção dos favorites de um utilizador" }))
 });
 
 
-router.get('/:id', function (req, res) {
+router.get('/:id', verify.userAccess, function (req, res) {
   User.getUser(req.params.id)
     .then(data => res.status(200).jsonp(data))
     .catch(error => res.status(501).jsonp({ error: error, message: "Erro na obtenção do utilizador" }))
 });
 
 
-router.post('/', function (req, res) {
+router.post('/', verify.adminAccess, function (req, res) {
   User.addUser(req.body)
     .then(data => res.status(200).jsonp(data))
     .catch(error => res.status(502).jsonp({ error: error, message: "Erro na criação do utilizador" }))
@@ -144,14 +143,14 @@ router.post('/register', function (req, res) {
 })
 
 
-router.put('/:id', function (req, res) {
+router.put('/:id', verify.userAccess, function (req, res) {
   User.updateUser(req.body.username, req.body)
     .then(data => res.status(200).jsonp(data))
     .catch(error => res.status(503).jsonp({ error: error, message: "Erro na atualização do utilizador" }))
 });
 
 
-router.delete('/:id', function (req, res) {
+router.delete('/:id', verify.adminAccess, function (req, res) {
   User.deleteUser(req.params.id)
     .then(data => res.status(200).jsonp(data))
     .catch(error => res.status(504).jsonp({ error: error, message: "Erro na deleção do utilizador" }))
@@ -175,7 +174,7 @@ router.post('/login', passport.authenticate('local'), function (req, res) {
 });
 
 
-router.post('/changepassword', function (req, res) {
+router.post('/changepassword', verify.userAccess, function (req, res) {
   User.getUser(req.body.username)
     .then(user => {
       user.changePassword(req.body.oldpassword, req.body.newpassword, function (error) {
@@ -189,14 +188,15 @@ router.post('/changepassword', function (req, res) {
 });
 
 
-router.post('/:id/favorites', function (req, res) {
+router.post('/:id/favorites', verify.userAccess, function (req, res) {
+  console.log("favoritos")
   User.updateFavorite(req.params.id, req.body.favorite)
     .then(data => res.status(200).jsonp(data))
     .catch(error => res.status(506).jsonp({ error: error, message: "Erro na adição de um favorito" }))
 });
 
 
-router.delete('/:user/favorites/:favorite', function (req, res) {
+router.delete('/:user/favorites/:favorite', verify.userAccess, function (req, res) {
   User.removeFavorite(req.params.user, req.params.favorite)
     .then(data => res.status(200).jsonp(data))
     .catch(error => res.status(506).jsonp({ error: error, message: "Erro na deleção de um favorito" }))
