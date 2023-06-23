@@ -14,7 +14,7 @@ function Register() {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [filiacao, setFiliacao] = useState("")
-    const [nivel, setNivel] = useState("Consumidor")
+    const [nivel, setNivel] = useState(10)
     const [isSubmitted, setIsSubmitted] = useState(false)
     const [emailExists, setEmailExists] = useState(false)
     const [usernameExists, setUsernameExists] = useState(false)
@@ -130,19 +130,6 @@ function Register() {
                                         <FloatingLabel className="mb-3 form-outline" label="Filiação">
                                             <Form.Control type="text" placeholder="Filiação" value={filiacao} onChange={(e) => setFiliacao(e.target.value)} />
                                         </FloatingLabel>
-
-                                        <div className="d-flex align-items-center mb-3">
-                                            <label className="form-label me-2">Nível:</label>
-                                            <Dropdown>
-                                                <Dropdown.Toggle variant="outline-primary" id="dropdown-nivel" style={{ backgroundColor: 'white', color: 'black', borderColor: '#ced4da' }}>
-                                                    {nivel === "Consumidor" ? 'Consumidor' : nivel === "Produtor" ? 'Produtor' : null}
-                                                </Dropdown.Toggle>
-                                                <Dropdown.Menu>
-                                                    <Dropdown.Item onClick={() => setNivel("Consumidor")}>Consumidor</Dropdown.Item>
-                                                    <Dropdown.Item onClick={() => setNivel("Produtor")}>Produtor</Dropdown.Item>
-                                                </Dropdown.Menu>
-                                            </Dropdown>
-                                        </div>
 
                                         <div className="d-flex justify-content-center">
                                             <Button type="submit" variant="outline-dark">Registar</Button>

@@ -7,7 +7,7 @@ var userSchema = new mongoose.Schema({
     surname: String,
     email: String,
     filiation: String,
-    level: String,
+    level: Number,
     favorites: [String],
     dateCreated: String,
     lastAccess: String,
