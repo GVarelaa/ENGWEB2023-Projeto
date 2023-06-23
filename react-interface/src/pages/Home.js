@@ -26,16 +26,14 @@ function Home() {
                 var skip = 0
 
                 if (searchParams.get('page')) {
-                    skip = (page - 1) * limit;
+                    skip = (searchParams.get('page') - 1) * limit;
                     setPage(searchParams.get('page'))
                 }
 
                 const response = await axios.get(env.apiAcordaosAccessPoint + `?skip=${skip}&limit=${limit}&token=${localStorage.token}`)
                 setData(response.data)
             } catch (error) {
-                toast.error("Não foi possível obter a lista de acórdãos!", {
-                    position: toast.POSITION.TOP_CENTER
-                })
+                toast.error("Não foi possível obter a lista de acórdãos!", { position: toast.POSITION.TOP_CENTER })
             }
         }
 
@@ -44,9 +42,7 @@ function Home() {
                 const response = await axios.get(env.apiAcordaosAccessPoint + `/number?token=${localStorage.token}`)
                 setPagesNumber(Math.ceil(response.data / limit))
             } catch (error) {
-                toast.error("Não foi possível obter a lista de acórdãos!", {
-                    position: toast.POSITION.TOP_CENTER
-                })
+                toast.error("Não foi possível obter a lista de acórdãos!", { position: toast.POSITION.TOP_CENTER })
             }
         }
 
@@ -55,9 +51,7 @@ function Home() {
                 const response = await axios.get(env.authAccessPoint + `/${decodedToken.username}` + `/favorites?token=${localStorage.token}`)
                 setFavorites(response.data.favorites);
             } catch (error) {
-                toast.error("Não foi possível obter a lista de favoritos!", {
-                    position: toast.POSITION.TOP_CENTER
-                })
+                toast.error("Não foi possível obter a lista de favoritos!", { position: toast.POSITION.TOP_CENTER })
             }
         }
 
@@ -89,9 +83,7 @@ function Home() {
             }
             window.scrollTo(0, 0)
         } catch (error) {
-            toast.error("Não foi possível obter a lista de acórdãos!", {
-                position: toast.POSITION.TOP_CENTER
-            })
+            toast.error("Não foi possível obter a lista de acórdãos!", { position: toast.POSITION.TOP_CENTER })
         }
     }
 
@@ -111,9 +103,7 @@ function Home() {
             )
             setData(response2.data);
         } catch (error) {
-            toast.error("Não foi possível obter a lista de acórdãos!", {
-                position: toast.POSITION.TOP_CENTER,
-            })
+            toast.error("Não foi possível obter a lista de acórdãos!", { position: toast.POSITION.TOP_CENTER })
         }
     }
 
@@ -128,7 +118,7 @@ function Home() {
                     <Card.Body>
                         <Container className='mt-4'>
                             <Search setSearch={setSearch} handleSearch={handleSearch} />
-                            <Accordions data={data} setData={setData} favorites={favorites} setFavorites={setFavorites} token={decodedToken} poge={page} />
+                            <Accordions data={data} setData={setData} favorites={favorites} setFavorites={setFavorites} token={decodedToken} page={page} />
                             <Container className='d-flex justify-content-center mb-4'>
                                 <Pagination className="mt-3" page={page} onChange={handleChangePage} count={pagesNumber} shape="rounded" />
                             </Container>
