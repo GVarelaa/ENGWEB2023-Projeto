@@ -26,15 +26,26 @@ function Search({ setSearch, handleSearch }) {
 
     const handleSearchChange = (filter) => {
         queryString["search"] = filter
-        
-        var string = "?"
-        var first = true
+
+        var string = "?", first = true
         Object.keys(queryString).forEach(key => {
-            if(first) {
-                string += key + '=' + queryString[key]
-                first = false
+            if (queryString[key] !== "") {
+                if (key === "Data") {
+                    if (first) {
+                        string += "Data do Acordão" + '=' + queryString[key]
+                        first = false
+                    }
+                    else string += '&' + "Data do Acordão" + '=' + queryString[key]
+                }
+                else {
+                    if (first) {
+                        string += key + '=' + queryString[key]
+                        first = false
+                    }
+                    else string += '&' + key + '=' + queryString[key]
+                }
             }
-            else string += '&' + key + '=' + queryString[key]
+
         })
         setSearch(string)
     }
@@ -43,19 +54,28 @@ function Search({ setSearch, handleSearch }) {
     const handleFilterChange = (filter, item) => {
         queryString[item] = filter
 
-        var string = "?"
-        var first = true
+        var string = "?", first = true
         Object.keys(queryString).forEach(key => {
-            if(first) {
-                string += key + '=' + queryString[item]
-                first = false
+            if (queryString[key] !== "") {
+                if (key === "Data") {
+                    if (first) {
+                        string += "Data do Acordão" + '=' + queryString[key]
+                        first = false
+                    }
+                    else string += '&' + "Data do Acordão" + '=' + queryString[key]
+                }
+                else {
+                    if (first) {
+                        string += key + '=' + queryString[key]
+                        first = false
+                    }
+                    else string += '&' + key + '=' + queryString[key]
+                }
             }
-            else string += '&' + key + '=' + queryString[item]
+
         })
         setSearch(string)
     }
-
-    console.log(queryString)
 
     return (
         <Container className="mt-3 mb-4">
@@ -67,7 +87,7 @@ function Search({ setSearch, handleSearch }) {
                             placeholder="Procurar"
                             className="me-2"
                             aria-label="Procurar"
-                            onChange= {(e) => handleSearchChange(e.target.value)}
+                            onChange={(e) => handleSearchChange(e.target.value)}
                         />
                         <Button type="submit" className="mx-2" variant="outline-dark" startIcon={<SearchIcon />} style={{ width: '50%' }} >Procurar</Button>
                     </Form>
@@ -95,7 +115,7 @@ function Search({ setSearch, handleSearch }) {
 
                             {
                                 filters.map(item => {
-                                    return <Form.Control className="my-3" type="search" placeholder={item} onChange={(e) => handleFilterChange(e.target.value, item)}/>
+                                    return <Form.Control className="my-3" type="search" placeholder={item} onChange={(e) => handleFilterChange(e.target.value, item)} />
                                 })
                             }
                         </Card.Body>
