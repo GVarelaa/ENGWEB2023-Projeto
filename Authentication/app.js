@@ -10,8 +10,8 @@ var FacebookStrategy = require("passport-facebook");
 require("dotenv").config();
 
 var mongoose = require("mongoose");
-//var mongoDB = "mongodb://127.0.0.1/ProjetoEngWeb";
-var mongoDB = process.env.MONGODB_URL;
+var mongoDB = "mongodb://127.0.0.1/ProjetoEngWeb";
+//var mongoDB = process.env.MONGODB_URL;
 mongoose.connect(mongoDB, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
