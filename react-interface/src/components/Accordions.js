@@ -14,7 +14,7 @@ function Accordions({ data, setData, favorites, setFavorites, token, page }) {
     const handleFavorite = async (event, id) => {
         try {
             if (favorites.includes(id)) {
-                await axios.delete(env.authAccessPoint + `/${token.username}/favorites/${id}`)
+                await axios.delete(env.authAccessPoint + `/${token.username}/favorites/${id}?token=${localStorage.token}`)
 
                 setFavorites(current => {
                     return current.filter((item) => item !== id)
@@ -25,7 +25,7 @@ function Accordions({ data, setData, favorites, setFavorites, token, page }) {
                 })
             }
             else {
-                await axios.post(env.authAccessPoint + `/${token.username}/favorites`, { favorite: id })
+                await axios.post(env.authAccessPoint + `/${token.username}/favorites?token=${localStorage.token}`, { favorite: id })
 
                 setFavorites(current => [...current, id])
 
@@ -34,7 +34,7 @@ function Accordions({ data, setData, favorites, setFavorites, token, page }) {
                 })
             }
         } catch (error) {
-
+            console.log(error)
             toast.error('Não foi possível adicionar o acórdão à lista de favoritos!', {
                 position: toast.POSITION.TOP_CENTER
             })
@@ -56,7 +56,7 @@ function Accordions({ data, setData, favorites, setFavorites, token, page }) {
 
     const handleDelete = async (event, id) => {
         try {
-            await axios.delete(env.apiAcordaosAccessPoint + `/${id}`)
+            await axios.delete(env.apiAcordaosAccessPoint + `/${id}?token=${localStorage.token}`)
 
             setData(current => {
                 return current.filter((item) => item._id !== id)

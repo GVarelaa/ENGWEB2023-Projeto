@@ -22,7 +22,7 @@ function Favorites() {
             var favorites = []
 
             try {
-                const response = await axios.get(env.authAccessPoint + `/${decodedToken.username}` + "/favorites");
+                const response = await axios.get(env.authAccessPoint + `/${decodedToken.username}` + `/favorites?token=${localStorage.token}`);
                 favorites = response.data.favorites
             } catch (error) {
                 toast.error('Não foi possível obter a lista de favoritos!', {
@@ -37,7 +37,7 @@ function Favorites() {
                 }
 
                 try {
-                    const response = await axios.get(env.apiAcordaosAccessPoint + queryString);
+                    const response = await axios.get(env.apiAcordaosAccessPoint + queryString + `&token=${localStorage.token}`);
                     setPagesNumber(Math.ceil(response.data.length / 25))
                     setData(response.data)
                     setFavorites(favorites)

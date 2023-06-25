@@ -15,7 +15,7 @@ function Home() {
     const [favorites, setFavorites] = useState([])
     const [page, setPage] = useState(1)
     const [pagesNumber, setPagesNumber] = useState(0)
-    const [search, setSearch] = useState("")
+    const [search, setSearch] = useState("?")
     const [onSearch, setOnSearch] = useState(false)
     const [limit, setLimit] = useState(25)
     const [searchParams] = useSearchParams()
@@ -91,7 +91,6 @@ function Home() {
         event.preventDefault()
         setPage(0)
         setOnSearch(true)
-
         try {
             const response1 = await axios.get(
                 env.apiAcordaosAccessPoint + `/number${search}&token=${localStorage.token}`
