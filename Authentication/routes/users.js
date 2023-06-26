@@ -5,6 +5,8 @@ var userModel = require("../models/user");
 var verify = require("../verify/verify");
 var jwt = require("jsonwebtoken");
 var User = require("../controllers/user");
+var path = require("path");
+const assetsFolder = path.join(__dirname, "../assets");
 
 router.get("/", verify.adminAccess, function (req, res) {
   User.list()
@@ -186,6 +188,11 @@ router.post("/register", function (req, res) {
       }
     }
   );
+});
+
+router.post("/image", (req, res) => {
+  const { image } = req.files;
+  image.mv(path.join(assetsFolder, image.name));
 });
 
 router.put("/:id", verify.userAccess, function (req, res) {

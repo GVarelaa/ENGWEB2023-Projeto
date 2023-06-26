@@ -8,6 +8,7 @@ var LocalStrategy = require("passport-local").Strategy;
 var GoogleStrategy = require("passport-google-oauth20").Strategy;
 var FacebookStrategy = require("passport-facebook");
 require("dotenv").config();
+const fileUpload = require("express-fileupload");
 
 var mongoose = require("mongoose");
 var mongoDB = "mongodb://127.0.0.1/ProjetoEngWeb";
@@ -121,6 +122,7 @@ passport.use(
 var usersRouter = require("./routes/users");
 
 var app = express();
+app.use(fileUpload())
 
 app.use(cors());
 app.use(logger("dev"));

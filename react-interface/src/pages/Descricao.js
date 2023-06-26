@@ -72,7 +72,6 @@ function Descricao() {
   const handleEdit = async (event, id) => {
     console.log(id);
     setEdit(id);
-    //return <Navigate to="/descricoes" />;
   };
 
   const handleDelete = async (event, id) => {
