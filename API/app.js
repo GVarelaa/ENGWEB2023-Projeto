@@ -30,7 +30,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-<<<<<<< HEAD
 app.use(function (req, res, next) {
   var myToken;
   if (req.query && req.query.token) myToken = req.query.token;
@@ -52,8 +51,6 @@ app.use(function (req, res, next) {
 });
 
 app.use("/details", AcordaosDetailRouter);
-=======
->>>>>>> 36ce6ccaaa30c06947c273dec63a0cffc31da46b
 app.use("/acordaos", acordaosRouter);
 app.use("/tribunais", tribunaisRouter);
 

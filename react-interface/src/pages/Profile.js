@@ -20,6 +20,7 @@ function Profile() {
     const [filiacao, setFiliacao] = useState('')
     const [nivel, setNivel] = useState('');
     const [showPasswordInputs, setShowPasswordInputs] = useState(false);
+    const [image, setImage] = useState(null);
 
 
     useEffect(() => {
@@ -51,6 +52,10 @@ function Profile() {
 
         fetchData();
     }, []);
+
+    const uploadImage = async e=>{
+        e.preventDefault()
+    }
 
 
     const handlePassword = () => {
@@ -118,6 +123,11 @@ function Profile() {
         }
     }
 
+    function handleChange(e) {
+        console.log(e.target.files);
+        setImage(URL.createObjectURL(e.target.files[0]));
+    }
+
     return (
         <>
             <ToastContainer />
@@ -128,13 +138,17 @@ function Profile() {
                     <Col md={3}>
                         <Card className="mb-4 mb-xl-0">
                             <Card.Body className="text-center">
+                               <Form>
                                 <img
                                     className="img-account-profile rounded-circle mb-2"
                                     src="https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
                                     alt=""
                                 />
                                 <div className="small font-italic text-muted mb-4">Insira um ficheiro JPG or PNG até 5 MB</div>
-                                <Button variant="outline-dark">Carregar Foto</Button>
+                                <label class="w3-text-pink">
+                                <b>Select File</b> </label>
+                                <input type="file" name="image"/>
+                                </Form>
                             </Card.Body>
                         </Card>
                     </Col>
