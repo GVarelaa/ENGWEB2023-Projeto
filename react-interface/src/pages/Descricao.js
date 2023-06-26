@@ -34,15 +34,16 @@ function Descricao() {
   const formRef = useRef(null);
 
   const fetchData = async () => {
-    try {
-      const response = await axios.get(
-        env.apiDescricaoAccessPoint + `?token=${localStorage.token}`
-      );
-      if (response.data) setRecord(response.data);
-      else setRecord("NoPage");
-    } catch (error) {
-      console.log(error);
-    }
+    const response = await axios
+      .get(env.apiDescricaoAccessPoint + `?token=${localStorage.token}`)
+      .then((response) => {
+        console.log(response.data + "aqui");
+        setRecord(response.data);
+      })
+      .catch((error) => {
+        setRecord("NoPage");
+        console.log(error);
+      });
   };
 
   useEffect(() => {
@@ -199,7 +200,7 @@ function Descricao() {
                               </FloatingLabel>
                               <FloatingLabel
                                 className="mb-3 form-outline"
-                                label="Decisão Texto Integral"
+                                label="Descrição"
                               >
                                 <textarea
                                   class="form-control"

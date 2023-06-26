@@ -33,7 +33,7 @@ function Profile() {
             }
 
             try {
-                const response = await axios.get(env.authAccessPoint + `/${decodedToken.username}?token${localStorage.token}`)
+                const response = await axios.get(env.authAccessPoint + `/${decodedToken.username}?token=${localStorage.token}`)
                 if (response.data) {
                     setUsername(response.data.username)
                     setNome(response.data.name)
@@ -78,7 +78,7 @@ function Profile() {
                             position: toast.POSITION.TOP_CENTER
                         })
 
-                        axios.put(env.authAccessPoint + '/' + username, {
+                        axios.put(env.authAccessPoint + '/' + username +`?token=${localStorage.token}`, {
                             name: nome,
                             surname: apelido,
                             username: username,
@@ -104,7 +104,7 @@ function Profile() {
         }
 
         else{
-            axios.put(env.authAccessPoint + '/' + username + `?token${localStorage.token}`, {
+            axios.put(env.authAccessPoint + '/' + username + `?token=${localStorage.token}`, {
                 name: nome,
                 surname: apelido,
                 username: username,

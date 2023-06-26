@@ -5,7 +5,9 @@ var Acordao = require("../controllers/acordao_details");
 /* GET home page. */
 router.get("/", function (req, res, next) {
   Acordao.list()
-    .then((data) => {console.log(data);res.status(200).json(data)})
+    .then((data) => {
+      res.status(200).jsonp(data);
+    })
     .catch((error) =>
       res.status(521).json({
         error: error,
@@ -15,9 +17,11 @@ router.get("/", function (req, res, next) {
 });
 
 router.post("/", function (req, res, next) {
-
   Acordao.addAcordao(req.body)
-    .then((data) => {console.log(data);res.status(200).json(data)})
+    .then((data) => {
+      console.log(data);
+      res.status(200).json(data);
+    })
     .catch((error) =>
       res
         .status(523)

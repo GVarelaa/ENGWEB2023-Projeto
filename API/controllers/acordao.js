@@ -26,7 +26,6 @@ module.exports.getAcordaosNumber = (query) => {
   return Acordao.find(query)
     .count()
     .then((response) => {
-      console.log(response);
       return response;
     })
     .catch((error) => {
