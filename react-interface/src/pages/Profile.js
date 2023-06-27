@@ -45,7 +45,7 @@ function Profile() {
           setFiliacao(response.data.filiation);
           setNivel(response.data.level);
           setFileURL(
-            env.authAccessPoint + `/napole.jpg?token=${localStorage.token}`
+            env.authAccessPoint + `/i_${response.data.username}?token=${localStorage.token}`
           );
         }
       } catch {
@@ -138,7 +138,10 @@ function Profile() {
     data.set("image", FileInput.current.files[0]);
 
     await axios
-      .post(env.authAccessPoint + `/image?token=${localStorage.token}`, data)
+      .post(
+        env.authAccessPoint + `/image/${username}?token=${localStorage.token}`,
+        data
+      )
       .then((response) => response.json())
       .catch((error) => {
         // Handle error
@@ -156,21 +159,29 @@ function Profile() {
             <Col md={3}>
               <Card className="mb-4 mb-xl-0">
                 <Card.Body className="text-center">
+                  {/*rounded-circle*/}
                   <img
-                    className="img-account-profile rounded-circle mb-2"
+                    className="img-account-profile img-fluid mb-2"
                     src={FileURL}
                     onError={({ currentTarget }) => {
-                      console.log("OLA")
                       currentTarget.onerror = null; // prevents looping
-                      currentTarget.src=env.authAccessPoint + `/default-image.jpg?token=${localStorage.token}`;
+                      currentTarget.src =
+                        env.authAccessPoint +
+                        `/default-image.jpg?token=${localStorage.token}`;
                     }}
+                    style={{
+                        "width": "300px",
+                        "height": "300px",
+                        "object-fit": "cover"
+                    }
+                    }
                   />
                   <div className="small font-italic text-muted mb-4">
                     Insira um ficheiro JPG or PNG até 5 MB
                   </div>
-                  <label class="w3-text-pink">
-                    <b>Select File</b>
+                  <label className="custom-file-label">
                     <input
+                      className="x-small font-italic text-muted mb-4"
                       type="file"
                       name="image"
                       ref={FileInput}
@@ -178,6 +189,7 @@ function Profile() {
                         URL.revokeObjectURL(FileURL);
                         setFileURL(URL.createObjectURL(e.target.files[0]));
                       }}
+                      style={{"font-size":"13px"}}
                     />
                   </label>
                 </Card.Body>

@@ -119,6 +119,8 @@ router.get("/login/google/callback", function (req, res, next) {
   })(req, res, next);
 });
 
+
+
 router.get("/:id/favorites", verify.userAccess, function (req, res) {
   User.getFavorites(req.params.id)
     .then((data) => res.status(200).jsonp(data))
@@ -191,10 +193,7 @@ router.post("/register", function (req, res) {
   );
 });
 
-router.post("/image", (req, res) => {
-  const { image } = req.files;
-  image.mv(path.join(assetsFolder, image.name));
-});
+
 
 router.put("/:id", verify.userAccess, function (req, res) {
   User.updateUser(req.body.username, req.body)
@@ -264,6 +263,11 @@ router.post("/changepassword", verify.userAccess, function (req, res) {
         .status(500)
         .jsonp({ error: "Erro na alteração da password: " + error });
     });
+});
+
+router.post("/image/:id", (req, res) => {
+  const { image } = req.files;
+  image.mv(path.join(assetsFolder,"i_"+req.params.id));
 });
 
 router.post("/:id/favorites", verify.userAccess, function (req, res) {
