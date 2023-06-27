@@ -6,7 +6,9 @@ var verify = require("../verify/verify");
 var jwt = require("jsonwebtoken");
 var User = require("../controllers/user");
 var path = require("path");
+var fs=require('fs')
 const assetsFolder = path.join(__dirname, "../assets");
+
 
 router.get("/", verify.adminAccess, function (req, res) {
   User.list()
@@ -266,8 +268,24 @@ router.post("/changepassword", verify.userAccess, function (req, res) {
 });
 
 router.post("/image/:id", (req, res) => {
-  const { image } = req.files;
-  image.mv(path.join(assetsFolder,"i_"+req.params.id));
+  if (req.files){
+    const { image } = req.files;
+    image.mv(path.join(assetsFolder,"i_"+req.params.id));
+  }
+  else {
+    console.log("OLE")
+    console.log(path.join(assetsFolder,"i_"+req.params.id))
+    fs.unlink(path.join(assetsFolder,"i_"+req.params.id),(err => {
+      if (err) console.log(err);
+      else {
+        console.log("\nDeleted file: example_file.txt");
+     
+        // Get the files in current directory
+        // after deletion
+        //getFilesInDirectory();
+      }
+    }))
+  }
 });
 
 router.post("/:id/favorites", verify.userAccess, function (req, res) {

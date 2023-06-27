@@ -1,8 +1,8 @@
-import React, { useState, useEffect, createRef } from "react";
-import { Navigate } from "react-router-dom";
+import React, { useState, useEffect, createRef, useRef } from "react";
+import { Navigate, Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { Container, Row, Col, Form, Card } from "react-bootstrap";
-import { Check, Pencil } from "react-bootstrap-icons";
+import { Check, Pencil, Trash3 } from "react-bootstrap-icons";
 import { ToastContainer, toast } from "react-toastify";
 import NavBar from "../components/NavBar";
 import "./Profile.css";
@@ -20,9 +20,8 @@ function Profile() {
   const [filiacao, setFiliacao] = useState("");
   const [nivel, setNivel] = useState("");
   const [showPasswordInputs, setShowPasswordInputs] = useState(false);
-  const [File, setFile] = useState("");
   const [FileURL, setFileURL] = useState();
-  const FileInput = createRef();
+  var FileInput = createRef();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,7 +44,8 @@ function Profile() {
           setFiliacao(response.data.filiation);
           setNivel(response.data.level);
           setFileURL(
-            env.authAccessPoint + `/i_${response.data.username}?token=${localStorage.token}`
+            env.authAccessPoint +
+              `/i_${response.data.username}?token=${localStorage.token}`
           );
         }
       } catch {
@@ -61,6 +61,17 @@ function Profile() {
   const handlePassword = () => {
     setShowPasswordInputs(true);
   };
+
+  function iteratorToDictionary(iterator) {
+    const dictionary = {};
+
+    for (const item of iterator) {
+      const [key, value] = item;
+      dictionary[key] = value;
+    }
+
+    return dictionary;
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -136,16 +147,24 @@ function Profile() {
     URL.revokeObjectURL(FileURL);
     var data = new FormData();
     data.set("image", FileInput.current.files[0]);
+    if (!FileURL.match(env.authAccessPoint)) {
+      await axios
+        .post(
+          env.authAccessPoint +
+            `/image/${username}?token=${localStorage.token}`,
+          data
+        )
+        .then((response) => response.json())
+        .catch((error) => {
+          // Handle error
+        });
+    }
+  };
 
-    await axios
-      .post(
-        env.authAccessPoint + `/image/${username}?token=${localStorage.token}`,
-        data
-      )
-      .then((response) => response.json())
-      .catch((error) => {
-        // Handle error
-      });
+  const handleRemoveImage = (event) => {
+    FileInput.current.value = null;
+    URL.revokeObjectURL(FileURL);
+    setFileURL("");
   };
 
   return (
@@ -170,15 +189,22 @@ function Profile() {
                         `/default-image.jpg?token=${localStorage.token}`;
                     }}
                     style={{
-                        "width": "300px",
-                        "height": "300px",
-                        "object-fit": "cover"
-                    }
-                    }
+                      width: "300px",
+                      height: "300px",
+                      "object-fit": "cover",
+                    }}
                   />
                   <div className="small font-italic text-muted mb-4">
                     Insira um ficheiro JPG or PNG até 5 MB
                   </div>
+                  <Link>
+                    <Trash3
+                      size={20}
+                      color="black"
+                      className="mx-3"
+                      onClick={(e) => handleRemoveImage(e)}
+                    />
+                  </Link>
                   <label className="custom-file-label">
                     <input
                       className="x-small font-italic text-muted mb-4"
@@ -189,7 +215,7 @@ function Profile() {
                         URL.revokeObjectURL(FileURL);
                         setFileURL(URL.createObjectURL(e.target.files[0]));
                       }}
-                      style={{"font-size":"13px"}}
+                      style={{ "font-Size": "13px" }}
                     />
                   </label>
                 </Card.Body>
