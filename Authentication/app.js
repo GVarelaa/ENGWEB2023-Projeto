@@ -122,7 +122,8 @@ passport.use(
 var usersRouter = require("./routes/users");
 
 var app = express();
-app.use(fileUpload())
+app.use(fileUpload());
+app.use(express.static("assets"));
 
 app.use(cors());
 app.use(logger("dev"));

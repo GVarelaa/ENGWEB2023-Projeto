@@ -44,6 +44,9 @@ function Profile() {
           setEmail(response.data.email);
           setFiliacao(response.data.filiation);
           setNivel(response.data.level);
+          setFileURL(
+            env.authAccessPoint + `/napole.jpg?token=${localStorage.token}`
+          );
         }
       } catch {
         toast.error("Não foi obter as informações do utilizador!", {
@@ -55,48 +58,11 @@ function Profile() {
     fetchData();
   }, []);
 
-  function iteratorToDictionary(iterator) {
-    const dictionary = {};
-
-    for (const item of iterator) {
-      const [key, value] = item;
-      dictionary[key] = value;
-    }
-
-    return dictionary;
-  }
-
-  const handleImageCheck = async (e) => {
-    e.preventDefault();
-
-    console.log("AQUI");
-    //var data = new FormData(e.Body);
-    //console.log(data);
-    var data = new FormData();
-    data.set("image", FileInput.current.files[0]);
-
-    await axios
-      .post(env.authAccessPoint + `/image?token=${localStorage.token}`, data)
-      .then((response) => response.json())
-      .catch((error) => {
-        // Handle error
-      });
-  };
-
-  const handleFileInput = (e) => {
-    // handle validations
-
-    setFileURL(URL.createObjectURL(e.target.files[0]));
-    const file = e.target.files[0];
-    setFile(file);
-    console.log(File);
-  };
-
   const handlePassword = () => {
     setShowPasswordInputs(true);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (showPasswordInputs) {
@@ -167,6 +133,16 @@ function Profile() {
           });
         });
     }
+    URL.revokeObjectURL(FileURL);
+    var data = new FormData();
+    data.set("image", FileInput.current.files[0]);
+
+    await axios
+      .post(env.authAccessPoint + `/image?token=${localStorage.token}`, data)
+      .then((response) => response.json())
+      .catch((error) => {
+        // Handle error
+      });
   };
 
   return (
@@ -175,47 +151,42 @@ function Profile() {
       <NavBar />
       <Container>
         <hr className="mt-4 mb-4" />
-        <Row>
-          <Col md={3}>
-            <Card className="mb-4 mb-xl-0">
-              <Card.Body className="text-center">
-                {File ? (
-                  <img
-                    className="img-account-profile img-fluid rounded-circle mb-2"
-                    style={{ "border-radius": "50%" }}
-                    src={FileURL}
-                    alt=""
-                  />
-                ) : (
+        <Form onSubmit={handleSubmit}>
+          <Row>
+            <Col md={3}>
+              <Card className="mb-4 mb-xl-0">
+                <Card.Body className="text-center">
                   <img
                     className="img-account-profile rounded-circle mb-2"
-                    src="https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
-                    alt=""
+                    src={FileURL}
+                    onError={({ currentTarget }) => {
+                      console.log("OLA")
+                      currentTarget.onerror = null; // prevents looping
+                      currentTarget.src=env.authAccessPoint + `/default-image.jpg?token=${localStorage.token}`;
+                    }}
                   />
-                )}
-                <Form
-                  onSubmit={(event) => handleImageCheck(event)}
-                  encType="multipart/form-data"
-                >
                   <div className="small font-italic text-muted mb-4">
                     Insira um ficheiro JPG or PNG até 5 MB
                   </div>
                   <label class="w3-text-pink">
                     <b>Select File</b>
-                    <input type="file" name="image" ref={FileInput} />
+                    <input
+                      type="file"
+                      name="image"
+                      ref={FileInput}
+                      onChange={(e) => {
+                        URL.revokeObjectURL(FileURL);
+                        setFileURL(URL.createObjectURL(e.target.files[0]));
+                      }}
+                    />
                   </label>
-                  <Button type="submit" variant="outline-dark">
-                    Salvar
-                  </Button>
-                </Form>
-              </Card.Body>
-            </Card>
-          </Col>
+                </Card.Body>
+              </Card>
+            </Col>
 
-          <Col md={8}>
-            <Card className="mb-4">
-              <Card.Body>
-                <Form onSubmit={handleSubmit}>
+            <Col md={8}>
+              <Card className="mb-4">
+                <Card.Body>
                   <Row className="gx-3 mb-3">
                     <Col md={6}>
                       <Form.Group className="mb-3">
@@ -355,11 +326,11 @@ function Profile() {
                       Salvar Alterações
                     </Button>
                   </div>
-                </Form>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Form>
       </Container>
     </>
   );
