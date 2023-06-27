@@ -39,20 +39,20 @@ passport.use(
       callbackURL: "http://localhost:8072/login/facebook/callback",
     },
     function (accessToken, refreshToken, profile, cb) {
-      console.log("A verificar....");
+      console.log(profile)
       User.findOne({ facebookID: profile.id })
         .then((user) => {
-          console.log(profile);
           if (user) {
             return cb(null, user);
           } else {
+            var nameArray = profile.displayName.split(" ")
             const newUser = new User({
               username: profile.id,
-              name: profile.displayName,
-              surname: "",
+              name: nameArray[0],
+              surname: nameArray[1] ? nameArray[1] : "",
               email: "",
               filiation: "",
-              level: "Consumidor",
+              level: 10,
               favorites: [],
               dateCreated: new Date().toISOString().substring(0, 19),
               lastAccess: "",
@@ -84,7 +84,6 @@ passport.use(
       callbackURL: "http://localhost:8072/login/google/callback",
     },
     function (accessToken, refreshToken, profile, cb) {
-      console.log("A verificar....");
       User.findOne({ googleID: profile.id })
         .then((user) => {
           if (user) {
@@ -96,7 +95,7 @@ passport.use(
               surname: profile.name.familyName || "",
               email: "",
               filiation: "",
-              level: "Consumidor",
+              level: 10,
               favorites: [],
               dateCreated: new Date().toISOString().substring(0, 19),
               lastAccess: "",
