@@ -84,7 +84,7 @@ function Search({ setSearch, handleSearch }) {
                     <Form className="d-flex" onSubmit={handleSearch}>
                         <Form.Control
                             type="search"
-                            placeholder="Procurar"
+                            placeholder="Pesquisa livre"
                             className="me-2"
                             aria-label="Procurar"
                             onChange={(e) => handleSearchChange(e.target.value)}

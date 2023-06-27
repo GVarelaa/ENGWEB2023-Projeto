@@ -47,6 +47,7 @@ router.get("/login/facebook", function (req, res) {
 
 router.get("/login/facebook/callback", function (req, res, next) {
   passport.authenticate("facebook", function (err, user, info, status) {
+    console.log(user)
     User.updateAccess(user.username, new Date().toISOString().substring(0, 19))
       .then((response) => {
         jwt.sign(
