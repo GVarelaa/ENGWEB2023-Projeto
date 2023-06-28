@@ -1,7 +1,7 @@
 import { useStepContext } from '@mui/material';
 import Button from '@mui/material/Button';
 import { useState } from 'react';
-import { Col, Container, Form, Row, Card } from "react-bootstrap";
+import { Col, Container, Form, Card, FloatingLabel} from "react-bootstrap";
 import { Search as SearchIcon, PlusCircle } from 'react-bootstrap-icons'
 
 function Search({ setSearch, handleSearch }) {
@@ -79,49 +79,38 @@ function Search({ setSearch, handleSearch }) {
 
     return (
         <Container className="mt-3 mb-4">
-            <Row>
-                <Col sm={4}>
-                    <Form className="d-flex" onSubmit={handleSearch}>
-                        <Form.Control
-                            type="search"
-                            placeholder="Pesquisa livre"
-                            className="me-2"
-                            aria-label="Procurar"
-                            onChange={(e) => handleSearchChange(e.target.value)}
-                        />
-                        <Button type="submit" className="mx-2" variant="outline-dark" startIcon={<SearchIcon />} style={{ width: '50%' }} >Procurar</Button>
-                    </Form>
-                </Col>
-
-                <Col sm={4}>
-                    <Card>
-                        <Card.Header className='d-flex justify-content-center'><p>Filtros</p></Card.Header>
-                        <Card.Body>
-                            <Card.Body>
-                                <Button variant="outline-dark" startIcon={<PlusCircle />} onClick={handleAddFilter}>Adicionar Filtro</Button>
-                                {
-                                    isSelected &&
-
-                                    <Form.Select className="my-3" onChange={(e) => handleSelectChange(e.target.value)}>
-                                        <option> Adicionar Filtro </option>
-                                        {possibleFilters.map(item => {
-                                            return <option>{item}</option>
-                                        })}
-                                    </Form.Select>
-
-                                }
-                            </Card.Body>
-
-
-                            {
-                                filters.map(item => {
-                                    return <Form.Control className="my-3" type="search" placeholder={item} onChange={(e) => handleFilterChange(e.target.value, item)} />
-                                })
-                            }
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
+            <Form className="d-flex mb-5" onSubmit={handleSearch}>
+                <Form.Control type="search" placeholder="Procurar..."    aria-label="Procurar" onChange={(e) => handleSearchChange(e.target.value)}
+                />
+            </Form>
+            <Card>
+                <Card.Header className='d-flex justify-content-center'><p>Filtros</p></Card.Header>
+                <Card.Body>
+                    <Card.Body>
+                        <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={handleAddFilter}>Adicionar Filtro</Button>
+                        {isSelected && 
+                            <Form.Select className="my-3" defaultValue="" onChange={(e) => handleSelectChange(e.target.value)}>
+                                <option disabled hidden value="">Filtro:</option>
+                                    {possibleFilters.map(item => {
+                                        return <option>{item}</option>
+                                    })}
+                            </Form.Select>
+                        }
+                    </Card.Body>
+                    {
+                        filters.map(item => {
+                            return (
+                                <>
+                                <FloatingLabel className="form-outline" label={item} style={{ transform: 'scale(0.85)' }}>
+                                    <Form.Control className="my-3" type="search" placeholder={item} onChange={(e) => handleFilterChange(e.target.value, item)} />
+                                </FloatingLabel>
+                                </>
+                            )
+                        })
+                    }
+                </Card.Body>
+            </Card>
+            <Button type="submit" className="mx-2 mt-5" variant="outline-dark" startIcon={<SearchIcon />} style={{ width: '50%' }} >Procurar</Button>
         </Container>
     );
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { Navigate, useSearchParams } from "react-router-dom"
-import { Container, Card } from "react-bootstrap"
+import { Container, Card, Row, Col } from "react-bootstrap"
 import { Pagination } from "@mui/material"
 import { ToastContainer, toast } from "react-toastify"
 import NavBar from "../components/NavBar"
@@ -113,17 +113,27 @@ function Home() {
             <NavBar />
             <Container>
                 <hr className="mt-4 mb-4" />
-                <Card className='d-flex justify-content-center' style={{ 'box-shadow': '0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)' }} >
-                    <Card.Body>
-                        <Container className='mt-4'>
-                            <Search setSearch={setSearch} handleSearch={handleSearch} />
-                            <Accordions data={data} setData={setData} favorites={favorites} setFavorites={setFavorites} token={decodedToken} page={page} />
-                            <Container className='d-flex justify-content-center mb-4'>
-                                <Pagination className="mt-3" page={page} onChange={handleChangePage} count={pagesNumber} shape="rounded" />
-                            </Container>
-                        </Container>
-                    </Card.Body>
-                </Card>
+                <Row>
+                    <Col md={3}>
+                        <Card className='d-flex justify-content-center mb-xl-0' style={{ 'box-shadow': '0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)' }} >
+                            <Card.Body className="text-center">
+                                <Search setSearch={setSearch} handleSearch={handleSearch}/>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                    <Col md={9}>
+                        <Card className='d-flex justify-content-center' style={{ 'box-shadow': '0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)' }} >
+                            <Card.Body className="text-center">
+                                <Container className='mt-4'>
+                                    <Accordions data={data} setData={setData} favorites={favorites} setFavorites={setFavorites} token={decodedToken} page={page} />
+                                    <Container className='d-flex justify-content-center mb-4'>
+                                        <Pagination className="mt-3" page={page} onChange={handleChangePage} count={pagesNumber} shape="rounded" />
+                                    </Container>
+                                </Container>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
             </Container>
         </>
     )
