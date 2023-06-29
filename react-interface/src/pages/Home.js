@@ -18,7 +18,6 @@ function Home() {
     const [search, setSearch] = useState("?")
     const [onSearch, setOnSearch] = useState(false)
     const [searchParams] = useSearchParams()
-
     const limit = 25
 
     useEffect(() => {
@@ -58,7 +57,7 @@ function Home() {
         fetchData()
         fetchPagesNumber()
         fetchFavorites()
-    })
+    }, [])
 
     try {
         var decodedToken = jwt_decode(localStorage.getItem("token"))

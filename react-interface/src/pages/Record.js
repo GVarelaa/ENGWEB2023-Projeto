@@ -43,7 +43,7 @@ function Record() {
 
         fetchData()
         fetchFavorites()
-    })
+    }, [])
 
     try {
         var decodedToken = jwt_decode(localStorage.getItem("token"))
