@@ -2,7 +2,6 @@ var jwt = require('jsonwebtoken')
 
 module.exports.userAccess = function (req, res, next) {
     var token = req.query.token || req.body.token
-    console.log(token)
     if(token){
         jwt.verify(token, "Acordaos2023", function(error, payload){
             delete req.query.token;

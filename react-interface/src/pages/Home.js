@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { Navigate, useSearchParams } from "react-router-dom"
 import { Container, Card, Row, Col } from "react-bootstrap"
 import { Pagination } from "@mui/material"
+import { PaginationControl } from 'react-bootstrap-pagination-control'
 import { ToastContainer, toast } from "react-toastify"
 import NavBar from "../components/NavBar"
 import Accordions from "../components/Accordions"
@@ -23,14 +24,12 @@ function Home() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                var skip = 0
+                var lastID = -1
 
-                if (searchParams.get('page')) {
-                    skip = (searchParams.get('page') - 1) * limit;
-                    setPage(searchParams.get('page'))
-                }
+                if (searchParams.get('start'))
+                    lastID = searchParams.get('start')
 
-                const response = await axios.get(env.apiAcordaosAccessPoint + `?skip=${skip}&limit=${limit}&token=${localStorage.token}`)
+                const response = await axios.get(env.apiAcordaosAccessPoint + `?lastID=${lastID}&limit=${limit}&token=${localStorage.token}`)
                 setData(response.data)
             } catch (error) {
                 toast.error("Não foi possível obter a lista de acórdãos!", { position: toast.POSITION.TOP_CENTER })
@@ -41,7 +40,7 @@ function Home() {
             try {
                 const response = await axios.get(env.apiAcordaosAccessPoint + `/number?token=${localStorage.token}`)
                 setPagesNumber(Math.ceil(response.data / limit))
-            } catch (error){}
+            } catch (error) { }
         }
 
         const fetchFavorites = async () => {
@@ -66,16 +65,15 @@ function Home() {
 
     const handleChangePage = async (event, page) => {
         setPage(page);
-        const skip = (page - 1) * limit;
 
         try {
             if (!onSearch) {
-                const response = await axios.get(
-                    env.apiAcordaosAccessPoint + `?skip=${skip}&limit=${limit}&token=${localStorage.token}`
-                );
+                const lastID = ((page - 1) * limit) - 1;
+                const response = await axios.get(env.apiAcordaosAccessPoint + `?lastID=${lastID}&limit=${limit}&token=${localStorage.token}`);
                 setData(response.data);
             }
             else {
+                const skip = (page - 1) * limit;
                 const response = await axios.get(env.apiAcordaosAccessPoint + `${search}&skip=${skip}&limit=${limit}&token=${localStorage.token}`)
                 setData(response.data)
             }
@@ -115,7 +113,7 @@ function Home() {
                     <Col md={3}>
                         <Card className='d-flex justify-content-center mb-xl-0' style={{ 'box-shadow': '0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)' }} >
                             <Card.Body className="text-center">
-                                <Search setSearch={setSearch} handleSearch={handleSearch}/>
+                                <Search setSearch={setSearch} handleSearch={handleSearch} />
                             </Card.Body>
                         </Card>
                     </Col>

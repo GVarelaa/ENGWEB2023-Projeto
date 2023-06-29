@@ -15,7 +15,7 @@ var LegislacoesSchema = new mongoose.Schema({
 });
 
 var acordaoSchema = new mongoose.Schema({
-  _id: String,
+  _id: Number,
   Processo: String,
   Relator: String,
   Descritores: [String],
@@ -62,11 +62,11 @@ var acordaoSchema = new mongoose.Schema({
   Réu: [String],
 });
 
+acordaoSchema.index({ "Processo": 1 });
+acordaoSchema.index({ "Data do Acordão": 1 });
+acordaoSchema.index({ "Descritores": 1});
+acordaoSchema.index({ "Relator": 1 });
+acordaoSchema.index({ "tribunal": 1 });
 acordaoSchema.index({ "$**": "text" });
-acordaoSchema.index({ "Processo": "1" });
-acordaoSchema.index({ "Data do Acordão": "1" });
-acordaoSchema.index({ "Descritores": "1" });
-acordaoSchema.index({ "Relator": "1" });
-acordaoSchema.index({ "tribunal": "1" });
 
 module.exports = mongoose.model("acordao", acordaoSchema);
