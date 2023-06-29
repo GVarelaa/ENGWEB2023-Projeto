@@ -37,7 +37,8 @@ function Register() {
                 .then((response) => {
                     if (response.data != null) {
                         console.log(response.data)
-                        setUsernameExists(true)}
+                        setUsernameExists(true)
+                    }
                     else setUsernameExists(false)
                 })
                 .catch((error) => { })
@@ -131,6 +132,13 @@ function Register() {
 
                                         <FloatingLabel className="mb-3 form-outline" label="Filiação">
                                             <Form.Control required type="text" placeholder="Filiação" value={filiacao} onChange={(e) => setFiliacao(e.target.value)} />
+                                        </FloatingLabel>
+
+                                        <FloatingLabel className="mb-3 form-outline" label="Nível">
+                                            <Form.Select onChange={(e) => setNivel(e.target.value)}>
+                                                <option value="10">Consumidor</option>
+                                                <option value="20">Produtor</option>
+                                            </Form.Select>
                                         </FloatingLabel>
 
                                         <div className="d-flex justify-content-center">
