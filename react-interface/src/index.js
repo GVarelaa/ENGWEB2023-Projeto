@@ -19,12 +19,12 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>
-          <Route path="/profile" element={<RouterGuard> <Profile/> </RouterGuard>}/>
-          <Route path="/favorites" element={<RouterGuard> <Favorites/> </RouterGuard>}/>
-          <Route path="/" element={<RouterGuard> <Home/> </RouterGuard>}/>
-          <Route path="/descricoes" element={<RouterGuard> <Descricao/> </RouterGuard>}/>
-          <Route path="/:id" element={<RouterGuard> <Record/> </RouterGuard>}/>
-          <Route path="/insert" element={<RouterGuard> <Insert/> </RouterGuard>}/>
+          <Route path="/profile" element={<RouterGuard level="10"> <Profile/> </RouterGuard>}/>
+          <Route path="/favorites" element={<RouterGuard level="10"> <Favorites/> </RouterGuard>}/>
+          <Route path="/" element={<RouterGuard level="10"> <Home/> </RouterGuard>}/>
+          <Route path="/descricoes" element={<RouterGuard level="10"> <Descricao/> </RouterGuard>}/>
+          <Route path="/:id" element={<RouterGuard level="10"> <Record/> </RouterGuard>}/>
+          <Route path="/insert" element={<RouterGuard level="20"> <Insert/> </RouterGuard>}/>
           <Route path="*" element={<NoPage/>}/>  // Proteger esta merda
         </Routes>
     </BrowserRouter>
