@@ -12,18 +12,6 @@ module.exports.list = (query, skip, limit) => {
     });
 };
 
-module.exports.listPages = (lastPage, limit) => {
-  return Acordao.find({_id : {$lt: lastPage}})
-    .sort({_id:-1})
-    .limit(limit)
-    .then((response) => {
-      return response;
-    })
-    .catch((error) => {
-      return error;
-    });
-};
-
 module.exports.getAcordao = (id) => {
   return Acordao.findOne({ _id: id })
     .then((response) => {

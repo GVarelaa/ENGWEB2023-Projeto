@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom"
 import { useState, useEffect } from "react"
-import { Col, Button, Row, Container, Card, Form, FloatingLabel, Dropdown } from "react-bootstrap"
+import { Col, Button, Row, Container, Card, Form, FloatingLabel } from "react-bootstrap"
 import { ToastContainer, toast } from "react-toastify"
 import ParticleLayout from "../components/ParticleLayout"
 import axios from "axios"
@@ -48,7 +48,7 @@ function Register() {
     const handleSubmit = (event) => {
         event.preventDefault()
 
-        axios.post(env.authAccessPoint + "/register" + `?token=${localStorage.token}`, {
+        axios.post(`${env.authAccessPoint}/register?token=${localStorage.token}`, {
             name: nome,
             surname: apelido,
             email: email,

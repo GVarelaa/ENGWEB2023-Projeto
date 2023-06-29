@@ -22,7 +22,7 @@ function Record() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(env.apiAcordaosAccessPoint + `/${params.id}` + `?token=${localStorage.token}`)
+                const response = await axios.get(`${env.apiAcordaosAccessPoint}/${params.id}?token=${localStorage.token}`)
                 if (response.data) setRecord([response.data])
                 else setRecord("NoPage")
             } catch (error) {
@@ -32,7 +32,7 @@ function Record() {
 
         const fetchFavorites = async () => {
             try {
-                const response = await axios.get(`${env.authAccessPoint}/${decodedToken.username}/favorites` + `?token=${localStorage.token}`)
+                const response = await axios.get(`${env.authAccessPoint}/${decodedToken.username}/favorites?token=${localStorage.token}`)
                 setFavorites(response.data.favorites)
             } catch (error) {
                 toast.error("Não foi possível obter a lista de favoritos!", {
@@ -43,7 +43,7 @@ function Record() {
 
         fetchData()
         fetchFavorites()
-    }, [])
+    })
 
     try {
         var decodedToken = jwt_decode(localStorage.getItem("token"))
@@ -54,7 +54,7 @@ function Record() {
     const handleFavorite = async (event, id) => {
         try {
             if (favorites.includes(id)) {
-                await axios.delete(env.authAccessPoint + `/${decodedToken.username}/favorites/${id}` + `?token=${localStorage.token}`)
+                await axios.delete(`${env.authAccessPoint}/${decodedToken.username}/favorites/${id}?token=${localStorage.token}`)
 
                 setFavorites((current) => {
                     return current.filter((item) => item !== id)
@@ -65,7 +65,7 @@ function Record() {
                 })
             }
             else {
-                await axios.post(env.authAccessPoint + `/${decodedToken.username}/favorites` + `?token=${localStorage.token}`, { favorite: id })
+                await axios.post(`${env.authAccessPoint}/${decodedToken.username}/favorites?token=${localStorage.token}`, { favorite: id });
 
                 setFavorites((current) => [...current, id])
 
@@ -115,7 +115,7 @@ function Record() {
             <Container>
                 <hr className="mt-4 mb-4" />
                 <div className="d-flex justify-content-start mb-4">
-                    <Link to={searchParams.get('returnPage') ? `/?page=${searchParams.get('returnPage')}` : "/"} style={{ "text-decoration": "none", color: "inherit" }}>
+                    <Link to={searchParams.get('returnStart') ? `/?start=${searchParams.get('returnStart') - 1}` : "/"} style={{ "text-decoration": "none", color: "inherit" }}>
                         <Button variant="outline-dark" startIcon={<ArrowLeftShort />}>Voltar atrás</Button>
                     </Link>
                 </div>

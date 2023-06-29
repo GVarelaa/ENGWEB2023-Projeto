@@ -6,9 +6,10 @@ var verify = require("../verify/verify");
 /* GET home page. */
 router.get("/", verify.userAccess, function (req, res, next) {
   var skip = 0, limit = 75; // Por default só manda 75 acordaos => impedir sobrecarga
-  if (req.query.skip) {
-    skip = req.query.skip;
-    delete req.query.skip;
+
+  if(req.query.skip){
+    skip = req.query.skip
+    delete req.query.skip
   }
 
   if (req.query.limit) {
@@ -16,10 +17,18 @@ router.get("/", verify.userAccess, function (req, res, next) {
     delete req.query.limit;
   }
 
+  if (req.query.lastID) {
+    req.query["_id"] = { $gt: parseInt(req.query.lastID)};
+    delete req.query.lastID;
+  }
+
   if (req.query.search) {
     req.query["$text"] = { $search: `\"${req.query.search}\"` };
     delete req.query.search;
   }
+
+  // Meter isto case sensative
+  
 
   Acordao.list(req.query, skip, limit)
     .then((data) => {

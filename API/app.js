@@ -26,13 +26,6 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
-
-/*
-app.use(function (req, res, next) {
-  delete req.query.token;
-  console.log(JSON.stringify(req.query));
-});
-*/
 app.use("/details", AcordaosDetailRouter);
 app.use("/acordaos", acordaosRouter);
 app.use("/tribunais", tribunaisRouter);

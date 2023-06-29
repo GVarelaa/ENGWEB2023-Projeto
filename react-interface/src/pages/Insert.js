@@ -1,9 +1,10 @@
 import NavBar from "../components/NavBar"
 import { useState, useEffect } from "react"
-import Select from "react-select"
 import { Link } from "react-router-dom"
-import { Container, Button, Form, FloatingLabel, Col, Row, Card } from "react-bootstrap"
-import { Trash3, PlusSquare, Airplane } from "react-bootstrap-icons"
+import { Container, Form, FloatingLabel, Col, Row, Card } from "react-bootstrap"
+import { Button as BootstrapButton } from "react-bootstrap"
+import { Trash3, PlusSquare, PlusCircle } from "react-bootstrap-icons"
+import Button from '@mui/material/Button';
 import { ToastContainer, toast } from "react-toastify"
 import axios from "axios"
 
@@ -71,7 +72,7 @@ function Insert() {
                     axios.get(env.apiTribunaisAccessPoint + "/" + response.data[0]._id + "/descritores" + `?token=${localStorage.token}`)
                         .then((response) => {
                             setListaDescritores(
-                                response.data.map((descritor) => ({
+                                response.data.descritores.map((descritor) => ({
                                     label: descritor,
                                     value: descritor,
                                 }))
@@ -85,7 +86,7 @@ function Insert() {
                     axios.get(env.apiTribunaisAccessPoint + "/" + response.data[0]._id + "/areatematica1" + `?token=${localStorage.token}`)
                         .then((response) => {
                             setListaAreaTematica1(
-                                response.data.map((area) => ({
+                                response.data.areaTematica1.map((area) => ({
                                     label: area,
                                     value: area,
                                 }))
@@ -99,7 +100,7 @@ function Insert() {
                     axios.get(env.apiTribunaisAccessPoint + "/" + response.data[0]._id + "/areatematica2" + `?token=${localStorage.token}`)
                         .then((response) => {
                             setListaAreaTematica2(
-                                response.data.map((area) => ({
+                                response.data.areaTematica2.map((area) => ({
                                     label: area,
                                     value: area,
                                 }))
@@ -126,7 +127,7 @@ function Insert() {
 
         axios.get(env.apiTribunaisAccessPoint + "/" + tribunal + "/descritores" + `?token=${localStorage.token}`)
             .then((response) => {
-                setListaDescritores(response.data.map((descritor) => ({ label: descritor, value: descritor })))
+                setListaDescritores(response.data.descritores.map((descritor) => ({ label: descritor, value: descritor })))
             })
             .catch((error) => {
                 toast.error("Não foi possível obter a lista de descritores!", {
@@ -136,17 +137,17 @@ function Insert() {
 
         axios.get(env.apiTribunaisAccessPoint + "/" + tribunal + "/areatematica1" + `?token=${localStorage.token}`)
             .then((response) => {
-                setListaAreaTematica1(response.data.map((area) => ({ label: area, value: area })))
+                setListaAreaTematica1(response.data.areaTematica1.map((area) => ({ label: area, value: area })))
             })
             .catch((error) => {
                 toast.error("Não foi possível obter a lista de descritores!", {
                     position: toast.POSITION.TOP_CENTER
                 })
             })
-        
+
         axios.get(env.apiTribunaisAccessPoint + "/" + tribunal + "/areatematica2" + `?token=${localStorage.token}`)
             .then((response) => {
-                setListaAreaTematica2(response.data.map((area) => ({ label: area, value: area })))
+                setListaAreaTematica2(response.data.areaTematica2.map((area) => ({ label: area, value: area })))
             })
             .catch((error) => {
                 toast.error("Não foi possível obter a lista de descritores!", {
@@ -318,6 +319,7 @@ function Insert() {
                                 {/*
                                     <Form.Group className="mb-3">
                                         <Form.Label style={{ marginLeft: '10px' }}>Área Temática 1:</Form.Label>
+                                        <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px', marginLeft: '10px' }} onClick={handleAddAreaTematica(1)}>Adicionar Descritor</Button>
                                         {area_tematica.map((area, index) => (
                                             <div key={index}>
                                                 <Col className="mb-2 t d-flex align-items-center">
@@ -330,13 +332,13 @@ function Insert() {
                                                 </Col>
                                             </div>
                                         ))}
-                                        <Link><PlusSquare size={20} color='black' className="mx-3" onClick={handleAddAreaTematica(1)} /></Link>
                                     </Form.Group>
                                                         */}
 
                                 {/*
                                     <Form.Group className="mb-3">
                                         <Form.Label style={{ marginLeft: '10px' }}>Área Temática 2:</Form.Label>
+                                        <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px', marginLeft: '10px' }} onClick={handleAddAreaTematica(2)}>Adicionar Descritor</Button>
                                         {area_tematica2.map((area, index) => (
                                             <div key={index}>
                                                 <Col className="mb-2 t d-flex align-items-center">
@@ -349,13 +351,13 @@ function Insert() {
                                                 </Col>
                                             </div>
                                         ))}
-                                        <Link><PlusSquare size={20} color='black' className="mx-3" onClick={handleAddAreaTematica(2)} /></Link>
                                     </Form.Group>
                                                         */}
 
                                 {
                                     <Form.Group className="mb-3">
                                         <Form.Label style={{ marginLeft: '10px' }}>Descritores:</Form.Label>
+                                        <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px', marginLeft: '10px' }} onClick={handleAddDescritor}>Adicionar Descritor</Button>
                                         {descritores.map((descritor, index) => (
                                             <div key={index}>
                                                 <Col className="mb-2 t d-flex align-items-center">
@@ -368,9 +370,16 @@ function Insert() {
                                                 </Col>
                                             </div>
                                         ))}
-                                        <Link><PlusSquare size={20} color='black' className="mx-3" onClick={handleAddDescritor} /></Link>
                                     </Form.Group>
                                 }
+
+                                <FloatingLabel className="mb-3 form-outline" label="Sumário">
+                                    <textarea class="form-control" style={{ height: '200px' }} placeholder="Sumário" value={sumario} onChange={(e) => setSumario(e.target.value)} />
+                                </FloatingLabel>
+                            </Container>
+
+                           <Container className="my-4 mb-5">
+                                <h4>Outras Informações</h4>
 
                                 <Row>
                                     <Col md={6} className="mt-2">
@@ -394,10 +403,6 @@ function Insert() {
 
                                 <FloatingLabel className="mb-3 mt-3 form-outline" label="Votação">
                                     <Form.Control type="text" placeholder="Votação" value={votacao} onChange={(e) => setVotacao(e.target.value)} />
-                                </FloatingLabel>
-
-                                <FloatingLabel className="mb-3 form-outline" label="Sumário">
-                                    <textarea class="form-control" style={{ height: '200px' }} placeholder="Sumário" value={sumario} onChange={(e) => setSumario(e.target.value)} />
                                 </FloatingLabel>
 
                                 <FloatingLabel className="mb-3 form-outline" label="Decisão Texto Integral">
@@ -470,7 +475,7 @@ function Insert() {
                                 </FloatingLabel>
 
                                 <div className="mb-5 d-flex justify-content-center padding-bottom">
-                                    <Button type="submit" variant="outline-dark">Registar</Button>
+                                    <BootstrapButton type="submit" variant="outline-dark">Registar</BootstrapButton>
                                 </div>
                             </Container>
                         </Form>
