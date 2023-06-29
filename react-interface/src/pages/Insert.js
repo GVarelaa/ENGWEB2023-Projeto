@@ -1,8 +1,7 @@
 import NavBar from "../components/NavBar"
 import { useState, useEffect } from "react"
-import { Link } from "react-router-dom"
-import { Container, Form, FloatingLabel, Col, Row, Card } from "react-bootstrap"
-import { Button as BootstrapButton } from "react-bootstrap"
+import { Container, Form, FloatingLabel, Col, Row, Card, Button } from "react-bootstrap"
+import { PlusCircle } from 'react-bootstrap-icons'
 import { MultiSelect } from "react-multi-select-component";
 import { ToastContainer, toast } from "react-toastify"
 import axios from "axios"
@@ -91,6 +90,7 @@ function Insert() {
         fetchData()
     }, [])
 
+
     const handleTribunal = (e) => {
         setTribunal(e.target.value)
 
@@ -125,6 +125,7 @@ function Insert() {
             })
     }
 
+
     const handleSubmit = (event) => {
         event.preventDefault()
 
@@ -153,6 +154,9 @@ function Insert() {
     }
 
 
+    const handleSelectChange = (field) => {
+
+    }
 
 
     return (
@@ -238,13 +242,34 @@ function Insert() {
                             <Container className="my-4 mb-5">
                                 <h4>Outras Informações</h4>
 
+                                <Form.Group>
+                                    <Form.Label style={{ marginLeft: '10px' }}>Adicionar campo</Form.Label>
+                                    <Form.Select defaultValue="" onChange={(e) => handleSelectChange(e.target.value)}>
+                                        <option disabled hidden value="">Campo</option>
+                                    </Form.Select>
+                                </Form.Group>
 
+
+                                {/*filters.map(item => {
+                                    return (
+                                        <Row>
+                                            <Col md={10}>
+                                                <FloatingLabel className="form-outline" label={item} style={{ transform: 'scale(0.90)' }}>
+                                                    <Form.Control className="my-3" type="search" placeholder={item} onChange={(e) => handleFilterChange(e.target.value, item)} />
+                                                </FloatingLabel>
+                                            </Col>
+                                            <Col md={1} className="d-flex justify-content-start">
+                                                <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-1em' }} size={20} color="black" onClick={e => handleRemoveFilter(e, item)} /></Link>
+                                            </Col>
+                                        </Row>
+                                    )
+                                })*/}
 
 
                             </Container>
 
                             <div className="mb-5 d-flex justify-content-center padding-bottom">
-                                <BootstrapButton type="submit" variant="outline-dark">Registar</BootstrapButton>
+                                <Button type="submit" variant="outline-dark">Registar</Button>
                             </div>
                         </Form>
                     </Card.Body>
