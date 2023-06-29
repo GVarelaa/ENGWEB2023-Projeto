@@ -42,8 +42,12 @@ function Profile() {
                     setApelido(response.data.surname)
                     setEmail(response.data.email)
                     setFiliacao(response.data.filiation)
-                    setNivel(response.data.level)
-                    setDataRegisto(response.data.dateCrreated)
+                    if  (response.data.level<=10)
+                        setNivel("Consumidor")
+                    else
+                        setNivel("Administrador")
+                    console.log(nivel)
+                    setDataRegisto(response.data.dateCreated)
                     setUltimoAcesso(response.data.lastAccess)
                     setfileURL(env.authAccessPoint + `/i_${response.data.username}?token=${localStorage.token}`)
                 }
