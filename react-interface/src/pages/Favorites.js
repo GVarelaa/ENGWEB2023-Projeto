@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Navigate } from 'react-router-dom';
+import { Navigate,useSearchParams } from 'react-router-dom';
 import { Container, Card } from 'react-bootstrap';
 import { Pagination } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify'
@@ -15,6 +15,8 @@ function Favorites() {
     const [favorites, setFavorites] = useState([])
     const [page, setPage] = useState(1);
     const [pagesNumber, setPagesNumber] = useState(0)
+    const [searchParams] = useSearchParams()
+    const [limit,] = useState(25)
     var decodedToken
 
     useEffect(() => {
@@ -31,18 +33,20 @@ function Favorites() {
             }
 
             if (favorites.length > 0) {
+                //constrói a querystring
                 var queryString = "?"
+                var skip = (page - 1) * limit;
                 for (var i = 0; i < favorites.length; i++) {
                     queryString += "_id=" + favorites[i] + "&"
                 }
 
                 try {
-                    const response = await axios.get(env.apiAcordaosAccessPoint + queryString + `&token=${localStorage.token}`);
-                    setPagesNumber(Math.ceil(response.data.length / 25))
+                    const response = await axios.get(env.apiAcordaosAccessPoint + queryString + `skip=${skip}&limit=${limit}&token=${localStorage.token}`);
+                    setPagesNumber(Math.ceil(favorites.length / 25))
                     setData(response.data)
                     setFavorites(favorites)
                 } catch (error) {
-                    toast.error('Não foi possível obter a lista de favoritos!', {
+                    toast.error('Não foi possível obter a lista de acórdãos!', {
                         position: toast.POSITION.TOP_CENTER
                     })
                 }
@@ -50,7 +54,7 @@ function Favorites() {
         }
 
         fetchData()
-    }, [])
+    }, [page])
 
 
     try {

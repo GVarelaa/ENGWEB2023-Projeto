@@ -129,7 +129,7 @@ router.get("/:id/favorites", verify.userAccess, function (req, res) {
     .catch((error) =>
       res.status(505).jsonp({
         error: error,
-        message: "Erro na obtenção dos favorites de um utilizador",
+        message: "Erro na obtenção dos acórdãos favoritos de um utilizador",
       })
     );
 });

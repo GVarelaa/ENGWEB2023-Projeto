@@ -89,7 +89,7 @@ function Accordions({ data, setData, favorites, setFavorites, token, page }) {
                                     : <Link> <Heart size={20} color='black' className='mx-3' onClick={(event) => handleFavorite(event, obj._id)} /> </Link>
                                 }
                                 <Link to={"/edit/" + obj._id}> <Pencil size={20} color='black' className='mx-3' /> </Link>
-                                {token.level === 'admin' &&
+                                {token.level === 100 &&
                                     <>
                                         <Link><Trash3 size={20} color='black' className='mx-3' onClick={(event) => handleShowModal(event, obj._id)} /></Link>
                                         <Modal show={showModal} onHide={handleHideModal}>
