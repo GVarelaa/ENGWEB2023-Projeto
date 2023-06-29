@@ -157,6 +157,62 @@ function Descricao() {
     return <Navigate to="/descricoes" />;
   };
 
+  function Lista(obj) {
+    console.log("isto" + decodedToken.level);
+    return (
+      
+      <div class="d-flex flex-row">
+        <Container>
+          <b>{obj["Nome"]}</b>
+        </Container>
+        {decodedToken.level >= 100 && (
+            <Container className="d-flex justify-content-end px-3">
+              <Link>
+                {" "}
+                <Pencil
+                  size={20}
+                  color="black"
+                  className="mx-3"
+                  onClick={(event) => handleEdit(event, obj["_id"])}
+                />{" "}
+              </Link>
+              <>
+                <Link>
+                  <Trash3
+                    size={20}
+                    color="black"
+                    className="mx-3"
+                    onClick={(event) => handleShowModal(event, obj._id)}
+                  />
+                </Link>
+                <Modal show={showModal} onHide={handleHideModal}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Confirmação de Remoção</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <div className="alert alert-danger">
+                      Tem a certeza que pretende remover este acórdão?
+                    </div>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="default" onClick={handleHideModal}>
+                      Cancelar
+                    </Button>
+                    <Button
+                      variant="danger"
+                      onClick={(event) => handleDelete(event, obj._id)}
+                    >
+                      Remover
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+              </>
+            </Container>
+          )}
+      </div>
+    );
+  }
+
   return (
     <>
       <ToastContainer />
@@ -226,68 +282,7 @@ function Descricao() {
                             </Form>
                           </div>
                         ) : (
-                          <div>
-                            <Container>
-                              <b>{obj["Nome"]}</b>
-                            </Container>
-                            <Container className="d-flex justify-content-end px-3">
-                              <Link>
-                                {" "}
-                                <Pencil
-                                  size={20}
-                                  color="black"
-                                  className="mx-3"
-                                  onClick={(event) =>
-                                    handleEdit(event, obj["_id"])
-                                  }
-                                />{" "}
-                              </Link>
-                              <>
-                                <Link>
-                                  <Trash3
-                                    size={20}
-                                    color="black"
-                                    className="mx-3"
-                                    onClick={(event) =>
-                                      handleShowModal(event, obj._id)
-                                    }
-                                  />
-                                </Link>
-                                <Modal
-                                  show={showModal}
-                                  onHide={handleHideModal}
-                                >
-                                  <Modal.Header closeButton>
-                                    <Modal.Title>
-                                      Confirmação de Remoção
-                                    </Modal.Title>
-                                  </Modal.Header>
-                                  <Modal.Body>
-                                    <div className="alert alert-danger">
-                                      Tem a certeza que pretende remover este
-                                      acórdão?
-                                    </div>
-                                  </Modal.Body>
-                                  <Modal.Footer>
-                                    <Button
-                                      variant="default"
-                                      onClick={handleHideModal}
-                                    >
-                                      Cancelar
-                                    </Button>
-                                    <Button
-                                      variant="danger"
-                                      onClick={(event) =>
-                                        handleDelete(event, obj._id)
-                                      }
-                                    >
-                                      Remover
-                                    </Button>
-                                  </Modal.Footer>
-                                </Modal>
-                              </>
-                            </Container>
-                          </div>
+                          Lista(obj)
                         )}
                       </ListGroupItem>
                       <ListGroupItem>{obj["Desc"]}</ListGroupItem>
@@ -296,6 +291,8 @@ function Descricao() {
                 ) : (
                   <ListGroupItem>{record}</ListGroupItem>
                 )}
+                {decodedToken.level >=100 && (
+                  <div>
                 {Edit === "add" ? (
                   <div ref={formRef}>
                     <Form onSubmit={handleAddRegisto}>
@@ -339,6 +336,8 @@ function Descricao() {
                   <Button variant="outline-dark" onClick={handleAddButton}>
                     Adicionar um novo registo
                   </Button>
+                )}
+                </div>
                 )}
               </ListGroup>
             </Container>

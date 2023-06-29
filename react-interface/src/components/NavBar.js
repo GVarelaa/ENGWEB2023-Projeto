@@ -26,7 +26,7 @@ function NavBar() {
                     <Navbar.Collapse>
                         <Nav >
                             <Nav.Link href="/">Início</Nav.Link>
-                            <Nav.Link href="/about">Acerca</Nav.Link>
+                            <Nav.Link href="/descricoes">Acerca</Nav.Link>
                             {decodedToken.level === 100 && <Nav.Link href="/dashboard">Dashboard</Nav.Link>}
                             {(decodedToken.level >= 20) && <Nav.Link href="/insert">Inserir Acórdão</Nav.Link>}
                         </Nav>
