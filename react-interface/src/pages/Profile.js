@@ -1,5 +1,5 @@
-import React, { useState, useEffect, createRef, useRef } from "react"
-import { Navigate, Link } from "react-router-dom"
+import React, { useState, useEffect, createRef } from "react"
+import { Navigate } from "react-router-dom"
 import Button from "@mui/material/Button"
 import { Container, Row, Col, Form, Card } from "react-bootstrap"
 import { Check, Pencil, Trash3, Upload } from "react-bootstrap-icons"
@@ -42,11 +42,9 @@ function Profile() {
                     setApelido(response.data.surname)
                     setEmail(response.data.email)
                     setFiliacao(response.data.filiation)
-                    if  (response.data.level<=10)
-                        setNivel("Consumidor")
-                    else
-                        setNivel("Administrador")
-                    console.log(nivel)
+                    if (response.data.level === 10) setNivel("Consumidor")
+                    else if (response.data.level === 20) setNivel("Produtor")
+                    else setNivel("Administrador")
                     setDataRegisto(response.data.dateCreated)
                     setUltimoAcesso(response.data.lastAccess)
                     setfileURL(env.authAccessPoint + `/i_${response.data.username}?token=${localStorage.token}`)
@@ -174,7 +172,7 @@ function Profile() {
                         <Col md={3}>
                             <Card className="mb-4 mb-xl-0">
                                 <Card.Body className="text-center">
-                                    <img className="img-account-profile rounded-circle mb-2" src={fileURL} onError={({ currentTarget }) => {
+                                    <img className="img-account-profile rounded-circle mb-2" alt="" src={fileURL} onError={({ currentTarget }) => {
                                         currentTarget.onerror = null // prevents looping
                                         currentTarget.src = env.authAccessPoint + `/default-image.jpg?token=${localStorage.token}`
                                     }}

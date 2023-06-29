@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Navigate,useSearchParams } from 'react-router-dom';
-import { Container, Card } from 'react-bootstrap';
-import { Pagination } from '@mui/material';
+import { Navigate } from 'react-router-dom'
+import { Container, Card } from 'react-bootstrap'
+import { Pagination } from '@mui/material'
 import { ToastContainer, toast } from 'react-toastify'
-import NavBar from '../components/NavBar';
+import NavBar from '../components/NavBar'
 import Accordions from '../components/Accordions'
-import axios from 'axios';
+import axios from 'axios'
 import env from '../config/env'
 import jwt_decode from 'jwt-decode'
 
@@ -13,9 +13,8 @@ import jwt_decode from 'jwt-decode'
 function Favorites() {
     const [data, setData] = useState([])
     const [favorites, setFavorites] = useState([])
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(1)
     const [pagesNumber, setPagesNumber] = useState(0)
-    const [searchParams] = useSearchParams()
     const [limit,] = useState(25)
     var decodedToken
 
@@ -24,7 +23,7 @@ function Favorites() {
             var favorites = []
 
             try {
-                const response = await axios.get(env.authAccessPoint + `/${decodedToken.username}` + `/favorites?token=${localStorage.token}`);
+                const response = await axios.get(`${env.authAccessPoint}/${decodedToken.username}/favorites?token=${localStorage.token}`)
                 favorites = response.data.favorites
             } catch (error) {
                 toast.error('Não foi possível obter a lista de favoritos!', {
@@ -33,15 +32,14 @@ function Favorites() {
             }
 
             if (favorites.length > 0) {
-                //constrói a querystring
                 var queryString = "?"
-                var skip = (page - 1) * limit;
+                var skip = (page - 1) * limit
                 for (var i = 0; i < favorites.length; i++) {
                     queryString += "_id=" + favorites[i] + "&"
                 }
 
                 try {
-                    const response = await axios.get(env.apiAcordaosAccessPoint + queryString + `skip=${skip}&limit=${limit}&token=${localStorage.token}`);
+                    const response = await axios.get(env.apiAcordaosAccessPoint + queryString + `skip=${skip}&limit=${limit}&token=${localStorage.token}`)
                     setPagesNumber(Math.ceil(favorites.length / 25))
                     setData(response.data)
                     setFavorites(favorites)
@@ -66,7 +64,7 @@ function Favorites() {
 
     const handleChangePage = async (event, page) => {
         setPage(page)
-        window.scrollTo(0, 0);
+        window.scrollTo(0, 0)
     }
 
 
@@ -88,7 +86,7 @@ function Favorites() {
                 </Card>
             </Container>
         </>
-    );
+    )
 }
 
-export default Favorites;
+export default Favorites

@@ -1,4 +1,4 @@
-import Button from '@mui/material/Button';
+import Button from '@mui/material/Button'
 import { useState } from 'react'
 import { Link } from "react-router-dom"
 import { Container, Form, Card, FloatingLabel, Row, Col } from "react-bootstrap"
@@ -7,8 +7,9 @@ import { Search as SearchIcon, PlusCircle, Trash3 } from 'react-bootstrap-icons'
 function Search({ setSearch, handleSearch }) {
     const [filters, setFilters] = useState([])
     const [possibleFilters, setPossibleFilters] = useState(["Processo", "Data", "Tribunal", "Relator", "Descritores", "Votação"])
-    const [queryString, setQueryString] = useState({})
     const [isSelected, setIsSelected] = useState(false)
+
+    const queryString = {}
 
     const handleAddFilter = () => {
         setIsSelected(true)
@@ -33,10 +34,10 @@ function Search({ setSearch, handleSearch }) {
             if (queryString[key] !== "") {
                 if (key === "Data") {
                     if (first) {
-                        string += "Data do Acordão" + '=' + queryString[key]
+                        string += "Data do Acordão=" + queryString[key]
                         first = false
                     }
-                    else string += '&' + "Data do Acordão" + '=' + queryString[key]
+                    else string += "&Data do Acordão=" + queryString[key]
                 }
                 else {
                     if (first) {
@@ -60,10 +61,10 @@ function Search({ setSearch, handleSearch }) {
             if (queryString[key] !== "") {
                 if (key === "Data") {
                     if (first) {
-                        string += "Data do Acordão" + '=' + queryString[key]
+                        string += "Data do Acordão=" + queryString[key]
                         first = false
                     }
-                    else string += '&' + "Data do Acordão" + '=' + queryString[key]
+                    else string += "&Data do Acordão=" + queryString[key]
                 }
                 else {
                     if (first) {
@@ -121,7 +122,9 @@ function Search({ setSearch, handleSearch }) {
                         </Card.Body>
                     </Card.Body>
                 </Card>
-                <Button className="d-flex justify-content-center mt-5" type="submit" variant="outline-dark" startIcon={<SearchIcon />} style={{ width: '50%' }}>Procurar</Button>
+                <div className="d-flex justify-content-center mt-5">
+                    <Button type="submit" variant="outline-dark" startIcon={<SearchIcon />} style={{ width: '50%' }}>Procurar</Button>
+                </div>
             </Form>
         </Container>
     )
