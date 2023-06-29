@@ -54,7 +54,7 @@ function Register() {
             username: username,
             password: password,
             filiation: filiacao,
-            level: nivel,
+            level: nivel
         })
             .then((response) => {
                 const token = response.data.token
