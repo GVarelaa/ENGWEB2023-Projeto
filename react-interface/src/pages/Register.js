@@ -35,7 +35,9 @@ function Register() {
         } else if (type === 2) {
             axios.get(env.authAccessPoint + "/check-username/" + username + `?token=${localStorage.token}`)
                 .then((response) => {
-                    if (response.data != null) setUsernameExists(true)
+                    if (response.data != null) {
+                        console.log(response.data)
+                        setUsernameExists(true)}
                     else setUsernameExists(false)
                 })
                 .catch((error) => { })
@@ -94,41 +96,41 @@ function Register() {
 
                                     <Form onSubmit={handleSubmit}>
                                         <FloatingLabel className="mb-3 form-outline" label="Nome">
-                                            <Form.Control type="text" placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} />
+                                            <Form.Control required type="text" placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} />
                                         </FloatingLabel>
 
                                         <FloatingLabel className="mb-3 form-outline" label="Apelido">
-                                            <Form.Control type="text" placeholder="Apelido" value={apelido} onChange={(e) => setApelido(e.target.value)} />
+                                            <Form.Control required type="text" placeholder="Apelido" value={apelido} onChange={(e) => setApelido(e.target.value)} />
                                         </FloatingLabel>
 
                                         {emailExists ? (
                                             <FloatingLabel className="mb-3 form-outline" label="Email">
-                                                <Form.Control isInvalid type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                                                <Form.Control required isInvalid type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                                                 <Form.Control.Feedback type="invalid"> Já existe uma conta com esse e-mail! </Form.Control.Feedback>
                                             </FloatingLabel>
                                         ) : (
                                             <FloatingLabel className="mb-3 form-outline" label="Email">
-                                                <Form.Control type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                                                <Form.Control required type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                                             </FloatingLabel>
                                         )}
 
                                         {usernameExists ? (
                                             <FloatingLabel className="mb-3 form-outline" label="Username">
-                                                <Form.Control isInvalid type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                                                <Form.Control isInvalid required type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
                                                 <Form.Control.Feedback type="invalid"> O username já está a ser utilizado! </Form.Control.Feedback>
                                             </FloatingLabel>
                                         ) : (
                                             <FloatingLabel className="mb-3 form-outline" label="Username">
-                                                <Form.Control type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                                                <Form.Control required type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
                                             </FloatingLabel>
                                         )}
 
                                         <FloatingLabel className="mb-3 form-outline" label="Password">
-                                            <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                                            <Form.Control required type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                                         </FloatingLabel>
 
                                         <FloatingLabel className="mb-3 form-outline" label="Filiação">
-                                            <Form.Control type="text" placeholder="Filiação" value={filiacao} onChange={(e) => setFiliacao(e.target.value)} />
+                                            <Form.Control required type="text" placeholder="Filiação" value={filiacao} onChange={(e) => setFiliacao(e.target.value)} />
                                         </FloatingLabel>
 
                                         <div className="d-flex justify-content-center">
