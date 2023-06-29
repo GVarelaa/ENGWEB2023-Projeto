@@ -41,9 +41,7 @@ function Home() {
             try {
                 const response = await axios.get(env.apiAcordaosAccessPoint + `/number?token=${localStorage.token}`)
                 setPagesNumber(Math.ceil(response.data / limit))
-            } catch (error) {
-                toast.error("Não foi possível obter a lista de acórdãos!", { position: toast.POSITION.TOP_CENTER })
-            }
+            } catch (error){}
         }
 
         const fetchFavorites = async () => {
