@@ -125,14 +125,14 @@ function Profile() {
         data.set("image", fileInput.current.files[0])
         if (!fileURL.match(env.authAccessPoint)) {
             await axios.post(env.authAccessPoint + `/image/${username}?token=${localStorage.token}`, data)
-                    .then((response) => response.json())
-                    .catch((error) => {})
+                .then((response) => response.json())
+                .catch((error) => {})
         }
     }
 
 
     const handleRemoveImage = (event) => {
-        if (fileInput.current){
+        if (fileInput.current.value || fileURL){
             fileInput.current.value = null
             URL.revokeObjectURL(fileURL)
             setfileURL("")
@@ -174,11 +174,11 @@ function Profile() {
                                         currentTarget.onerror = null // prevents looping
                                         currentTarget.src = env.authAccessPoint + `/default-image.jpg?token=${localStorage.token}`
                                     }}
-                                    style={{"width": "250px", "height": "250px", "object-fit": "cover" }}
+                                    style={{"width": "250px", "height": "250px", "objectFit": "cover" }}
                                     />
                                     <Button className="mb-4" variant="outline-dark" startIcon={<Trash3 />} onClick={(e) => handleRemoveImage(e)}>Remover Foto</Button>
                                     <div className="small font-italic text-muted mb-2">Insira um ficheiro JPG or PNG até 5 MB</div>
-                                    <input id="file-input" type="file" style={{ display: 'none' }} onChange={handlefileInputChange}/>
+                                    <input id="file-input" type="file" style={{ display: 'none' }} onChange={handlefileInputChange} ref={fileInput}/>
                                     <Button variant="outline-dark" startIcon={<Upload/>} onClick={handleButtonClick}>Carregar Foto</Button>
                                 </Card.Body>
                             </Card>

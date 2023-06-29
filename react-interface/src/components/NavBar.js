@@ -21,7 +21,7 @@ function NavBar() {
     return (
         <>
             <Navbar bg="dark" variant="dark" expand="lg" style={{ '--bs-navbar-padding-y': '1rem' }}>
-                <Container style={{ 'max-width': '95%' }}>
+                <Container style={{ 'maxWidth': '95%' }}>
                     <Navbar.Brand href="/">Acórdãos</Navbar.Brand>
                     <Navbar.Collapse>
                         <Nav >
