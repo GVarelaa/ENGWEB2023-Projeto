@@ -97,11 +97,11 @@ function Register() {
 
                                     <Form onSubmit={handleSubmit}>
                                         <FloatingLabel className="mb-3 form-outline" label="Nome">
-                                            <Form.Control required type="text" placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} />
+                                            <Form.Control type="text" placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} />
                                         </FloatingLabel>
 
                                         <FloatingLabel className="mb-3 form-outline" label="Apelido">
-                                            <Form.Control required type="text" placeholder="Apelido" value={apelido} onChange={(e) => setApelido(e.target.value)} />
+                                            <Form.Control type="text" placeholder="Apelido" value={apelido} onChange={(e) => setApelido(e.target.value)} />
                                         </FloatingLabel>
 
                                         {emailExists ? (
@@ -131,7 +131,7 @@ function Register() {
                                         </FloatingLabel>
 
                                         <FloatingLabel className="mb-3 form-outline" label="Filiação">
-                                            <Form.Control required type="text" placeholder="Filiação" value={filiacao} onChange={(e) => setFiliacao(e.target.value)} />
+                                            <Form.Control type="text" placeholder="Filiação" value={filiacao} onChange={(e) => setFiliacao(e.target.value)} />
                                         </FloatingLabel>
 
                                         <FloatingLabel className="mb-3 form-outline" label="Nível">
