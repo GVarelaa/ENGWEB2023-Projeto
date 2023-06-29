@@ -30,7 +30,6 @@ function Home() {
                     lastID = searchParams.get('start')
                 }
                     
-
                 const response = await axios.get(`${env.apiAcordaosAccessPoint}?lastID=${lastID}&limit=${limit}&token=${localStorage.token}`)
                 setData(response.data)
             } catch (error) {
