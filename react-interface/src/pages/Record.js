@@ -3,7 +3,7 @@ import { useState, useEffect, React } from "react"
 import Button from "@mui/material/Button"
 import { Container, ListGroup, ListGroupItem, Card, Modal } from "react-bootstrap"
 import { Button as BootstrapButton } from "react-bootstrap"
-import { Pencil, Trash3, Heart, HeartFill } from "react-bootstrap-icons"
+import { Pencil, Trash3, Heart, HeartFill, ArrowLeftShort } from "react-bootstrap-icons"
 import { ToastContainer, toast } from "react-toastify"
 import NavBar from "../components/NavBar"
 import NoPage from "../pages/NoPage"
@@ -115,13 +115,8 @@ function Record() {
             <Container>
                 <hr className="mt-4 mb-4" />
                 <div className="d-flex justify-content-start mb-4">
-                    <Link
-                        to={searchParams.get('returnPage') ? `/?page=${searchParams.get('returnPage')}` : "/"}
-                        style={{ "text-decoration": "none", color: "inherit" }}
-                    >
-                        <Button variant="outline-dark" startIcon={<Pencil />}>
-                            Voltar atrás
-                        </Button>
+                    <Link to={searchParams.get('returnPage') ? `/?page=${searchParams.get('returnPage')}` : "/"} style={{ "text-decoration": "none", color: "inherit" }}>
+                        <Button variant="outline-dark" startIcon={<ArrowLeftShort />}>Voltar atrás</Button>
                     </Link>
                 </div>
                 <Card className='d-flex justify-content-center' style={{ 'box-shadow': '0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)' }} >
@@ -135,7 +130,7 @@ function Record() {
                             <Link to={"/edit/" + params.id} style={{ 'text-decoration': 'none', 'color': 'inherit' }}>
                                 <Button variant="outline-dark" startIcon={<Pencil />}>Editar Acórdão</Button>
                             </Link>
-                            {decodedToken.level === 'admin' && (
+                            {decodedToken.level === 100 && (
                                 <>
                                     <Button variant="outline-dark" startIcon={<Trash3 />} onClick={(event) => handleShowModal(event, params.id)}>Remover Acórdão</Button>
                                     <Modal show={showModal} onHide={handleHideModal}>
