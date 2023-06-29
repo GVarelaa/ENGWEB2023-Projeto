@@ -26,8 +26,11 @@ function Home() {
             try {
                 var lastID = -1
 
-                if (searchParams.get('start'))
+                if (searchParams.get('start')){
+                    setPage(Math.ceil(searchParams.get('start') / limit) + 1)
                     lastID = searchParams.get('start')
+                }
+                    
 
                 const response = await axios.get(env.apiAcordaosAccessPoint + `?lastID=${lastID}&limit=${limit}&token=${localStorage.token}`)
                 setData(response.data)
