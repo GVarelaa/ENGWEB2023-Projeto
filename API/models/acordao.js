@@ -63,5 +63,10 @@ var acordaoSchema = new mongoose.Schema({
 });
 
 acordaoSchema.index({ "$**": "text" });
+acordaoSchema.index({ "Processo": "1" });
+acordaoSchema.index({ "Data do Acordão": "1" });
+acordaoSchema.index({ "Descritores": "1" });
+acordaoSchema.index({ "Relator": "1" });
+acordaoSchema.index({ "tribunal": "1" });
 
 module.exports = mongoose.model("acordao", acordaoSchema);
