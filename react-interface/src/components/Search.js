@@ -66,6 +66,13 @@ function Search({ setSearch, handleSearch }) {
                     }
                     else string += "&Data do Acordão=" + queryString[key]
                 }
+                if (key == "Tribunal"){
+                    if (first) {
+                        string += "tribunal=" + queryString[key]
+                        first = false
+                    }
+                    else string += "&tribunal=" + queryString[key]
+                }
                 else {
                     if (first) {
                         string += key + '=' + queryString[key]
