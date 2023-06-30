@@ -7,7 +7,7 @@ var verify = require("../verify/verify");
 router.get("/", verify.userAccess, function (req, res, next) {
   var skip = 0, limit = 75; // Por default só manda 75 acordaos => impedir sobrecarga
 
-  if(req.query.skip){
+  if (req.query.skip) {
     skip = req.query.skip
     delete req.query.skip
   }
@@ -18,7 +18,7 @@ router.get("/", verify.userAccess, function (req, res, next) {
   }
 
   if (req.query.lastID) {
-    req.query["_id"] = { $gt: parseInt(req.query.lastID)};
+    req.query["_id"] = { $gt: parseInt(req.query.lastID) };
     delete req.query.lastID;
   }
 
@@ -28,7 +28,7 @@ router.get("/", verify.userAccess, function (req, res, next) {
   }
 
   // Meter isto case sensative
-  
+
 
   Acordao.list(req.query, skip, limit)
     .then((data) => {
@@ -50,64 +50,37 @@ router.get("/number", verify.userAccess, function (req, res, next) {
 
   Acordao.getAcordaosNumber(req.query)
     .then((data) => res.status(200).json(data))
-    .catch((error) =>
-      res.status(523).json({
-        error: error,
-        message: "Erro na obtenção do número de acordãos",
-      })
-    );
+    .catch((error) => res.status(523).json({ error: "Erro na obtenção do número de acordãos" }))
 });
 
 router.get("/relatores", verify.userAccess, function (req, res, next) {
   Acordao.getRelatores()
     .then((data) => res.status(200).json(data))
-    .catch((error) =>
-      res
-        .status(523)
-        .json({ error: error, message: "Erro na obtenção de relatores" })
-    );
+    .catch((error) => res.status(523).json({ error: "Erro na obtenção de relatores" }))
 });
 
 router.get("/:id", verify.userAccess, function (req, res, next) {
   Acordao.getAcordao(req.params.id)
-    .then((data) => {
-      res.status(200).json(data);
-    })
-    .catch((error) =>
-      res
-        .status(522)
-        .json({ error: error, message: "Erro na obtenção do acordão" })
-    );
+    .then((data) => res.status(200).json(data))
+    .catch((error) => res.status(522).json({ error: "Erro na obtenção do acordão" }));
 });
 
 router.post("/", verify.adminAccess, function (req, res, next) {
   Acordao.addAcordao(req.body)
     .then((data) => res.status(200).json(data))
-    .catch((error) =>
-      res
-        .status(523)
-        .json({ error: error, message: "Erro na criação do acordão" })
-    );
+    .catch((error) => res.status(523).json({ error: "Erro na criação do acordão" }))
 });
 
 router.delete("/:id", verify.adminAccess, function (req, res, next) {
   Acordao.deleteAcordao(req.params.id)
     .then((data) => res.status(200).json(data))
-    .catch((error) =>
-      res
-        .status(524)
-        .json({ error: error, message: "Erro na deleção do acordão" })
-    );
+    .catch((error) => res.status(524).json({ error: "Erro na deleção do acordão" }))
 });
 
 router.put("/:id", verify.adminAccess, function (req, res) {
   Acordao.updateAcordao(req.body)
     .then((data) => res.status(201).json(data))
-    .catch((error) =>
-      res
-        .status(525)
-        .json({ error: error, message: "Erro a atualizar acordão." })
-    );
+    .catch((error) => res.status(525).json({ error: "Erro a atualizar acordão." }))
 });
 
 module.exports = router;

@@ -60,6 +60,7 @@ var acordaoSchema = new mongoose.Schema({
   "Volume dos Acordãos do T.C.": String,
   Autor: String,
   Réu: [String],
+  "Data do Acordão 2": String
 });
 
 acordaoSchema.index({ "Processo": 1 });

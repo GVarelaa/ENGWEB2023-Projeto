@@ -1,7 +1,6 @@
 import NavBar from "../components/NavBar"
 import { useState, useEffect } from "react"
 import { Container, Form, FloatingLabel, Col, Row, Card, Button } from "react-bootstrap"
-import { PlusCircle } from 'react-bootstrap-icons'
 import { MultiSelect } from "react-multi-select-component";
 import { ToastContainer, toast } from "react-toastify"
 import axios from "axios"
@@ -49,6 +48,8 @@ function Insert() {
                                 position: toast.POSITION.TOP_CENTER
                             })
                         })
+
+
 
                     axios.get(env.apiTribunaisAccessPoint + "/" + response.data[0]._id + "/areatematica1" + `?token=${localStorage.token}`)
                         .then((response) => {
@@ -233,9 +234,10 @@ function Insert() {
                                     <textarea class="form-control" style={{ height: '200px' }} placeholder="Sumário" value={sumario} onChange={(e) => setSumario(e.target.value)} />
                                 </Form.Group>
 
-                                <FloatingLabel className="mb-3 form-outline" label="Decisão Texto Integral">
+                                <Form.Group className="my-3">
+                                    <Form.Label style={{ marginLeft: '10px' }}>Decisão Texto Integral:</Form.Label>
                                     <textarea class="form-control" style={{ height: '200px' }} placeholder="Decisão Texto Integral" value={textoIntegral} onChange={(e) => setTextoIntegral(e.target.value)} />
-                                </FloatingLabel>
+                                </Form.Group>
 
                             </Container>
 
