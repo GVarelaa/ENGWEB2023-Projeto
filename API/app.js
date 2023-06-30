@@ -16,6 +16,7 @@ db.on("open", function () {
 
 var acordaosRouter = require("./routes/acordaosRouter");
 var tribunaisRouter = require("./routes/tribunaisRouter");
+var fieldsRouter = require("./routes/fieldsRouter");
 var AcordaosDetailRouter = require("./routes/acordaodetails");
 
 var app = express();

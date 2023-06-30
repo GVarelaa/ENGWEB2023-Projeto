@@ -1,15 +1,20 @@
 import NavBar from "../components/NavBar"
 import { useState, useEffect } from "react"
-import { Container, Form, FloatingLabel, Col, Row, Card, Button } from "react-bootstrap"
+import { Link } from "react-router-dom"
+import { Container, Form, FloatingLabel, Col, Row, Card } from "react-bootstrap"
+import Button from '@mui/material/Button'
 import { MultiSelect } from "react-multi-select-component";
 import { ToastContainer, toast } from "react-toastify"
+import { PlusCircle, Trash3 } from 'react-bootstrap-icons'
 import axios from "axios"
 
 var env = require("../config/env")
 
 function Insert() {
-    const [selected, setSelected] = useState([]);
+    const [selectedDescritores, setSelectedDescritores] = useState([]);
+    const [selectedInfo, setSelectedInfo] = useState(false)
 
+    const [listaCampos, setListaCampos] = useState([])
     const [listaTribunais, setListaTribunais] = useState([])
     const [listaDescritores, setListaDescritores] = useState([])
     const [listaAreaTematica1, setListaAreaTematica1] = useState([])
@@ -24,6 +29,7 @@ function Insert() {
     const [meioProcessual, setMeioProcessual] = useState("")
     const [textoIntegral, setTextoIntegral] = useState("")
     const [sumario, setSumario] = useState("")
+    const [outrasInformacoes, setOutrasInformacoes] = useState({})
 
 
     useEffect(() => {
@@ -83,6 +89,16 @@ function Insert() {
                 })
                 .catch((error) => {
                     toast.error("Não foi possível obter a lista de tribunais!", {
+                        position: toast.POSITION.TOP_CENTER
+                    })
+                })
+
+            axios.get(env.apiFieldsAccessPoint + `?token=${localStorage.token}`)
+                .then((response) => {
+                    setListaCampos(response.data.map(obj => obj.field))
+                })
+                .catch((error) => {
+                    toast.error("Não foi possível obter a lista de campos adicionais!", {
                         position: toast.POSITION.TOP_CENTER
                     })
                 })
@@ -155,10 +171,29 @@ function Insert() {
     }
 
 
-    const handleSelectChange = (field) => {
+        const handleAddField = () => {
+            setSelectedInfo(true)
+        }
 
-    }
 
+        const handleFieldChange = (item) => {
+            setListaCampos(current => {
+                return current.filter(i => i !== item)
+            })
+
+            outrasInformacoes[item] = undefined
+            setSelectedInfo(false)
+        }
+
+
+        const handleFieldValueChange = (value, field) => {
+            outrasInformacoes.field = value
+        }
+
+        const handleRemoveField= (e, item) => {
+            delete outrasInformacoes[item];
+            setListaCampos(current => [...current, item])
+        }
 
     return (
         <>
@@ -171,7 +206,6 @@ function Insert() {
                         <Form onSubmit={handleSubmit}>
                             <Container className="my-4 mb-5">
                                 <h4>Informação Principal</h4>
-
                                 <Row className="gx-3 mb-3">
                                     <Col md={6}>
                                         <FloatingLabel className="mb-3 form-outline" label="Processo">
@@ -203,73 +237,57 @@ function Insert() {
                                         </FloatingLabel>
                                     </Col>
                                 </Row>
-
-
                                 <Form.Group className="mb-3">
                                     <Form.Label style={{ marginLeft: '10px' }}>Descritores:</Form.Label>
-                                    <MultiSelect options={listaDescritores}
-                                        value={selected}
-                                        onChange={setSelected}
-                                        labelledBy="Selecionar" />
+                                    <MultiSelect options={listaDescritores} value={selectedDescritores} onChange={setSelectedDescritores} labelledBy="Selecionar" />
                                 </Form.Group>
-
                                 <Form.Group className="mb-3 mt-3">
                                     <Form.Label style={{ marginLeft: '10px' }}>Votação:</Form.Label>
                                     <Form.Control type="text" placeholder="Votação" value={votacao} onChange={(e) => setVotacao(e.target.value)} />
                                 </Form.Group>
-
                                 <Form.Group className="mb-3">
                                     <Form.Label style={{ marginLeft: '10px' }}>Decisão</Form.Label>
                                     <Form.Control type="text" placeholder="Decisão" value={decisao} onChange={(e) => setDecisao(e.target.value)} />
                                 </Form.Group>
-
                                 <Form.Group>
                                     <Form.Label style={{ marginLeft: '10px' }}>Meio Processual:</Form.Label>
                                     <Form.Control type="text" placeholder="Meio Processual" value={meioProcessual} onChange={(e) => setMeioProcessual(e.target.value)} />
                                 </Form.Group>
-
-
                                 <Form.Group className="my-3">
                                     <Form.Label style={{ marginLeft: '10px' }}>Sumário:</Form.Label>
                                     <textarea class="form-control" style={{ height: '200px' }} placeholder="Sumário" value={sumario} onChange={(e) => setSumario(e.target.value)} />
                                 </Form.Group>
-
                                 <Form.Group className="my-3">
                                     <Form.Label style={{ marginLeft: '10px' }}>Decisão Texto Integral:</Form.Label>
                                     <textarea class="form-control" style={{ height: '200px' }} placeholder="Decisão Texto Integral" value={textoIntegral} onChange={(e) => setTextoIntegral(e.target.value)} />
                                 </Form.Group>
-
                             </Container>
-
                             <Container className="my-4 mb-5">
                                 <h4>Outras Informações</h4>
-
-                                <Form.Group>
-                                    <Form.Label style={{ marginLeft: '10px' }}>Adicionar campo</Form.Label>
-                                    <Form.Select defaultValue="" onChange={(e) => handleSelectChange(e.target.value)}>
-                                        <option disabled hidden value="">Campo</option>
+                                <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={handleAddField}>Adicionar Informação</Button>
+                                {selectedInfo && (
+                                    <Form.Select className="my-3" defaultValue="" onChange={(e) => handleFieldChange(e.target.value)}>
+                                        <option disabled hidden value="">Campo:</option>
+                                        {listaCampos.map(item => {
+                                            return <option>{item}</option>
+                                        })}
                                     </Form.Select>
-                                </Form.Group>
-
-
-                                {/*filters.map(item => {
+                                )}
+                                {Object.keys(outrasInformacoes).map(item => {
                                     return (
                                         <Row>
                                             <Col md={10}>
                                                 <FloatingLabel className="form-outline" label={item} style={{ transform: 'scale(0.90)' }}>
-                                                    <Form.Control className="my-3" type="search" placeholder={item} onChange={(e) => handleFilterChange(e.target.value, item)} />
+                                                    <Form.Control className="my-3" type="text" placeholder={item} onChange={(e) => handleFieldValueChange(e.target.value, item)} />
                                                 </FloatingLabel>
                                             </Col>
                                             <Col md={1} className="d-flex justify-content-start">
-                                                <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-1em' }} size={20} color="black" onClick={e => handleRemoveFilter(e, item)} /></Link>
+                                                <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => handleRemoveField(e, item)} /></Link>
                                             </Col>
                                         </Row>
                                     )
-                                })*/}
-
-
+                                })}
                             </Container>
-
                             <div className="mb-5 d-flex justify-content-center padding-bottom">
                                 <Button type="submit" variant="outline-dark">Registar</Button>
                             </div>
