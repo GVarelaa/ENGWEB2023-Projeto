@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
 var acordaoSchema = new mongoose.Schema({
-  
   _id:{type:mongoose.Types.ObjectId},
   Nome: String,
   Desc: String,

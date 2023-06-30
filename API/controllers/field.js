@@ -1,7 +1,7 @@
 var Field = require('../models/field')
 
 module.exports.list = () => {
-    return Field.find().select('field -_id').sort()
+    return Field.find()
             .then(response => { return response })
             .catch(error => { return error })
 }

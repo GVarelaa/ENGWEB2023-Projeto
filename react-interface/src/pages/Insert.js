@@ -14,22 +14,25 @@ function Insert() {
     const [selectedDescritores, setSelectedDescritores] = useState([]);
     const [selectedInfo, setSelectedInfo] = useState(false)
 
-    const [listaCampos, setListaCampos] = useState([])
-    const [listaTribunais, setListaTribunais] = useState([])
+    const [campos, setCampos] = useState([])
+    const [camposSelecionados, setCamposSelecionados] = useState([])
+    const [tribunais, setTribunais] = useState([])
     const [listaDescritores, setListaDescritores] = useState([])
-    const [listaAreaTematica1, setListaAreaTematica1] = useState([])
-    const [listaAreaTematica2, setListaAreaTematica2] = useState([])
+    const [areaTematica1, setAreaTematica1] = useState([])
+    const [areaTematica2, setAreaTematica2] = useState([])
+    const [form, setForm] = useState({
+        "Processo": "",
+        "Data do Acordão": "",
+        "tribunal": "",
+        "Relator": "",
+        "Descritores": [],
+        "Votação": "",
+        "Decisão": "",
+        "Meio Processual": "",
+        "Sumário": "",
+        "Decisão Texto Integral": ""
+    })
 
-    const [processo, setProcesso] = useState("")
-    const [data, setData] = useState("")
-    const [tribunal, setTribunal] = useState("")
-    const [relator, setRelator] = useState("")
-    const [votacao, setVotacao] = useState("")
-    const [decisao, setDecisao] = useState("")
-    const [meioProcessual, setMeioProcessual] = useState("")
-    const [textoIntegral, setTextoIntegral] = useState("")
-    const [sumario, setSumario] = useState("")
-    const [outrasInformacoes, setOutrasInformacoes] = useState({})
 
 
     useEffect(() => {
@@ -37,7 +40,7 @@ function Insert() {
             axios.get(env.apiTribunaisAccessPoint + `?token=${localStorage.token}`)
                 .then((response) => {
 
-                    setListaTribunais(response.data)
+                    setTribunais(response.data)
 
                     axios.get(env.apiTribunaisAccessPoint + "/" + response.data[0]._id + "/descritores" + `?token=${localStorage.token}`)
                         .then((response) => {
@@ -59,7 +62,7 @@ function Insert() {
 
                     axios.get(env.apiTribunaisAccessPoint + "/" + response.data[0]._id + "/areatematica1" + `?token=${localStorage.token}`)
                         .then((response) => {
-                            setListaAreaTematica1(
+                            setAreaTematica1(
                                 response.data.areaTematica1.map((area) => ({
                                     label: area,
                                     value: area,
@@ -74,7 +77,7 @@ function Insert() {
 
                     axios.get(env.apiTribunaisAccessPoint + "/" + response.data[0]._id + "/areatematica2" + `?token=${localStorage.token}`)
                         .then((response) => {
-                            setListaAreaTematica2(
+                            setAreaTematica2(
                                 response.data.areaTematica2.map((area) => ({
                                     label: area,
                                     value: area,
@@ -95,7 +98,15 @@ function Insert() {
 
             axios.get(env.apiFieldsAccessPoint + `?token=${localStorage.token}`)
                 .then((response) => {
-                    setListaCampos(response.data.map(obj => obj.field))
+                    response.data.sort((a, b) => {
+                        let f1 = a.field.toLowerCase(),
+                            f2 = b.field.toLowerCase()
+
+                        if (f1 < f2) return -1
+                        if (f1 > f2) return 1
+                        return 0
+                    })
+                    setCampos(response.data)
                 })
                 .catch((error) => {
                     toast.error("Não foi possível obter a lista de campos adicionais!", {
@@ -109,7 +120,8 @@ function Insert() {
 
 
     const handleTribunal = (e) => {
-        setTribunal(e.target.value)
+        console.log(e.target.value)
+        form["tribunal"] = e.target.value
 
         axios.get(env.apiTribunaisAccessPoint + "/" + e.target.value + "/descritores" + `?token=${localStorage.token}`)
             .then((response) => {
@@ -123,7 +135,7 @@ function Insert() {
 
         axios.get(env.apiTribunaisAccessPoint + "/" + e.target.value + "/areatematica1" + `?token=${localStorage.token}`)
             .then((response) => {
-                setListaAreaTematica1(response.data.areaTematica1.map((area) => ({ label: area, value: area })))
+                setAreaTematica1(response.data.areaTematica1.map((area) => ({ label: area, value: area })))
             })
             .catch((error) => {
                 toast.error("Não foi possível obter a lista de descritores!", {
@@ -133,7 +145,7 @@ function Insert() {
 
         axios.get(env.apiTribunaisAccessPoint + "/" + e.target.value + "/areatematica2" + `?token=${localStorage.token}`)
             .then((response) => {
-                setListaAreaTematica2(response.data.areaTematica2.map((area) => ({ label: area, value: area })))
+                setAreaTematica2(response.data.areaTematica2.map((area) => ({ label: area, value: area })))
             })
             .catch((error) => {
                 toast.error("Não foi possível obter a lista de descritores!", {
@@ -147,17 +159,7 @@ function Insert() {
         event.preventDefault()
 
         // SIMPLIFICAR ISTO
-        axios.post(env.apiAcordaosAccessPoint + `?token=${localStorage.token}`, {
-            Processo: processo,
-            "Data do Acordão": data,
-            Tribunal: tribunal,
-            Relator: relator,
-            //"Área Temática 1": area_tematica,
-            //"Área Temática 2": area_tematica2,
-            Descritores: listaDescritores,
-            Votação: votacao,
-            Sumário: sumario
-        })
+        axios.post(env.apiAcordaosAccessPoint + `?token=${localStorage.token}`, form)
             .then((response) => {
                 toast.success("O acórdão foi adicionado com sucesso!", {
                     position: toast.POSITION.TOP_CENTER
@@ -171,29 +173,39 @@ function Insert() {
     }
 
 
-        const handleAddField = () => {
-            setSelectedInfo(true)
-        }
+    const handleAddField = () => {
+        setSelectedInfo(true)
+    }
 
 
-        const handleFieldChange = (item) => {
-            setListaCampos(current => {
-                return current.filter(i => i !== item)
-            })
+    const handleFieldChange = (event) => {
+        var campo = campos[event.target.selectedIndex - 1]
+        setCamposSelecionados(current => [...current, campo])
+        setCampos(current => { return current.filter(i => i.field !== campo.field) })
+        form[campo] = undefined
 
-            outrasInformacoes[item] = undefined
-            setSelectedInfo(false)
-        }
+        setSelectedInfo(false)
+    }
 
 
-        const handleFieldValueChange = (value, field) => {
-            outrasInformacoes.field = value
-        }
+    const handleSingleInput = (value, field) => {
+        form[field] = value
+    }
 
-        const handleRemoveField= (e, item) => {
-            delete outrasInformacoes[item];
-            setListaCampos(current => [...current, item])
-        }
+    const handleRemoveField = (e, item) => {
+        delete form[item.field];
+        setCamposSelecionados(current => { return current.filter(i => i.field !== item.field) })
+        setCampos(current => [...current, item].sort((a, b) => {
+            let f1 = a.field.toLowerCase(),
+                f2 = b.field.toLowerCase()
+
+            if (f1 < f2) return -1
+            if (f1 > f2) return 1
+            return 0
+        }))
+    }
+
+    console.log(form)
 
     return (
         <>
@@ -209,12 +221,12 @@ function Insert() {
                                 <Row className="gx-3 mb-3">
                                     <Col md={6}>
                                         <FloatingLabel className="mb-3 form-outline" label="Processo">
-                                            <Form.Control type="text" placeholder="Processo" value={processo} onChange={(e) => setProcesso(e.target.value)} />
+                                            <Form.Control type="text" placeholder="Processo" onChange={(e) => form["Processo"] = e.target.value} />
                                         </FloatingLabel>
                                     </Col>
                                     <Col md={6}>
                                         <FloatingLabel className="mb-3 form-outline" label="Data do Acórdão">
-                                            <Form.Control type="date" placeholder="Data do Acórdão" value={data} onChange={(e) => setData(e.target.value)} />
+                                            <Form.Control type="date" placeholder="Data do Acórdão" onChange={(e) => form["Data do Acordão"] = e.target.value} />
                                         </FloatingLabel>
                                     </Col>
                                 </Row>
@@ -224,17 +236,18 @@ function Insert() {
                                             <Form.Label style={{ marginLeft: '10px' }}>Tribunal:</Form.Label>
                                             <Col>
                                                 <Form.Select onChange={(e) => handleTribunal(e)}>
-                                                    {listaTribunais.map(tribunal => (
-                                                        <option key={tribunal._id} value={tribunal._id}>{tribunal.nome}</option>
+                                                    {tribunais.map(tribunal => (
+                                                        <option key={tribunal._id}>{tribunal.nome}</option>
                                                     ))}
                                                 </Form.Select>
                                             </Col>
                                         </Form.Group>
                                     </Col>
                                     <Col md={6}>
-                                        <FloatingLabel className="mb-3 mt-3 form-outline" label="Relator">
-                                            <Form.Control type="text" placeholder="Relator" value={relator} onChange={(e) => setRelator(e.target.value)} />
-                                        </FloatingLabel>
+                                        <Form.Group>
+                                            <Form.Label style={{ marginLeft: '10px' }}>Relator:</Form.Label>
+                                            <Form.Control type="text" placeholder="Relator" onChange={(e) => form["Relator"] = e.target.value} />
+                                        </Form.Group>
                                     </Col>
                                 </Row>
                                 <Form.Group className="mb-3">
@@ -243,50 +256,58 @@ function Insert() {
                                 </Form.Group>
                                 <Form.Group className="mb-3 mt-3">
                                     <Form.Label style={{ marginLeft: '10px' }}>Votação:</Form.Label>
-                                    <Form.Control type="text" placeholder="Votação" value={votacao} onChange={(e) => setVotacao(e.target.value)} />
+                                    <Form.Control type="text" placeholder="Votação" onChange={(e) => form["Votação"] = e.target.value} />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label style={{ marginLeft: '10px' }}>Decisão</Form.Label>
-                                    <Form.Control type="text" placeholder="Decisão" value={decisao} onChange={(e) => setDecisao(e.target.value)} />
+                                    <Form.Control type="text" placeholder="Decisão" onChange={(e) => form["Decisão"] = e.target.value} />
                                 </Form.Group>
                                 <Form.Group>
                                     <Form.Label style={{ marginLeft: '10px' }}>Meio Processual:</Form.Label>
-                                    <Form.Control type="text" placeholder="Meio Processual" value={meioProcessual} onChange={(e) => setMeioProcessual(e.target.value)} />
+                                    <Form.Control type="text" placeholder="Meio Processual" onChange={(e) => form["Meio Processual"] = e.target.value} />
                                 </Form.Group>
                                 <Form.Group className="my-3">
                                     <Form.Label style={{ marginLeft: '10px' }}>Sumário:</Form.Label>
-                                    <textarea class="form-control" style={{ height: '200px' }} placeholder="Sumário" value={sumario} onChange={(e) => setSumario(e.target.value)} />
+                                    <textarea class="form-control" style={{ height: '200px' }} placeholder="Sumário" onChange={(e) => form["Sumário"] = e.target.value} />
                                 </Form.Group>
                                 <Form.Group className="my-3">
                                     <Form.Label style={{ marginLeft: '10px' }}>Decisão Texto Integral:</Form.Label>
-                                    <textarea class="form-control" style={{ height: '200px' }} placeholder="Decisão Texto Integral" value={textoIntegral} onChange={(e) => setTextoIntegral(e.target.value)} />
+                                    <textarea class="form-control" style={{ height: '200px' }} placeholder="Decisão Texto Integral" onChange={(e) => form["Decisão Texto Integral"] = e.target.value} />
                                 </Form.Group>
                             </Container>
                             <Container className="my-4 mb-5">
                                 <h4>Outras Informações</h4>
                                 <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={handleAddField}>Adicionar Informação</Button>
                                 {selectedInfo && (
-                                    <Form.Select className="my-3" defaultValue="" onChange={(e) => handleFieldChange(e.target.value)}>
+                                    <Form.Select className="my-3" defaultValue="" onChange={(e) => handleFieldChange(e)}>
                                         <option disabled hidden value="">Campo:</option>
-                                        {listaCampos.map(item => {
-                                            return <option>{item}</option>
+                                        {campos.map(item => {
+                                            return <option>{item.field}</option>
                                         })}
                                     </Form.Select>
                                 )}
-                                {Object.keys(outrasInformacoes).map(item => {
+                                {camposSelecionados.map(item => {
+
                                     return (
-                                        <Row>
-                                            <Col md={10}>
-                                                <FloatingLabel className="form-outline" label={item} style={{ transform: 'scale(0.90)' }}>
-                                                    <Form.Control className="my-3" type="text" placeholder={item} onChange={(e) => handleFieldValueChange(e.target.value, item)} />
-                                                </FloatingLabel>
-                                            </Col>
-                                            <Col md={1} className="d-flex justify-content-start">
-                                                <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => handleRemoveField(e, item)} /></Link>
-                                            </Col>
-                                        </Row>
+                                        item.multiselect === "false"
+                                            ?
+                                            <Row>
+                                                <Col md={10}>
+                                                    <FloatingLabel className="form-outline" label={item.field} style={{ transform: 'scale(0.90)' }}>
+                                                        <Form.Control className="my-3" type="text" placeholder={item.field} onChange={(e) => form[item.field] = e.target.value} />
+                                                    </FloatingLabel>
+                                                </Col>
+                                                <Col md={1} className="d-flex justify-content-start">
+                                                    <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => handleRemoveField(e, item)} /></Link>
+                                                </Col>
+                                            </Row>
+                                            :
+                                            <Row>
+
+                                            </Row>
                                     )
-                                })}
+                                }
+                                )}
                             </Container>
                             <div className="mb-5 d-flex justify-content-center padding-bottom">
                                 <Button type="submit" variant="outline-dark">Registar</Button>

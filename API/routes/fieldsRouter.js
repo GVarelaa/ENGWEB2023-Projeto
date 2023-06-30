@@ -6,7 +6,7 @@ var verify = require('../verify/verify')
 
 router.get('/', verify.userAccess, function (req, res, next) {
     Field.list()
-        .then(data => { res.status(200).json(data); console.log(data) })
+        .then(data => res.status(200).json(data))
         .catch(error => res.status(523).json({ error: "Erro na obtenção da lista de campos" }))
 })
 
