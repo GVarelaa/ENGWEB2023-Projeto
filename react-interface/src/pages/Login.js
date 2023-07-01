@@ -55,11 +55,11 @@ function Login() {
 
                                     <Form onSubmit={handleSubmit}>
                                         <FloatingLabel className="mb-3 form-outline" label="Username">
-                                            <Form.Control type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                                            <Form.Control required type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
                                         </FloatingLabel>
 
                                         <FloatingLabel className="mb-3 form-outline" label="Password">
-                                            <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                                            <Form.Control required type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                                         </FloatingLabel>
 
                                         <div className="d-flex justify-content-center">

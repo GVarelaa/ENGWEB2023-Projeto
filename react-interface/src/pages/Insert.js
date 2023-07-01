@@ -32,7 +32,7 @@ function Insert() {
         "Sumário": "",
         "Decisão Texto Integral": ""
     })
-    const [refresh, setRefresh] = useState([]) // Atualizar o estado
+    const [refresh, setRefresh] = useState("") // Atualizar o estado
 
 
     useEffect(() => {
@@ -190,7 +190,7 @@ function Insert() {
 
 
     const handleSingleRemoveField = (e, item) => {
-        delete form[item.field];
+        delete form[item.field]
         setCamposSelecionados(current => { return current.filter(i => i.field !== item.field) })
         setCampos(current => [...current, item].sort((a, b) => {
             let f1 = a.field.toLowerCase(),
@@ -203,25 +203,50 @@ function Insert() {
     }
 
 
-    const handleMultiRemoveField = (e, field, index) => {
-        setRefresh(current => [...current, field])
-        var list = []
-        for (let i = 0; i < form[field].length; i++) {
-            if (i !== index) {
-                list.push(form[field][i])
+    const handleMultiRemoveField = (e, item, index) => {
+        if (form[item.field].length > 1) {
+            var list = []
+            for (let i = 0; i < form[item.field].length; i++) {
+                if (i !== index) {
+                    list.push(form[item.field][i])
+                }
             }
+
+            form[item.field] = list
         }
-        
-        form[field] = list
+        else {
+            delete form[item.field]
+            setCamposSelecionados(current => { return current.filter(i => i.field !== item.field) })
+            setCampos(current => [...current, item].sort((a, b) => {
+                let f1 = a.field.toLowerCase(),
+                    f2 = b.field.toLowerCase()
+
+                if (f1 < f2) return -1
+                if (f1 > f2) return 1
+                return 0
+            }))
+        }
+        setRefresh(item.field + index)
     }
 
 
-    const teste = (e, field) => {
-        setRefresh(current => [...current, field])
+    const handleMultiChangeField = (e, field, index) => {
+        form[field][index] = e.target.value
+        setRefresh(e.target.value)
+    }
+
+
+    const handleMultiAddField = (e, field) => {
         form[field].push("")
+        setRefresh(field)
     }
 
-    console.log(form)
+
+    const handleChange = (e, field) => {
+        form[field] = e.target.value
+        setRefresh(e.target.value)
+    }
+
 
     return (
         <>
@@ -237,12 +262,12 @@ function Insert() {
                                 <Row className="gx-3 mb-3">
                                     <Col md={6}>
                                         <FloatingLabel className="mb-3 form-outline" label="Processo">
-                                            <Form.Control type="text" placeholder="Processo" onChange={(e) => form["Processo"] = e.target.value} />
+                                            <Form.Control required type="text" placeholder="Processo" value={form["Processo"]} onChange={(e) => handleChange(e, "Processo")} />
                                         </FloatingLabel>
                                     </Col>
                                     <Col md={6}>
                                         <FloatingLabel className="mb-3 form-outline" label="Data do Acórdão">
-                                            <Form.Control type="date" placeholder="Data do Acórdão" onChange={(e) => form["Data do Acordão"] = e.target.value} />
+                                            <Form.Control required type="date" placeholder="Data do Acórdão" onChange={(e) => form["Data do Acordão"] = e.target.value} />
                                         </FloatingLabel>
                                     </Col>
                                 </Row>
@@ -250,19 +275,17 @@ function Insert() {
                                     <Col md={6}>
                                         <Form.Group className="mb-3">
                                             <Form.Label style={{ marginLeft: '10px' }}>Tribunal:</Form.Label>
-                                            <Col>
-                                                <Form.Select onChange={(e) => handleTribunal(e)}>
-                                                    {tribunais.map(tribunal => (
-                                                        <option key={tribunal._id}>{tribunal.nome}</option>
-                                                    ))}
-                                                </Form.Select>
-                                            </Col>
+                                            <Form.Select onChange={(e) => handleTribunal(e)}>
+                                                {tribunais.map(tribunal => (
+                                                    <option key={tribunal._id}>{tribunal.nome}</option>
+                                                ))}
+                                            </Form.Select>
                                         </Form.Group>
                                     </Col>
                                     <Col md={6}>
                                         <Form.Group>
                                             <Form.Label style={{ marginLeft: '10px' }}>Relator:</Form.Label>
-                                            <Form.Control type="text" placeholder="Relator" onChange={(e) => form["Relator"] = e.target.value} />
+                                            <Form.Control required type="text" placeholder="Relator" onChange={(e) => form["Relator"] = e.target.value} />
                                         </Form.Group>
                                     </Col>
                                 </Row>
@@ -272,23 +295,23 @@ function Insert() {
                                 </Form.Group>
                                 <Form.Group className="mb-3 mt-3">
                                     <Form.Label style={{ marginLeft: '10px' }}>Votação:</Form.Label>
-                                    <Form.Control type="text" placeholder="Votação" onChange={(e) => form["Votação"] = e.target.value} />
+                                    <Form.Control required type="text" placeholder="Votação" onChange={(e) => form["Votação"] = e.target.value} />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label style={{ marginLeft: '10px' }}>Decisão</Form.Label>
-                                    <Form.Control type="text" placeholder="Decisão" onChange={(e) => form["Decisão"] = e.target.value} />
+                                    <Form.Control required type="text" placeholder="Decisão" onChange={(e) => form["Decisão"] = e.target.value} />
                                 </Form.Group>
                                 <Form.Group>
                                     <Form.Label style={{ marginLeft: '10px' }}>Meio Processual:</Form.Label>
-                                    <Form.Control type="text" placeholder="Meio Processual" onChange={(e) => form["Meio Processual"] = e.target.value} />
+                                    <Form.Control required type="text" placeholder="Meio Processual" onChange={(e) => form["Meio Processual"] = e.target.value} />
                                 </Form.Group>
                                 <Form.Group className="my-3">
                                     <Form.Label style={{ marginLeft: '10px' }}>Sumário:</Form.Label>
-                                    <textarea class="form-control" style={{ height: '200px' }} placeholder="Sumário" onChange={(e) => form["Sumário"] = e.target.value} />
+                                    <textarea required class="form-control" style={{ height: '200px' }} placeholder="Sumário" onChange={(e) => form["Sumário"] = e.target.value} />
                                 </Form.Group>
                                 <Form.Group className="my-3">
                                     <Form.Label style={{ marginLeft: '10px' }}>Decisão Texto Integral:</Form.Label>
-                                    <textarea class="form-control" style={{ height: '200px' }} placeholder="Decisão Texto Integral" onChange={(e) => form["Decisão Texto Integral"] = e.target.value} />
+                                    <textarea required class="form-control" style={{ height: '200px' }} placeholder="Decisão Texto Integral" onChange={(e) => form["Decisão Texto Integral"] = e.target.value} />
                                 </Form.Group>
                             </Container>
                             <Container className="my-4 mb-5">
@@ -322,19 +345,19 @@ function Insert() {
                                                     form[item.field].map((value, index) => {
                                                         return (
                                                             <Row>
-                                                                <Col md={10}>
+                                                                <Col md={11}>
                                                                     <FloatingLabel className="form-outline" label={item.field + " " + (index + 1)} style={{ transform: 'scale(0.90)' }}>
-                                                                        <Form.Control className="my-3" type="text" placeholder={item.field + " " + (index + 1)} onChange={(e) => form[item.field][index] = e.target.value}/>
+                                                                        <Form.Control className="my-3" type="text" placeholder={item.field + " " + (index + 1)} value={form[item.field][index]} onChange={(e) => handleMultiChangeField(e, item.field, index)} />
                                                                     </FloatingLabel>
                                                                 </Col>
                                                                 <Col md={1} className="d-flex justify-content-start">
-                                                                    <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => handleMultiRemoveField(e, item.field, index)} /></Link>
+                                                                    <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => handleMultiRemoveField(e, item, index)} /></Link>
                                                                 </Col>
                                                             </Row>)
                                                     })
                                                 }
                                                 <Row>
-                                                    <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={e => teste(e, item.field)}>Adicionar {item.field}</Button>
+                                                    <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={e => handleMultiAddField(e, item.field)}>Adicionar {item.field}</Button>
                                                 </Row>
                                             </>
                                     )
