@@ -106,13 +106,9 @@ function Insert() {
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        var descritores = [], at1 = [], at2 = []
+        var descritores = []
         selectedDescritores.map(obj => descritores.push(obj.label))
-        selectedAT1.map(obj => at1.push(obj.label))
-        selectedAT2.map(obj => at2.push(obj.label))
         form["Descritores"] = descritores
-        form["Área Temática 1"] = at1
-        form["Área Temática 2"] = at2
 
         axios.post(env.apiAcordaosAccessPoint + `?token=${localStorage.token}`, form)
             .then((response) => {
