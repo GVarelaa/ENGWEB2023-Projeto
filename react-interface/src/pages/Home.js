@@ -121,8 +121,7 @@ function Home() {
             toast.error("Não foi possível obter a lista de acórdãos!", { position: toast.POSITION.TOP_CENTER })
         }
     }
-
-    console.log(search)
+    
 
     return (
         <>

@@ -20,7 +20,8 @@ function Edit() {
     const [form, setForm] = useState({})
 
     const [refresh, setRefresh] = useState("")
-    const [selectedCampos, setSelectedCampos] = useState("")
+    const [selectedCampos, setSelectedCampos] = useState([])
+    const [isSelected, setIsSelected] = useState(false)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -40,7 +41,6 @@ function Edit() {
                         form["Descritores"] = response.data.Descritores
                         form["Área Temática 1"] = response.data["Área Temática 1"]
                         form["Área Temática 2"] = response.data["Área Temática 2"]
-                        setRefresh(new Date().toISOString())
 
                         axios.get(`${env.apiTribunaisAccessPoint}/${response.data.tribunal}?token=${localStorage.token}`)
                             .then(response => {
@@ -57,14 +57,21 @@ function Edit() {
                     axios.get(env.apiFieldsAccessPoint + `?token=${localStorage.token}`)
                         .then(response => {
                             response.data.sort((a, b) => {
-                                let f1 = a.field.toLowerCase(),
-                                    f2 = b.field.toLowerCase()
-
+                                let f1 = a.field.toLowerCase(), f2 = b.field.toLowerCase()
                                 if (f1 < f2) return -1
                                 if (f1 > f2) return 1
                                 return 0
                             })
                             setCampos(response.data)
+                            
+                            Object.keys(record).forEach(key => {
+                                response.data.forEach(item => {
+                                  if (item.field === key) {
+                                    selectedCampos.push(item);
+                                  }
+                                })
+                              })
+
                         })
                         .catch(error => {
                             toast.error("Não foi possível obter a lista de campos adicionais!", { position: toast.POSITION.TOP_CENTER })
@@ -116,28 +123,56 @@ function Edit() {
     }
 
 
-    const handleAddFieldMulti = (e, field) => {
-        form[field] = [...form[field], ""]
+    const handleAddField = () => {
+        setIsSelected(true)
+    }
+
+
+    const handleFieldChange = (event) => {
+        var campo = campos[event.target.selectedIndex - 1]
+        setSelectedCampos(current => [...current, campo])
+        setCampos(current => { return current.filter(i => i.field !== campo.field) })
+
+        if (campo.multiselect === "false") form[campo.field] = ""
+        else form[campo.field] = [""]
+
+        setIsSelected(false)
+    }
+
+
+    const handleRemoveFieldSingle = (e, item) => {
+
+        delete form[item.field]
+        setSelectedCampos(current => { return current.filter(i => i.field !== item.field) })
+        setCampos(current => [...current, item].sort((a, b) => {
+            let f1 = a.field.toLowerCase(), f2 = b.field.toLowerCase()
+            if (f1 < f2) return -1
+            if (f1 > f2) return 1
+            return 0
+        }))
+    }
+
+
+    const handleAddFieldMulti = (e, item) => {
+        form[item.field] = [...form[item.field], ""]
         setRefresh(new Date().toISOString())
     }
 
 
-    const handleChangeFieldMulti = (e, index, field) => {
-        form[field][index] = e.target.value
+    const handleChangeFieldMulti = (e, index, item) => {
+        form[item.field][index] = e.target.value
         setRefresh(new Date().toISOString())
     }
 
 
-    const handleRemoveFieldMulti = (e, index, field) => {
-        form[field].splice(index, 1)
+    const handleRemoveFieldMulti = (e, index, item) => {
+        form[item.field].splice(index, 1)
 
-        if (field != "Área Temática 1" && field != "Área Temática 2"){
-            delete form[field]
-            setSelectedCampos(current => { return current.filter(i => i.field !== field) })
-            setCampos(current => [...current, field].sort((a, b) => {
-                let f1 = a.field.toLowerCase(),
-                    f2 = b.field.toLowerCase()
-    
+        if (form[item.field].length < 1) {
+            delete form[item.field]
+            setSelectedCampos(current => { return current.filter(i => i.field !== item.field) })
+            setCampos(current => [...current, item].sort((a, b) => {
+                let f1 = a.field.toLowerCase(), f2 = b.field.toLowerCase()
                 if (f1 < f2) return -1
                 if (f1 > f2) return 1
                 return 0
@@ -160,6 +195,7 @@ function Edit() {
             })
     }
 
+    console.log(selectedCampos)
 
     return (
         <>
@@ -224,18 +260,18 @@ function Edit() {
                                                             <Row className="mb-3" key={index}>
                                                                 <Col md={11}>
                                                                     <Form.Group>
-                                                                        <Form.Control type="text" placeholder={"Área Temática 1 - " + (index + 1)} value={form["Área Temática 1"][index]} onChange={(e) => handleChangeFieldMulti(e, index, "Área Temática 1")}/>
+                                                                        <Form.Control type="text" placeholder={"Área Temática 1 - " + (index + 1)} value={form["Área Temática 1"][index]} onChange={(e) => handleChangeFieldMulti(e, index, campos.find(item => item.field === "Área Temática 1"))} />
                                                                     </Form.Group>
                                                                 </Col>
                                                                 <Col md={1} className="d-flex justify-content-start">
-                                                                    <Link><Trash3 style={{ marginTop: '0.25cm', marginLeft: '-1em' }} size={20} color="black" onClick={(e) => handleRemoveFieldMulti(e, index, "Área Temática 1")}/></Link>
+                                                                    <Link><Trash3 style={{ marginTop: '0.25cm', marginLeft: '-1em' }} size={20} color="black" onClick={(e) => handleRemoveFieldMulti(e, index, campos.find(item => item.field === "Área Temática 1"))} /></Link>
                                                                 </Col>
                                                             </Row>
                                                         ))
                                                     }
                                                     <Row>
                                                         <div style={{ width: '50%' }}>
-                                                            <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleAddFieldMulti(e, "Área Temática 1")}>Adicionar Área Temática</Button>
+                                                            <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleAddFieldMulti(e, campos.find(item => item.field === "Área Temática 1"))}>Adicionar Área Temática</Button>
                                                         </div>
                                                     </Row>
                                                 </Col>
@@ -246,18 +282,18 @@ function Edit() {
                                                             <Row className="mb-3" key={index}>
                                                                 <Col md={11}>
                                                                     <Form.Group>
-                                                                        <Form.Control type="text" placeholder={"Área Temática 2 - " + (index + 1)} value={form["Área Temática 2"][index]} onChange={(e) => handleChangeFieldMulti(e, index, "Área Temática 2")}/>
+                                                                        <Form.Control type="text" placeholder={"Área Temática 2 - " + (index + 1)} value={form["Área Temática 2"][index]} onChange={(e) => handleChangeFieldMulti(e, index, campos.find(item => item.field === "Área Temática 2"))} />
                                                                     </Form.Group>
                                                                 </Col>
                                                                 <Col md={1} className="d-flex justify-content-start">
-                                                                    <Link><Trash3 style={{ marginTop: '0.25cm', marginLeft: '-1em' }} size={20} color="black" onClick={(e) => handleRemoveFieldMulti(e, index, "Área Temática 2")}/></Link>
+                                                                    <Link><Trash3 style={{ marginTop: '0.25cm', marginLeft: '-1em' }} size={20} color="black" onClick={(e) => handleRemoveFieldMulti(e, index, campos.find(item => item.field === "Área Temática 2"))} /></Link>
                                                                 </Col>
                                                             </Row>
                                                         ))
                                                     }
                                                     <Row>
                                                         <div style={{ width: '50%' }}>
-                                                            <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleAddFieldMulti(e, "Área Temática 2")}>Adicionar Área Temática</Button>
+                                                            <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleAddFieldMulti(e, campos.find(item => item.field === "Área Temática 2"))}>Adicionar Área Temática</Button>
                                                         </div>
                                                     </Row>
                                                 </Col>
@@ -297,6 +333,55 @@ function Edit() {
                                                     <textarea required class="form-control" style={{ height: '200px' }} placeholder="Decisão Texto Integral" value={record["Decisão Texto Integral"]} onChange={(e) => form["Decisão Texto Integral"] = e.target.value} />
                                                 </Form.Group>
                                             </Row>
+                                        </Container>
+                                        <Container className="my-4 mb-5">
+                                            <h4>Outras Informações</h4>
+                                            <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={handleAddField}>Adicionar Informação</Button>
+                                            {isSelected && (
+                                                <Form.Select className="my-3" defaultValue="" onChange={(e) => handleFieldChange(e)}>
+                                                    <option disabled hidden value="">Campo:</option>
+                                                    {campos.map(item => {
+                                                        return <option>{item.field}</option>
+                                                    })}
+                                                </Form.Select>
+                                            )}
+                                            {selectedCampos.map(item => {
+                                                return (
+                                                    item.multiselect === "false"
+                                                        ?
+                                                        <Row>
+                                                            <Col md={10}>
+                                                                <FloatingLabel className="form-outline" label={item.field} style={{ transform: 'scale(0.90)' }}>
+                                                                    <Form.Control className="my-3" type="text" placeholder={item.field} onChange={(e) => form[item.field] = e.target.value} />
+                                                                </FloatingLabel>
+                                                            </Col>
+                                                            <Col md={1} className="d-flex justify-content-start">
+                                                                <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => handleRemoveFieldSingle(e, item)} /></Link>
+                                                            </Col>
+                                                        </Row>
+                                                        :
+                                                        <>
+                                                            {
+                                                                form[item.field].map((value, index) => {
+                                                                    return (
+                                                                        <Row>
+                                                                            <Col md={11}>
+                                                                                <FloatingLabel className="form-outline" label={item.field + " " + (index + 1)} style={{ transform: 'scale(0.90)' }}>
+                                                                                    <Form.Control className="my-3" type="text" placeholder={item.field + " " + (index + 1)} value={form[item.field][index]} onChange={(e) => handleChangeFieldMulti(e, index, item)} />
+                                                                                </FloatingLabel>
+                                                                            </Col>
+                                                                            <Col md={1} className="d-flex justify-content-start">
+                                                                                <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => handleRemoveFieldMulti(e, index, item)} /></Link>
+                                                                            </Col>
+                                                                        </Row>)
+                                                                })
+                                                            }
+                                                            <Row>
+                                                                <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={e => handleAddFieldMulti(e, item)}>Adicionar {item.field}</Button>
+                                                            </Row>
+                                                        </>
+                                                )
+                                            })}
                                         </Container>
                                         <div className="mb-3 d-flex justify-content-end padding-bottom">
                                             <Button type="submit" className="mx-2" variant="outline-dark" startIcon={<Check />}>Salvar Alterações</Button>
