@@ -11,15 +11,15 @@ import axios from "axios"
 var env = require("../config/env")
 
 function Insert() {
-    const [selectedDescritores, setSelectedDescritores] = useState([]);
+    const [selectedDescritores, setSelectedDescritores] = useState([])
+    const [selectedAT1, setSelectedAT1] = useState([])
+    const [selectedAT2, setSelectedAT2] = useState([])
     const [selectedInfo, setSelectedInfo] = useState(false)
 
     const [campos, setCampos] = useState([])
     const [camposSelecionados, setCamposSelecionados] = useState([])
     const [tribunais, setTribunais] = useState([])
     const [listaDescritores, setListaDescritores] = useState([])
-    const [areaTematica1, setAreaTematica1] = useState([])
-    const [areaTematica2, setAreaTematica2] = useState([])
     const [form, setForm] = useState({
         "Processo": "",
         "Data do Acordão": "",
@@ -30,7 +30,9 @@ function Insert() {
         "Decisão": "",
         "Meio Processual": "",
         "Sumário": "",
-        "Decisão Texto Integral": ""
+        "Decisão Texto Integral": "",
+        "Área Temática 1": [""],
+        "Área Temática 2": [""]
     })
     const [refresh, setRefresh] = useState("") // Atualizar o estado
 
@@ -39,7 +41,6 @@ function Insert() {
         const fetchData = async () => {
             axios.get(env.apiTribunaisAccessPoint + `?token=${localStorage.token}`)
                 .then((response) => {
-
                     setTribunais(response.data)
 
                     axios.get(env.apiTribunaisAccessPoint + "/" + response.data[0]._id + "/descritores" + `?token=${localStorage.token}`)
@@ -54,38 +55,6 @@ function Insert() {
                         })
                         .catch((error) => {
                             toast.error("Não foi possível obter a lista de descritores!", {
-                                position: toast.POSITION.TOP_CENTER
-                            })
-                        })
-
-
-
-                    axios.get(env.apiTribunaisAccessPoint + "/" + response.data[0]._id + "/areatematica1" + `?token=${localStorage.token}`)
-                        .then((response) => {
-                            setAreaTematica1(
-                                response.data.areaTematica1.map((area) => ({
-                                    label: area,
-                                    value: area,
-                                }))
-                            )
-                        })
-                        .catch((error) => {
-                            toast.error("Não foi possível obter a lista de áreas temáticas!", {
-                                position: toast.POSITION.TOP_CENTER
-                            })
-                        })
-
-                    axios.get(env.apiTribunaisAccessPoint + "/" + response.data[0]._id + "/areatematica2" + `?token=${localStorage.token}`)
-                        .then((response) => {
-                            setAreaTematica2(
-                                response.data.areaTematica2.map((area) => ({
-                                    label: area,
-                                    value: area,
-                                }))
-                            )
-                        })
-                        .catch((error) => {
-                            toast.error("Não foi possível obter a lista de áreas temáticas!", {
                                 position: toast.POSITION.TOP_CENTER
                             })
                         })
@@ -120,32 +89,12 @@ function Insert() {
 
 
     const handleTribunal = (e) => {
-        console.log(e.target.value)
         form["tribunal"] = e.target.value
+        setRefresh(new Date().toISOString())
 
         axios.get(env.apiTribunaisAccessPoint + "/" + e.target.value + "/descritores" + `?token=${localStorage.token}`)
             .then((response) => {
                 setListaDescritores(response.data.descritores.map((descritor) => ({ label: descritor, value: descritor })))
-            })
-            .catch((error) => {
-                toast.error("Não foi possível obter a lista de descritores!", {
-                    position: toast.POSITION.TOP_CENTER
-                })
-            })
-
-        axios.get(env.apiTribunaisAccessPoint + "/" + e.target.value + "/areatematica1" + `?token=${localStorage.token}`)
-            .then((response) => {
-                setAreaTematica1(response.data.areaTematica1.map((area) => ({ label: area, value: area })))
-            })
-            .catch((error) => {
-                toast.error("Não foi possível obter a lista de descritores!", {
-                    position: toast.POSITION.TOP_CENTER
-                })
-            })
-
-        axios.get(env.apiTribunaisAccessPoint + "/" + e.target.value + "/areatematica2" + `?token=${localStorage.token}`)
-            .then((response) => {
-                setAreaTematica2(response.data.areaTematica2.map((area) => ({ label: area, value: area })))
             })
             .catch((error) => {
                 toast.error("Não foi possível obter a lista de descritores!", {
@@ -157,6 +106,13 @@ function Insert() {
 
     const handleSubmit = (event) => {
         event.preventDefault()
+        var descritores = [], at1 = [], at2 = []
+        selectedDescritores.map(obj => descritores.push(obj.label))
+        selectedAT1.map(obj => at1.push(obj.label))
+        selectedAT2.map(obj => at2.push(obj.label))
+        form["Descritores"] = descritores
+        form["Área Temática 1"] = at1
+        form["Área Temática 2"] = at2
 
         axios.post(env.apiAcordaosAccessPoint + `?token=${localStorage.token}`, form)
             .then((response) => {
@@ -203,6 +159,19 @@ function Insert() {
     }
 
 
+    const handleATRemoveField = (e, field, index) => {
+        var list = []
+        for (let i = 0; i < form[field].length; i++) {
+            if (i !== index) {
+                list.push(form[field][i])
+            }
+        }
+
+        form[field] = list
+        setRefresh(new Date().toISOString())
+    }
+
+
     const handleMultiRemoveField = (e, item, index) => {
         if (form[item.field].length > 1) {
             var list = []
@@ -226,27 +195,29 @@ function Insert() {
                 return 0
             }))
         }
-        setRefresh(item.field + index)
+        setRefresh(new Date().toISOString())
     }
 
 
     const handleMultiChangeField = (e, field, index) => {
         form[field][index] = e.target.value
-        setRefresh(e.target.value)
+        setRefresh(new Date().toISOString())
     }
 
 
     const handleMultiAddField = (e, field) => {
         form[field].push("")
-        setRefresh(field)
+        setRefresh(new Date().toISOString())
     }
 
 
     const handleChange = (e, field) => {
         form[field] = e.target.value
-        setRefresh(e.target.value)
+        setRefresh(new Date().toISOString())
     }
 
+
+    console.log(form)
 
     return (
         <>
@@ -258,26 +229,29 @@ function Insert() {
                     <Card.Body>
                         <Form onSubmit={handleSubmit}>
                             <Container className="my-4 mb-5">
-                                <h4>Informação Principal</h4>
+                                <h4 className="mb-3">Informação Principal</h4>
                                 <Row className="gx-3 mb-3">
                                     <Col md={6}>
-                                        <FloatingLabel className="mb-3 form-outline" label="Processo">
+                                        <Form.Group className="mb-3">
+                                            <Form.Label style={{ marginLeft: '10px' }}>Processo:</Form.Label>
                                             <Form.Control required type="text" placeholder="Processo" value={form["Processo"]} onChange={(e) => handleChange(e, "Processo")} />
-                                        </FloatingLabel>
+                                        </Form.Group>
                                     </Col>
                                     <Col md={6}>
-                                        <FloatingLabel className="mb-3 form-outline" label="Data do Acórdão">
+                                        <Form.Group className="mb-3">
+                                            <Form.Label style={{ marginLeft: '10px' }}>Data do Acordão:</Form.Label>
                                             <Form.Control required type="date" placeholder="Data do Acórdão" onChange={(e) => form["Data do Acordão"] = e.target.value} />
-                                        </FloatingLabel>
+                                        </Form.Group>
                                     </Col>
                                 </Row>
+
                                 <Row>
                                     <Col md={6}>
                                         <Form.Group className="mb-3">
                                             <Form.Label style={{ marginLeft: '10px' }}>Tribunal:</Form.Label>
                                             <Form.Select onChange={(e) => handleTribunal(e)}>
                                                 {tribunais.map(tribunal => (
-                                                    <option key={tribunal._id}>{tribunal.nome}</option>
+                                                    <option key={tribunal._id} value={tribunal._id}>{tribunal.nome}</option>
                                                 ))}
                                             </Form.Select>
                                         </Form.Group>
@@ -289,31 +263,113 @@ function Insert() {
                                         </Form.Group>
                                     </Col>
                                 </Row>
+
+                                <Row>
+                                    <Col md={6}>
+                                        <>
+                                            <Row>
+                                                <Col md={11}>
+                                                    <Form.Group className="mb-3">
+                                                        <Form.Label style={{ marginLeft: '10px' }}>Área Temática 1</Form.Label>
+                                                        <Form.Control className="my-3" type="text" placeholder={"Área Temática 1 " + 1} value={form["Área Temática 1"][0]} onChange={(e) => handleMultiChangeField(e, "Área Temática 1", 0)} />
+
+                                                    </Form.Group>
+                                                </Col>
+                                            </Row>
+                                            {
+                                                form["Área Temática 1"].map((value, index) => {
+                                                    {
+                                                        return (
+                                                            index !== 0 &&
+                                                            <Row>
+                                                                <Col md={11}>
+                                                                    <Form.Group className="mb-3">
+                                                                        <Form.Label style={{ marginLeft: '10px' }}>{"Área Temática 1 " + (index + 1)}</Form.Label>
+                                                                        <Form.Control className="my-3" type="text" placeholder={"Área Temática 1 " + (index + 1)} value={form["Área Temática 1"][index]} onChange={(e) => handleMultiChangeField(e, "Área Temática 1", index)} />
+
+                                                                    </Form.Group>
+                                                                </Col>
+                                                                <Col md={1} className="d-flex justify-content-start">
+                                                                    <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => { handleATRemoveField(e, "Área Temática 1", index) }} /></Link>
+                                                                </Col>
+                                                            </Row>
+                                                        )
+                                                    }
+                                                })
+                                            }
+                                            <Row>
+                                                <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={e => handleMultiAddField(e, "Área Temática 1")}>Adicionar {"Área Temática 1"}</Button>
+                                            </Row>
+                                        </>
+                                    </Col>
+                                    <Col md={6}>
+                                        <>
+                                            <Row>
+                                                <Col md={11}>
+                                                    <Form.Group className="mb-3">
+                                                        <Form.Label style={{ marginLeft: '10px' }}>Área Temática 2</Form.Label>
+                                                        <Form.Control className="my-3" type="text" placeholder={"Área Temática 2 " + 1} value={form["Área Temática 2"][0]} onChange={(e) => handleMultiChangeField(e, "Área Temática 2", 0)} />
+                                                    </Form.Group>
+                                                </Col>
+                                            </Row>
+                                            {
+                                                form["Área Temática 2"].map((value, index) => {
+                                                    {
+                                                        return (
+                                                            index !== 0 &&
+                                                            <Row>
+                                                                <Col md={11}>
+                                                                    <Form.Group className="mb-3">
+                                                                        <Form.Label style={{ marginLeft: '10px' }}>{"Área Temática 2 " + (index + 1)}</Form.Label>
+                                                                        <Form.Control className="my-3" type="text" placeholder={"Área Temática 2 " + (index + 1)} value={form["Área Temática 2"][index]} onChange={(e) => handleMultiChangeField(e, "Área Temática 2", index)} />
+                                                                    </Form.Group>
+                                                                </Col>
+                                                                <Col md={1} className="d-flex justify-content-start">
+                                                                    <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => { handleATRemoveField(e, "Área Temática 2", index) }} /></Link>
+                                                                </Col>
+                                                            </Row>
+                                                        )
+                                                    }
+                                                })
+                                            }
+                                            <Row>
+                                                <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={e => handleMultiAddField(e, "Área Temática 2")}>Adicionar {"Área Temática 2"}</Button>
+                                            </Row>
+                                        </>
+                                    </Col>
+                                </Row>
+
                                 <Form.Group className="mb-3">
                                     <Form.Label style={{ marginLeft: '10px' }}>Descritores:</Form.Label>
                                     <MultiSelect options={listaDescritores} value={selectedDescritores} onChange={setSelectedDescritores} labelledBy="Selecionar" />
                                 </Form.Group>
+
                                 <Form.Group className="mb-3 mt-3">
                                     <Form.Label style={{ marginLeft: '10px' }}>Votação:</Form.Label>
                                     <Form.Control required type="text" placeholder="Votação" onChange={(e) => form["Votação"] = e.target.value} />
                                 </Form.Group>
+
                                 <Form.Group className="mb-3">
                                     <Form.Label style={{ marginLeft: '10px' }}>Decisão</Form.Label>
                                     <Form.Control required type="text" placeholder="Decisão" onChange={(e) => form["Decisão"] = e.target.value} />
                                 </Form.Group>
+
                                 <Form.Group>
                                     <Form.Label style={{ marginLeft: '10px' }}>Meio Processual:</Form.Label>
                                     <Form.Control required type="text" placeholder="Meio Processual" onChange={(e) => form["Meio Processual"] = e.target.value} />
                                 </Form.Group>
+
                                 <Form.Group className="my-3">
                                     <Form.Label style={{ marginLeft: '10px' }}>Sumário:</Form.Label>
                                     <textarea required class="form-control" style={{ height: '200px' }} placeholder="Sumário" onChange={(e) => form["Sumário"] = e.target.value} />
                                 </Form.Group>
+
                                 <Form.Group className="my-3">
                                     <Form.Label style={{ marginLeft: '10px' }}>Decisão Texto Integral:</Form.Label>
                                     <textarea required class="form-control" style={{ height: '200px' }} placeholder="Decisão Texto Integral" onChange={(e) => form["Decisão Texto Integral"] = e.target.value} />
                                 </Form.Group>
                             </Container>
+
                             <Container className="my-4 mb-5">
                                 <h4>Outras Informações</h4>
                                 <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={handleAddField}>Adicionar Informação</Button>
