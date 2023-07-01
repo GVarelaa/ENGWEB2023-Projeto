@@ -77,6 +77,7 @@ function Accordions({ data, setData, favorites, setFavorites, token, page }) {
 
     return (
         <Accordion className='mb-4'>
+            
             {data.map((obj, index) => {
                 return (
                     <Accordion.Item eventKey={index}>

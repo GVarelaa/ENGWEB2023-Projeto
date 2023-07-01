@@ -232,18 +232,20 @@ function Descricao() {
         <div className="d-flex justify-content-start mb-4"></div>
         <Card
           className="d-flex justify-content-center"
-          style={{ "box-shadow": "0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)" }}
+          style={{ "boxShadow": "0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)" }}
         >
           <Card.Body>
             <div className="d-flex justify-content-end mb-4"></div>
             {/* OUTRAS INFORMAÇÕES */}
             <Container className="my-4 b-4">
-              <h4>Campos</h4>
+              <h4> Campos</h4>
               <ListGroup>
                 <Form>
-                  <Form.Control className="d-flex mb-5" type="search" placeholder="Pesquisa livre..." aria-label="Procurar" onChange={handleSearchChange} />
+                  <Form.Control className="d-flex mb-3" type="search" placeholder="Pesquisa livre..." aria-label="Procurar" onChange={handleSearchChange} />
                 </Form>
                 {Array.isArray(record) && record !== "NoPage" ? (
+                  <div>
+                  {recordFiltered.length >= 1 ?(
                   recordFiltered.map((obj) => (
                     <ListGroup className="list-group-flush" key={obj}>
                       <ListGroupItem>
@@ -300,8 +302,21 @@ function Descricao() {
                       </ListGroupItem>
                       <ListGroupItem>{obj["Desc"]}</ListGroupItem>
                     </ListGroup>
-                  ))
-                ) : (
+                  )
+                    ))
+                  :(
+                    <Card
+                    className="d-flex justify-content-center"
+                    style={{ "boxShadow": "0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)","height": "3rem" }}
+                    >
+                    <Card.Body>
+                      <div className="d-flex justify-content-center mb-3 mt-3"> Não está disponibilizada nenhuma descrição de um Campo. 
+                      </div>
+                      </Card.Body>
+                      </Card>
+                      )}
+                  </div>
+                    ) : (
                   <ListGroupItem>{record}</ListGroupItem>
                 )}
                 {decodedToken.level >=100 && (
@@ -346,9 +361,12 @@ function Descricao() {
                     </Form>
                   </div>
                 ) : (
+                  <div>
+                    <hr/>
                   <Button variant="outline-dark" onClick={handleAddButton}>
                     Adicionar um novo registo
                   </Button>
+                  </div>
                 )}
                 </div>
                 )}

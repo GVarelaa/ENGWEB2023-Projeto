@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Navigate } from 'react-router-dom'
-import { Container, Card } from 'react-bootstrap'
+import { Navigate, Link } from 'react-router-dom'
+import { Container, Card,Button } from 'react-bootstrap'
 import { Pagination } from '@mui/material'
 import { ToastContainer, toast } from 'react-toastify'
 import NavBar from '../components/NavBar'
@@ -74,13 +74,32 @@ function Favorites() {
             <NavBar />
             <Container>
                 <hr className="mt-4 mb-4" />
-                <Card className='d-flex justify-content-center' style={{ 'box-shadow': '0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)' }} >
+                <Card className='d-flex justify-content-center' style={{ 'boxShadow': '0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)' }} >
                     <Card.Body>
                         <Container className='mt-4'>
+                            {data.length>=1 ?(
+                                <div>
                             <Accordions data={data} setData={setData} favorites={favorites} setFavorites={setFavorites} token={decodedToken} />
                             <Container className='d-flex justify-content-center mb-4'>
                                 <Pagination className="mt-3" page={page} onChange={handleChangePage} count={pagesNumber} shape="rounded" />
                             </Container>
+                            </div>
+                            ):(  
+                                <div>
+                                    <Card className="d-flex justify-content-center mb-3" style={{ "boxShadow": "0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)","height": "3rem" }}>
+                                        <Card.Body>
+                                            <div className="d-flex justify-content-center mt-2">Ainda não adicionou acórdãos aos favoritos. </div>
+                                        </Card.Body>
+                                    </Card>
+                                    <div className="d-flex justify-content-center">
+                                        <Link to="/"> 
+                                            <Button type="button" variant="outline-dark">
+                                                Comece já!
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            )}
                         </Container>
                     </Card.Body>
                 </Card>
