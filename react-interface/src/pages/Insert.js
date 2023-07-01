@@ -32,7 +32,7 @@ function Insert() {
         "Sumário": "",
         "Decisão Texto Integral": ""
     })
-
+    const [refresh, setRefresh] = useState([]) // Atualizar o estado
 
 
     useEffect(() => {
@@ -158,7 +158,6 @@ function Insert() {
     const handleSubmit = (event) => {
         event.preventDefault()
 
-        // SIMPLIFICAR ISTO
         axios.post(env.apiAcordaosAccessPoint + `?token=${localStorage.token}`, form)
             .then((response) => {
                 toast.success("O acórdão foi adicionado com sucesso!", {
@@ -182,17 +181,15 @@ function Insert() {
         var campo = campos[event.target.selectedIndex - 1]
         setCamposSelecionados(current => [...current, campo])
         setCampos(current => { return current.filter(i => i.field !== campo.field) })
-        form[campo] = undefined
+
+        if (campo.multiselect === "false") form[campo.field] = ""
+        else form[campo.field] = [""]
 
         setSelectedInfo(false)
     }
 
 
-    const handleSingleInput = (value, field) => {
-        form[field] = value
-    }
-
-    const handleRemoveField = (e, item) => {
+    const handleSingleRemoveField = (e, item) => {
         delete form[item.field];
         setCamposSelecionados(current => { return current.filter(i => i.field !== item.field) })
         setCampos(current => [...current, item].sort((a, b) => {
@@ -203,6 +200,25 @@ function Insert() {
             if (f1 > f2) return 1
             return 0
         }))
+    }
+
+
+    const handleMultiRemoveField = (e, field, index) => {
+        setRefresh(current => [...current, field])
+        var list = []
+        for (let i = 0; i < form[field].length; i++) {
+            if (i !== index) {
+                list.push(form[field][i])
+            }
+        }
+        
+        form[field] = list
+    }
+
+
+    const teste = (e, field) => {
+        setRefresh(current => [...current, field])
+        form[field].push("")
     }
 
     console.log(form)
@@ -287,7 +303,6 @@ function Insert() {
                                     </Form.Select>
                                 )}
                                 {camposSelecionados.map(item => {
-
                                     return (
                                         item.multiselect === "false"
                                             ?
@@ -298,16 +313,32 @@ function Insert() {
                                                     </FloatingLabel>
                                                 </Col>
                                                 <Col md={1} className="d-flex justify-content-start">
-                                                    <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => handleRemoveField(e, item)} /></Link>
+                                                    <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => handleSingleRemoveField(e, item)} /></Link>
                                                 </Col>
                                             </Row>
                                             :
-                                            <Row>
-
-                                            </Row>
+                                            <>
+                                                {
+                                                    form[item.field].map((value, index) => {
+                                                        return (
+                                                            <Row>
+                                                                <Col md={10}>
+                                                                    <FloatingLabel className="form-outline" label={item.field + " " + (index + 1)} style={{ transform: 'scale(0.90)' }}>
+                                                                        <Form.Control className="my-3" type="text" placeholder={item.field + " " + (index + 1)} onChange={(e) => form[item.field][index] = e.target.value}/>
+                                                                    </FloatingLabel>
+                                                                </Col>
+                                                                <Col md={1} className="d-flex justify-content-start">
+                                                                    <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => handleMultiRemoveField(e, item.field, index)} /></Link>
+                                                                </Col>
+                                                            </Row>)
+                                                    })
+                                                }
+                                                <Row>
+                                                    <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={e => teste(e, item.field)}>Adicionar {item.field}</Button>
+                                                </Row>
+                                            </>
                                     )
-                                }
-                                )}
+                                })}
                             </Container>
                             <div className="mb-5 d-flex justify-content-center padding-bottom">
                                 <Button type="submit" variant="outline-dark">Registar</Button>
