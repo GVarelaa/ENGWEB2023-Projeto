@@ -28,6 +28,15 @@ function Search({ setSearch, handleSearch }) {
     }, [])
 
 
+    function convertFromISO8601(date) {
+        var parts = date.split("-")
+        var year = parts[0], month = parts[1], day = parts[2]
+
+        return day + "/" + month + "/" + year
+    }
+
+
+
     const handleAddFilter = () => {
         setIsSelected(true)
     }
@@ -195,7 +204,7 @@ function Search({ setSearch, handleSearch }) {
                                         <Row>
                                             <Col md={10}>
                                                 <FloatingLabel className="form-outline" label={item} style={{ transform: 'scale(0.90)' }}>
-                                                    <Form.Control type="date" placeholder="Data" onChange={(e) => handleFilterChange(e.target.value, item)} />
+                                                    <Form.Control type="date" placeholder="Data" onChange={(e) => handleFilterChange(convertFromISO8601(e.target.value), item)} />
                                                 </FloatingLabel>
                                             </Col>
                                             <Col md={1} className="d-flex justify-content-start">
