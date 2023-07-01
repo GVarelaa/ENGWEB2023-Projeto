@@ -27,7 +27,11 @@ router.get("/", verify.userAccess, function (req, res, next) {
         delete req.query.search
     }
 
-
+    Object.keys(req.query).forEach(key => {
+        if (typeof req.query[key] === 'string') {
+            req.query[key] = {$regex: req.query[key], $options: "i"}
+        }
+    })
 
     Acordao.list(req.query, skip, limit)
         .then((data) => {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { Navigate, useSearchParams } from "react-router-dom"
 import { Container, Card, Row, Col } from "react-bootstrap"
-import { Pagination } from "@mui/material"
+import { PaginationControl } from 'react-bootstrap-pagination-control';
 import { ToastContainer, toast } from "react-toastify"
 import NavBar from "../components/NavBar"
 import Accordions from "../components/Accordions"
@@ -14,7 +14,6 @@ function Home() {
     const [data, setData] = useState([])
     const [favorites, setFavorites] = useState([])
     const [page, setPage] = useState(1)
-    const [pagesNumber, setPagesNumber] = useState(0)
     const [recordsNumber, setRecordsNumber] = useState(0)
     const [search, setSearch] = useState("?")
     const [onSearch, setOnSearch] = useState(false)
@@ -26,16 +25,38 @@ function Home() {
             try {
                 const response1 = await axios.get(env.apiAcordaosAccessPoint + `/number?token=${localStorage.token}`)
                 setRecordsNumber(response1.data)
-                setPagesNumber(Math.ceil(response1.data / limit))
-                
-                var lastID = response1.data
-                if (searchParams.get('page')){
+
+                var lastID = response1.data, page = 1
+                if (searchParams.get('page')) {
                     setPage(searchParams.get('page'))
-                    lastID = response1.data - ((searchParams.get('page')-1) * limit)
+                    page = searchParams.get('page')
+                    lastID = response1.data - ((searchParams.get('page') - 1) * limit)
                 }
-                    
-                const response2 = await axios.get(`${env.apiAcordaosAccessPoint}?lastID=${lastID}&limit=${limit}&token=${localStorage.token}`)
-                setData(response2.data)
+
+                if (searchParams.get('search') || searchParams.get('tribunal') || searchParams.get('Relator') || searchParams.get('Data do Acordão') ||
+                    searchParams.get('Processo') || searchParams.get('Descritores') || searchParams.get('Votação')) {
+
+                    setOnSearch(true)
+                    var search = "?", first = true, list = { search: searchParams.get('search'), tribunal: searchParams.get('tribunal'), Relator: searchParams.get('Relator'), "Data do Acordão": searchParams.get('Data do Acordão'), Processo: searchParams.get('Processo'), Descritores: searchParams.get('Descritores'), "Votação": searchParams.get('Votação') }
+                    Object.keys(list).forEach(key => {
+                        if (list[key]) {
+                            if (first) {
+                                search += key + '=' + list[key]
+                                first = false
+                            }
+                            else search += '&' + key + '=' + list[key]
+                        }
+                    })
+
+                    const skip = (page - 1) * limit;
+                    const response2 = await axios.get(env.apiAcordaosAccessPoint + `${search}&skip=${skip}&limit=${limit}&token=${localStorage.token}`)
+                    setData(response2.data)
+                    setSearch(search)
+                }
+                else {
+                    const response2 = await axios.get(`${env.apiAcordaosAccessPoint}?lastID=${lastID}&limit=${limit}&token=${localStorage.token}`)
+                    setData(response2.data)
+                }
             } catch (error) {
                 toast.error("Não foi possível obter a lista de acórdãos!", { position: toast.POSITION.TOP_CENTER })
             }
@@ -60,12 +81,12 @@ function Home() {
         return <Navigate to="/login" />
     }
 
-    const handleChangePage = async (event, page) => {
+    const handleChangePage = async (page) => {
         setPage(page);
 
         try {
             if (!onSearch) {
-                const lastID = recordsNumber - ((page-1) * limit)
+                const lastID = recordsNumber - ((page - 1) * limit)
                 const response = await axios.get(env.apiAcordaosAccessPoint + `?lastID=${lastID}&limit=${limit}&token=${localStorage.token}`);
                 setData(response.data);
             }
@@ -83,12 +104,14 @@ function Home() {
     const handleSearch = async (event) => {
         event.preventDefault()
         setPage(0)
-        setOnSearch(true)
+
+        if (search === "?") setOnSearch(false)
+        else setOnSearch(true)
         try {
             const response1 = await axios.get(
                 env.apiAcordaosAccessPoint + `/number${search}&token=${localStorage.token}`
             )
-            setPagesNumber(Math.ceil(response1.data / limit));
+            setRecordsNumber(response1.data)
 
             const response2 = await axios.get(
                 env.apiAcordaosAccessPoint + `${search}&skip=0&limit=${limit}&token=${localStorage.token}`
@@ -99,6 +122,7 @@ function Home() {
         }
     }
 
+    console.log(search)
 
     return (
         <>

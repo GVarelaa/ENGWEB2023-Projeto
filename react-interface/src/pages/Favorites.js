@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Navigate, Link } from 'react-router-dom'
 import { Container, Card,Button } from 'react-bootstrap'
-import { Pagination } from '@mui/material'
+import { PaginationControl } from 'react-bootstrap-pagination-control';
 import { ToastContainer, toast } from 'react-toastify'
 import NavBar from '../components/NavBar'
 import Accordions from '../components/Accordions'
@@ -14,7 +14,7 @@ function Favorites() {
     const [data, setData] = useState([])
     const [favorites, setFavorites] = useState([])
     const [page, setPage] = useState(1)
-    const [pagesNumber, setPagesNumber] = useState(0)
+    const [recordsNumber, setRecordsNumber] = useState(0)
     const [limit,] = useState(25)
     var decodedToken
 
@@ -40,7 +40,7 @@ function Favorites() {
 
                 try {
                     const response = await axios.get(env.apiAcordaosAccessPoint + queryString + `skip=${skip}&limit=${limit}&token=${localStorage.token}`)
-                    setPagesNumber(Math.ceil(favorites.length / 25))
+                    setRecordsNumber(favorites.length)
                     setData(response.data)
                     setFavorites(favorites)
                 } catch (error) {
@@ -62,7 +62,7 @@ function Favorites() {
         return (<Navigate to="/login" />)
     }
 
-    const handleChangePage = async (event, page) => {
+    const handleChangePage = async (page) => {
         setPage(page)
         window.scrollTo(0, 0)
     }
@@ -81,7 +81,7 @@ function Favorites() {
                                 <div>
                             <Accordions data={data} setData={setData} favorites={favorites} setFavorites={setFavorites} token={decodedToken} />
                             <Container className='d-flex justify-content-center mb-4'>
-                                <Pagination className="mt-3" page={page} onChange={handleChangePage} count={pagesNumber} shape="rounded" />
+                                <PaginationControl page={page} between={4} total={recordsNumber} limit={limit} changePage={handleChangePage} ellipsis={1} />
                             </Container>
                             </div>
                             ):(  

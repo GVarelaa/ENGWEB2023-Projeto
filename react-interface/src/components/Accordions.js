@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Accordion, ListGroup, ListGroupItem, Modal, Button, Container } from 'react-bootstrap'
 import { Eye, Pencil, Trash3, Heart, HeartFill } from 'react-bootstrap-icons'
 import { toast } from 'react-toastify'
@@ -7,9 +7,10 @@ import axios from 'axios'
 import env from '../config/env'
 
 
-function Accordions({ data, setData, favorites, setFavorites, token, page }) {
+function Accordions({ data, setData, favorites, setFavorites, token, page, search }) {
     const [showModal, setShowModal] = useState(false);
     const [deleteItemID, setDeleteItemID] = useState(null);
+    const [searchParams] = useSearchParams()
 
     const handleFavorite = async (event, id) => {
         try {
@@ -84,7 +85,7 @@ function Accordions({ data, setData, favorites, setFavorites, token, page }) {
                         <Accordion.Header>
                             <Container><b>Processo: </b>{obj.Processo}</Container>
                             <Container className='d-flex justify-content-end px-3'>
-                                <Link to={`/${obj._id}?returnPage=${page}`}> <Eye size={20} color='black' className='mx-3' /> </Link>
+                                <Link to={`/${obj._id}?returnPage=${page}` + (search && search !== "?" ? "&" + search.slice(1) : "")}> <Eye size={20} color='black' className='mx-3' /> </Link>
                                 {favorites.includes(obj._id.toString())
                                     ? <Link> <HeartFill size={20} color='black' className='mx-3' onClick={(event) => handleFavorite(event, obj._id.toString())} /> </Link>
                                     : <Link> <Heart size={20} color='black' className='mx-3' onClick={(event) => handleFavorite(event, obj._id.toString())} /> </Link>

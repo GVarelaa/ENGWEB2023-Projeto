@@ -48,7 +48,7 @@ function Insert() {
                     response.data.forEach(obj => { delete obj.descritores })
                     setTribunais(response.data)
                 })
-                .catch((error) => {})
+                .catch((error) => { })
 
             axios.get(env.apiFieldsAccessPoint + `?token=${localStorage.token}`)
                 .then((response) => {
@@ -74,9 +74,9 @@ function Insert() {
     function convertFromISO8601(date) {
         var parts = date.split("-")
         var year = parts[0], month = parts[1], day = parts[2]
-      
+
         return day + "/" + month + "/" + year
-      }
+    }
 
 
     const handleTribunal = (e) => {
