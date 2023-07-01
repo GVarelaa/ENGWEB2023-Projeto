@@ -23,12 +23,9 @@ function Record() {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`${env.apiAcordaosAccessPoint}/${params.id}?token=${localStorage.token}`)
-                console.log(response.data)
                 if (!response.data.error) setRecord([response.data])
                 else setRecord("NoPage")
-            } catch (error) {
-                console.log(error)
-            }
+            } catch (error) {}
         }
 
         const fetchFavorites = async () => {
