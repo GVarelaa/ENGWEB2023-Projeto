@@ -179,7 +179,7 @@ function Profile() {
                                     />
                                     <Button className="mb-4" variant="outline-dark" startIcon={<Trash3 />} onClick={(e) => handleRemoveImage(e)}>Remover Foto</Button>
                                     <div className="small font-italic text-muted mb-2">Insira um ficheiro JPG or PNG até 5 MB</div>
-                                    <input id="file-input" type="file" style={{ display: 'none' }} onChange={handlefileInputChange} ref={fileInput}/>
+                                    <input id="file-input" type="file" accept="image/*" style={{ display: 'none' }} onChange={handlefileInputChange} ref={fileInput}/>
                                     <Button variant="outline-dark" startIcon={<Upload/>} onClick={handleButtonClick}>Carregar Foto</Button>
                                 </Card.Body>
                             </Card>

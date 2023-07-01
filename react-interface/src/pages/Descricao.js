@@ -28,6 +28,7 @@ import jwt_decode from "jwt-decode";
 
 function Descricao() {
   const [record, setRecord] = useState(null);
+  const [recordFiltered, setRecordFiltered] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [Edit, setEdit] = useState(null);
   const [deleteItemID, setDeleteItemID] = useState(null);
@@ -39,6 +40,7 @@ function Descricao() {
       .then((response) => {
         console.log(response.data + "aqui");
         setRecord(response.data);
+        setRecordFiltered(response.data)
       })
       .catch((error) => {
         setRecord("NoPage");
@@ -158,7 +160,6 @@ function Descricao() {
   };
 
   function Lista(obj) {
-    console.log("isto" + decodedToken.level);
     return (
       
       <div class="d-flex flex-row">
@@ -213,6 +214,15 @@ function Descricao() {
     );
   }
 
+  const handleSearchChange = async (event) => {
+    event.preventDefault();
+    const regex = new RegExp(event.target.value, "i");
+    setRecordFiltered(record.filter(function (elem) {
+      return (elem["Nome"].search(regex)!== -1);
+    })
+    )
+  };
+
   return (
     <>
       <ToastContainer />
@@ -230,8 +240,11 @@ function Descricao() {
             <Container className="my-4 b-4">
               <h4>Campos</h4>
               <ListGroup>
+                <Form>
+                  <Form.Control className="d-flex mb-5" type="search" placeholder="Pesquisa livre..." aria-label="Procurar" onChange={handleSearchChange} />
+                </Form>
                 {Array.isArray(record) && record !== "NoPage" ? (
-                  record.map((obj) => (
+                  recordFiltered.map((obj) => (
                     <ListGroup className="list-group-flush" key={obj}>
                       <ListGroupItem>
                         {Edit === obj["_id"] ? (
