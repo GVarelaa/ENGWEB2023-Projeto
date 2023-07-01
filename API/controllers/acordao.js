@@ -13,15 +13,15 @@ module.exports.list = (query, skip, limit) => {
 };
 
 module.exports.getAcordao = (id) => {
-  if (isNaN(parseInt(id)))
-    throw new Error('O tipo do identificador do registo apresentado não corresponde a um número!')
-  return Acordao.findOne({ _id: id })
-    .then((response) => {
-      return response;
-    })
-    .catch((error) => {
-      return error;
-    });
+    if (isNaN(parseInt(id)))
+        throw new Error('O tipo do identificador do registo apresentado não corresponde a um número!')
+    return Acordao.findOne({ _id: id })
+        .then((response) => {
+            return response;
+        })
+        .catch((error) => {
+            return error;
+        });
 };
 
 module.exports.getAcordaosNumber = (query) => {

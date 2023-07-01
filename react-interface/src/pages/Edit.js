@@ -24,6 +24,9 @@ function Edit() {
         const fetchData = async () => {
             axios.get(env.apiTribunaisAccessPoint + `?token=${localStorage.token}`)
                 .then(response => {
+                    response.data.find(obj => obj._id === response.data[0]._id).descritores.sort()
+                    setDescritores(response.data.find(obj => obj._id === response.data[0]._id).descritores.map((descritor) => ({ label: descritor, value: descritor })))
+                    response.data.forEach(obj => { delete obj.descritores })
                     setTribunais(response.data)
                 })
                 .catch(error => {
@@ -33,21 +36,7 @@ function Edit() {
             axios.get(`${env.apiAcordaosAccessPoint}/${params.id}?token=${localStorage.token}`)
                 .then(response => {
                     if (!response.data.error){
-                        setRecord([response.data[0]])
-
-                        axios.get(env.apiTribunaisAccessPoint + "/" + response.data[0].tribunal + `?token=${localStorage.token}`)
-                            .then(response => {
-                                response.data.descritores.sort()
-                                setDescritores(
-                                    response.data.descritores.map((descritor) => ({
-                                        label: descritor,
-                                        value: descritor,
-                                    }))
-                                )
-                            })
-                            .catch(error => {
-                                toast.error("Não foi possível obter a lista de descritores!", { position: toast.POSITION.TOP_CENTER })
-                            })
+                        setRecord([response.data])
                     }
 
                     else setRecord("NoPage")
@@ -89,7 +78,6 @@ function Edit() {
 
 
     const handleTribunal = (e) => {
-        console.log(e.target.value)
         form["tribunal"] = e.target.value
 
         axios.get(env.apiTribunaisAccessPoint + "/" + e.target.value + `?token=${localStorage.token}`)

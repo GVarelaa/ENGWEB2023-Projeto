@@ -43,14 +43,12 @@ function Insert() {
         const fetchData = async () => {
             axios.get(env.apiTribunaisAccessPoint + `?token=${localStorage.token}`)
                 .then((response) => {
+                    response.data.find(obj => obj._id === response.data[0]._id).descritores.sort()
+                    setListaDescritores(response.data.find(obj => obj._id === response.data[0]._id).descritores.map((descritor) => ({ label: descritor, value: descritor })))
+                    response.data.forEach(obj => { delete obj.descritores })
                     setTribunais(response.data)
-                    response.data.descritores.sort()
-                    setListaDescritores(response.data.descritores.map((descritor) => ({ label: descritor, value: descritor })))
                 })
-                .catch((error) => {
-                    console.log("to")
-                    toast.error("Não foi possível obter a lista de tribunais!", { position: toast.POSITION.TOP_CENTER })
-                })
+                .catch((error) => {})
 
             axios.get(env.apiFieldsAccessPoint + `?token=${localStorage.token}`)
                 .then((response) => {
