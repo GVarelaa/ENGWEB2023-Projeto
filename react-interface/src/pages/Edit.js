@@ -13,18 +13,19 @@ var env = require("../config/env")
 
 function Edit() {
     var params = useParams()
-    const [record, setRecord] = useState(null)
-    const [campos, setCampos] = useState([])
     const [tribunais, setTribunais] = useState([])
     const [descritores, setDescritores] = useState([])
-    const [form, setForm] = useState({})
+    const [form, setForm] = useState(null)
 
     const [refresh, setRefresh] = useState("")
-    const [selectedCampos, setSelectedCampos] = useState([])
+    const [camposSelecionados, setCamposSelecionados] = useState([])
+    const [campos, setCampos] = useState([])
     const [isSelected, setIsSelected] = useState(false)
 
     useEffect(() => {
         const fetchData = async () => {
+            var record = []
+
             axios.get(env.apiTribunaisAccessPoint + `?token=${localStorage.token}`)
                 .then(response => {
                     response.data.forEach(obj => { delete obj.descritores })
@@ -34,52 +35,53 @@ function Edit() {
                     toast.error("Não foi possível obter a lista de tribunais!", { position: toast.POSITION.TOP_CENTER })
                 })
 
+
             axios.get(`${env.apiAcordaosAccessPoint}/${params.id}?token=${localStorage.token}`)
                 .then(response => {
                     if (!response.data.error) {
-                        setRecord(response.data)
-                        form["Descritores"] = response.data.Descritores
-                        form["Área Temática 1"] = response.data["Área Temática 1"]
-                        form["Área Temática 2"] = response.data["Área Temática 2"]
+                        record = response.data
+                        setForm(response.data)
 
                         axios.get(`${env.apiTribunaisAccessPoint}/${response.data.tribunal}?token=${localStorage.token}`)
-                            .then(response => {
-                                response.data.descritores.sort()
-                                setDescritores(response.data.descritores.map((descritor) => ({ label: descritor, value: descritor })))
+                            .then(response1 => {
+                                response1.data.descritores.sort()
+                                setDescritores(response1.data.descritores.map((descritor) => ({ label: descritor, value: descritor })))
                             })
                             .catch(error => {
                                 toast.error("Não foi possível obter a lista de descritores!", { position: toast.POSITION.TOP_CENTER })
                             })
                     }
-
-                    else setRecord("NoPage")
-
-                    axios.get(env.apiFieldsAccessPoint + `?token=${localStorage.token}`)
-                        .then(response => {
-                            response.data.sort((a, b) => {
-                                let f1 = a.field.toLowerCase(), f2 = b.field.toLowerCase()
-                                if (f1 < f2) return -1
-                                if (f1 > f2) return 1
-                                return 0
-                            })
-                            setCampos(response.data)
-                            
-                            Object.keys(record).forEach(key => {
-                                response.data.forEach(item => {
-                                  if (item.field === key) {
-                                    selectedCampos.push(item);
-                                  }
-                                })
-                              })
-
-                        })
-                        .catch(error => {
-                            toast.error("Não foi possível obter a lista de campos adicionais!", { position: toast.POSITION.TOP_CENTER })
-                        })
+                    else setForm("NoPage")
                 })
                 .catch(error => {
                     toast.error("Não foi possível obter a informação do acórdão!", { position: toast.POSITION.TOP_CENTER })
                 })
+
+
+            axios.get(env.apiFieldsAccessPoint + `?token=${localStorage.token}`)
+                .then(response => {
+                    response.data.sort((a, b) => {
+                        let f1 = a.field.toLowerCase(), f2 = b.field.toLowerCase()
+                        if (f1 < f2) return -1
+                        if (f1 > f2) return 1
+                        return 0
+                    })
+                    setCampos(response.data)
+
+                    Object.keys(record).forEach(key => {
+                        response.data.forEach(item => {
+                            if (item.field === key) {
+                                if(Array.isArray(record[key]) && record[key].length > 0) camposSelecionados.push(item);
+                            }
+                        })
+                    })
+
+                })
+                .catch(error => {
+                    console.log(error)
+                    toast.error("Não foi possível obter a lista de campos adicionais!", { position: toast.POSITION.TOP_CENTER })
+                })
+
         }
 
         fetchData()
@@ -99,6 +101,7 @@ function Edit() {
 
     const handleTribunal = (e) => {
         form["tribunal"] = e.target.value
+        setRefresh(new Date().toISOString())
 
         axios.get(env.apiTribunaisAccessPoint + "/" + e.target.value + `?token=${localStorage.token}`)
             .then(response => {
@@ -111,8 +114,8 @@ function Edit() {
     }
 
 
-    const handleChange = (e, field) => {
-        form[field] = e.target.value
+    const handleChange = (value, field) => {
+        form[field] = value
         setRefresh(new Date().toISOString())
     }
 
@@ -130,7 +133,7 @@ function Edit() {
 
     const handleFieldChange = (event) => {
         var campo = campos[event.target.selectedIndex - 1]
-        setSelectedCampos(current => [...current, campo])
+        setCamposSelecionados(current => [...current, campo])
         setCampos(current => { return current.filter(i => i.field !== campo.field) })
 
         if (campo.multiselect === "false") form[campo.field] = ""
@@ -143,7 +146,7 @@ function Edit() {
     const handleRemoveFieldSingle = (e, item) => {
 
         delete form[item.field]
-        setSelectedCampos(current => { return current.filter(i => i.field !== item.field) })
+        setCamposSelecionados(current => { return current.filter(i => i.field !== item.field) })
         setCampos(current => [...current, item].sort((a, b) => {
             let f1 = a.field.toLowerCase(), f2 = b.field.toLowerCase()
             if (f1 < f2) return -1
@@ -170,7 +173,7 @@ function Edit() {
 
         if (form[item.field].length < 1) {
             delete form[item.field]
-            setSelectedCampos(current => { return current.filter(i => i.field !== item.field) })
+            setCamposSelecionados(current => { return current.filter(i => i.field !== item.field) })
             setCampos(current => [...current, item].sort((a, b) => {
                 let f1 = a.field.toLowerCase(), f2 = b.field.toLowerCase()
                 if (f1 < f2) return -1
@@ -195,11 +198,12 @@ function Edit() {
             })
     }
 
-    console.log(selectedCampos)
+    console.log(form)
+    console.log(camposSelecionados)
 
     return (
         <>
-            {record && (record === "NoPage" ? (<NoPage />) :
+            {form && (form === "NoPage" ? (<NoPage />) :
                 (
                     <div>
                         <ToastContainer />
@@ -215,13 +219,13 @@ function Edit() {
                                                 <Col md={6}>
                                                     <Form.Group className="mb-3">
                                                         <Form.Label style={{ marginLeft: '10px' }}>Processo:</Form.Label>
-                                                        <Form.Control required type="text" placeholder="Processo" value={record.Processo} onChange={(e) => handleChange(e, "Processo")} />
+                                                        <Form.Control required type="text" placeholder="Processo" value={form["Processo"]} onChange={(e) => handleChange(e.target.value, "Processo")} />
                                                     </Form.Group>
                                                 </Col>
                                                 <Col md={6}>
                                                     <Form.Group className="mb-3">
                                                         <Form.Label style={{ marginLeft: '10px' }}>Data do Acordão:</Form.Label>
-                                                        <Form.Control required type="date" placeholder="Data do Acórdão" value={convertToISO8601(record["Data do Acordão"])} onChange={(e) => form["Data do Acordão"] = e.target.value} />
+                                                        <Form.Control required type="date" placeholder="Data do Acórdão" value={convertToISO8601(form["Data do Acordão"])} onChange={(e) => handleChange(convertToISO8601(e.target.value), "Data do Acordão")} />
                                                     </Form.Group>
                                                 </Col>
                                             </Row>
@@ -230,7 +234,7 @@ function Edit() {
                                                 <Col md={6}>
                                                     <Form.Group className="mb-3">
                                                         <Form.Label style={{ marginLeft: '10px' }}>Tribunal:</Form.Label>
-                                                        <Form.Select value={record.tribunal} onChange={(e) => handleTribunal(e)}>
+                                                        <Form.Select value={form.tribunal} onChange={(e) => handleTribunal(e)}>
                                                             {tribunais.map(tribunal => (
                                                                 <option key={tribunal._id} value={tribunal._id}>{tribunal.nome}</option>
                                                             ))}
@@ -240,7 +244,7 @@ function Edit() {
                                                 <Col md={6}>
                                                     <Form.Group>
                                                         <Form.Label style={{ marginLeft: '10px' }}>Relator:</Form.Label>
-                                                        <Form.Control required type="text" placeholder="Relator" value={record.Relator} onChange={(e) => form["Relator"] = e.target.value} />
+                                                        <Form.Control required type="text" placeholder="Relator" value={form["Relator"]} onChange={(e) => handleChange(e.target.value, "Relator")} />
                                                     </Form.Group>
                                                 </Col>
                                             </Row>
@@ -256,7 +260,7 @@ function Edit() {
                                                 <Col md={6}>
                                                     <Form.Label style={{ marginLeft: '10px' }}>Área Temática 1:</Form.Label>
                                                     {
-                                                        form["Área Temática 1"].map((area, index) => (
+                                                        form["Área Temática 1"] && form["Área Temática 1"].map((area, index) => (
                                                             <Row className="mb-3" key={index}>
                                                                 <Col md={11}>
                                                                     <Form.Group>
@@ -278,7 +282,7 @@ function Edit() {
                                                 <Col md={6}>
                                                     <Form.Label style={{ marginLeft: '10px' }}>Área Temática 2:</Form.Label>
                                                     {
-                                                        form["Área Temática 2"].map((area, index) => (
+                                                        form["Área Temática 2"] && form["Área Temática 2"].map((area, index) => (
                                                             <Row className="mb-3" key={index}>
                                                                 <Col md={11}>
                                                                     <Form.Group>
@@ -302,38 +306,39 @@ function Edit() {
                                             <Row className="gx-3 mb-3">
                                                 <Form.Group className="mb-3">
                                                     <Form.Label style={{ marginLeft: '10px' }}>Votação:</Form.Label>
-                                                    <Form.Control required type="text" placeholder="Votação" value={record["Votação"]} onChange={(e) => form["Votação"] = e.target.value} />
+                                                    <Form.Control required type="text" placeholder="Votação" value={form["Votação"]} onChange={(e) => handleChange(e.target.value, "Votação")} />
                                                 </Form.Group>
                                             </Row>
 
                                             <Row className="gx-3 mb-3">
                                                 <Form.Group className="mb-3">
                                                     <Form.Label style={{ marginLeft: '10px' }}>Decisão:</Form.Label>
-                                                    <Form.Control required type="text" placeholder="Decisão" value={record["Decisão"]} onChange={(e) => form["Decisão"] = e.target.value} />
+                                                    <Form.Control required type="text" placeholder="Decisão" value={form["Decisão"]} onChange={(e) => handleChange(e.target.value, "Decisão")} />
                                                 </Form.Group>
                                             </Row>
 
                                             <Row className="gx-3 mb-3">
                                                 <Form.Group>
                                                     <Form.Label style={{ marginLeft: '10px' }}>Meio Processual:</Form.Label>
-                                                    <Form.Control required type="text" placeholder="Meio Processual" value={record["Meio Processual"]} onChange={(e) => form["Meio Processual"] = e.target.value} />
+                                                    <Form.Control required type="text" placeholder="Meio Processual" value={form["Meio Processual"]} onChange={(e) => handleChange(e.target.value, "Meio Processual")} />
                                                 </Form.Group>
                                             </Row>
 
                                             <Row className="gx-3 mb-3">
                                                 <Form.Group className="my-3">
                                                     <Form.Label style={{ marginLeft: '10px' }}>Sumário:</Form.Label>
-                                                    <textarea required class="form-control" style={{ height: '200px' }} placeholder="Sumário" value={record["Sumário"]} onChange={(e) => form["Sumário"] = e.target.value} />
+                                                    <textarea required class="form-control" style={{ height: '200px' }} placeholder="Sumário" value={form["Sumário"]} onChange={(e) => handleChange(e.target.value, "Sumário")} />
                                                 </Form.Group>
                                             </Row>
 
                                             <Row className="gx-3 mb-3">
                                                 <Form.Group className="my-3">
                                                     <Form.Label style={{ marginLeft: '10px' }}>Decisão Texto Integral:</Form.Label>
-                                                    <textarea required class="form-control" style={{ height: '200px' }} placeholder="Decisão Texto Integral" value={record["Decisão Texto Integral"]} onChange={(e) => form["Decisão Texto Integral"] = e.target.value} />
+                                                    <textarea required class="form-control" style={{ height: '200px' }} placeholder="Decisão Texto Integral" value={form["Decisão Texto Integral"]} onChange={(e) => handleChange(e.target.value, "Decisão Texto Integral")} />
                                                 </Form.Group>
                                             </Row>
                                         </Container>
+
                                         <Container className="my-4 mb-5">
                                             <h4>Outras Informações</h4>
                                             <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={handleAddField}>Adicionar Informação</Button>
@@ -345,7 +350,7 @@ function Edit() {
                                                     })}
                                                 </Form.Select>
                                             )}
-                                            {selectedCampos.map(item => {
+                                            {camposSelecionados.map(item => {
                                                 return (
                                                     item.multiselect === "false"
                                                         ?

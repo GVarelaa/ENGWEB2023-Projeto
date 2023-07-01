@@ -10,7 +10,7 @@ import env from '../config/env'
 function Accordions({ data, setData, favorites, setFavorites, token, page, search }) {
     const [showModal, setShowModal] = useState(false);
     const [deleteItemID, setDeleteItemID] = useState(null);
-    const [searchParams] = useSearchParams()
+    const [refresh, setRefresh] = useState("")
 
     const handleFavorite = async (event, id) => {
         try {
@@ -59,9 +59,7 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
         try {
             await axios.delete(env.apiAcordaosAccessPoint + `/${id}?token=${localStorage.token}`)
 
-            setData(current => {
-                return current.filter((item) => item._id !== id)
-            })
+            setData(current => { return current.filter((item) => item._id.toString() !== id) })
 
             toast.success('O acórdão foi removido com sucesso!', {
                 position: toast.POSITION.TOP_CENTER
@@ -73,12 +71,13 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
         }
 
         handleHideModal();
+        setRefresh(new Date().toISOString())
     }
 
 
     return (
         <Accordion className='mb-4'>
-            
+
             {data.map((obj, index) => {
                 return (
                     <Accordion.Item eventKey={index}>
