@@ -18,7 +18,7 @@ router.get("/", verify.userAccess, function (req, res, next) {
     }
 
     if (req.query.lastID) {
-        req.query["_id"] = { $gt: parseInt(req.query.lastID) };
+        req.query["_id"] = { $lt: parseInt(req.query.lastID) };
         delete req.query.lastID;
     }
 

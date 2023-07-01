@@ -7,8 +7,8 @@ import { MultiSelect } from "react-multi-select-component";
 import { ToastContainer, toast } from "react-toastify"
 import { PlusCircle, Trash3 } from 'react-bootstrap-icons'
 import axios from "axios"
+import env from "../config/env"
 
-var env = require("../config/env")
 
 function Insert() {
     const [selectedDescritores, setSelectedDescritores] = useState([])
@@ -41,6 +41,7 @@ function Insert() {
         const fetchData = async () => {
             axios.get(env.apiTribunaisAccessPoint + `?token=${localStorage.token}`)
                 .then((response) => {
+                    console.log(response.data)
                     setTribunais(response.data)
 
                     axios.get(env.apiTribunaisAccessPoint + "/" + response.data[0]._id + "/descritores" + `?token=${localStorage.token}`)
@@ -212,8 +213,6 @@ function Insert() {
         setRefresh(new Date().toISOString())
     }
 
-
-    console.log(form)
 
     return (
         <>

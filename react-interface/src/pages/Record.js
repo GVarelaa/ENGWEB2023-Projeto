@@ -117,7 +117,7 @@ function Record() {
             <Container>
                 <hr className="mt-4 mb-4" />
                 <div className="d-flex justify-content-start mb-4">
-                    <Link to={searchParams.get('returnStart') ? `/?start=${searchParams.get('returnStart') - 1}` : "/"} style={{ "text-decoration": "none", color: "inherit" }}>
+                    <Link to={searchParams.get('returnPage') ? `/?page=${searchParams.get('returnPage')}` : "/"} style={{ "text-decoration": "none", color: "inherit" }}>
                         <Button variant="outline-dark" startIcon={<ArrowLeftShort />}>Voltar atrás</Button>
                     </Link>
                 </div>

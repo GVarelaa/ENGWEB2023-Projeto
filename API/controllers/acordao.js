@@ -4,6 +4,7 @@ module.exports.list = (query, skip, limit) => {
     return Acordao.find(query)
         .skip(skip)
         .limit(limit)
+        .sort({_id: -1})
         .then((response) => {
             return response;
         })

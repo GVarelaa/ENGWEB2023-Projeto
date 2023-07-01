@@ -83,7 +83,7 @@ function Accordions({ data, setData, favorites, setFavorites, token, page }) {
                         <Accordion.Header>
                             <Container><b>Processo: </b>{obj.Processo}</Container>
                             <Container className='d-flex justify-content-end px-3'>
-                                <Link to={`/${obj._id}?returnStart=${data[0]._id}`}> <Eye size={20} color='black' className='mx-3' /> </Link>
+                                <Link to={`/${obj._id}?returnPage=${page}`}> <Eye size={20} color='black' className='mx-3' /> </Link>
                                 {favorites.includes(obj._id)
                                     ? <Link> <HeartFill size={20} color='black' className='mx-3' onClick={(event) => handleFavorite(event, obj._id)} /> </Link>
                                     : <Link> <Heart size={20} color='black' className='mx-3' onClick={(event) => handleFavorite(event, obj._id)} /> </Link>
