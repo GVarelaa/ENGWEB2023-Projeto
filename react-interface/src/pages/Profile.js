@@ -5,7 +5,6 @@ import { Container, Row, Col, Form, Card } from "react-bootstrap"
 import { Check, Pencil, Trash3, Upload } from "react-bootstrap-icons"
 import { ToastContainer, toast } from "react-toastify"
 import NavBar from "../components/NavBar"
-import "./Profile.css"
 import axios from "axios"
 import jwt_decode from "jwt-decode"
 import env from "../config/env"
@@ -170,7 +169,7 @@ function Profile() {
                 <Form onSubmit={handleSubmit}>
                     <Row>
                         <Col md={3}>
-                            <Card className="mb-4 mb-xl-0">
+                            <Card className="mb-4 mb-xl-0" style={{ 'box-shadow': '0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)' }}>
                                 <Card.Body className="text-center">
                                     <img className="img-account-profile rounded-circle mb-2" alt="" src={fileURL} onError={({ currentTarget }) => {
                                         currentTarget.onerror = null // prevents looping
@@ -186,8 +185,8 @@ function Profile() {
                             </Card>
                         </Col>
 
-                        <Col md={8}>
-                            <Card className="mb-4">
+                        <Col md={9}>
+                            <Card className="mb-4" style={{ 'box-shadow': '0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)' }}>
                                 <Card.Body>
                                     <Row className="gx-3 mb-3">
                                         <Col md={6}>
