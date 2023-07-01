@@ -1,15 +1,15 @@
 var Acordao = require("../models/acordao");
 
 module.exports.list = (query, skip, limit) => {
-  return Acordao.find(query)
-    .skip(skip)
-    .limit(limit)
-    .then((response) => {
-      return response;
-    })
-    .catch((error) => {
-      return error;
-    });
+    return Acordao.find(query)
+        .skip(skip)
+        .limit(limit)
+        .then((response) => {
+            return response;
+        })
+        .catch((error) => {
+            return error;
+        });
 };
 
 module.exports.getAcordao = (id) => {
@@ -25,54 +25,60 @@ module.exports.getAcordao = (id) => {
 };
 
 module.exports.getAcordaosNumber = (query) => {
-  return Acordao.find(query)
-    .count()
-    .then((response) => {
-      return response;
-    })
-    .catch((error) => {
-      return error;
-    });
+    return Acordao.find(query)
+        .count()
+        .then((response) => {
+            return response;
+        })
+        .catch((error) => {
+            return error;
+        });
 };
 
 module.exports.getRelatores = () => {
-  return Acordao.distinct("Relator")
-    .then((response) => {
-      return response;
-    })
-    .catch((error) => {
-      return error;
-    });
+    return Acordao.distinct("Relator")
+        .then((response) => {
+            return response;
+        })
+        .catch((error) => {
+            return error;
+        });
 };
 
 module.exports.addAcordao = (acordao) => {
-  acordao._id = Acordao.find().count();
+    return Acordao.find().count()
+        .then((response1) => {
+            acordao["_id"] = response1
+            Acordao.create(acordao)
+                .then((response2) => {
+                    return response2;
+                })
+                .catch((error) => {
+                    return error;
+                });
+        })
+        .catch((error) => {
+            return error
+        })
 
-  return Acordao.create(acordao)
-    .then((response) => {
-      return response;
-    })
-    .catch((error) => {
-      return error;
-    });
 };
 
 module.exports.deleteAcordao = (id) => {
-  return Acordao.deleteOne({ _id: id })
-    .then((response) => {
-      return response;
-    })
-    .catch((error) => {
-      return error;
-    });
+    return Acordao.deleteOne({ _id: id })
+        .then((response) => {
+            return response;
+        })
+        .catch((error) => {
+            return error;
+        });
 };
 
 module.exports.updateAcordao = (acordao) => {
-  return Acordao.updateOne({ _id: acordao._id }, acordao)
-    .then((response) => {
-      return response;
-    })
-    .catch((error) => {
-      return error;
-    });
+    return Acordao.updateOne({ _id: acordao._id }, acordao)
+        .then((response) => {
+            return response;
+        })
+        .catch((error) => {
+            return error;
+        });
 };

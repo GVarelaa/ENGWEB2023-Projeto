@@ -7,9 +7,8 @@ import { Search as SearchIcon, PlusCircle, Trash3 } from 'react-bootstrap-icons'
 function Search({ setSearch, handleSearch }) {
     const [filters, setFilters] = useState([])
     const [possibleFilters, setPossibleFilters] = useState(["Processo", "Data", "Tribunal", "Relator", "Descritores", "Votação"])
+    const [queryString, setQueryString] = useState({})
     const [isSelected, setIsSelected] = useState(false)
-
-    const queryString = {}
 
     const handleAddFilter = () => {
         setIsSelected(true)

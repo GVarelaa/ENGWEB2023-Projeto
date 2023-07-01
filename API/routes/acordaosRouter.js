@@ -5,58 +5,58 @@ var verify = require("../verify/verify");
 
 /* GET home page. */
 router.get("/", verify.userAccess, function (req, res, next) {
-  var skip = 0, limit = 75; // Por default só manda 75 acordaos => impedir sobrecarga
+    var skip = 0, limit = 75; // Por default só manda 75 acordaos => impedir sobrecarga
 
-  if (req.query.skip) {
-    skip = req.query.skip
-    delete req.query.skip
-  }
+    if (req.query.skip) {
+        skip = req.query.skip
+        delete req.query.skip
+    }
 
-  if (req.query.limit) {
-    limit = req.query.limit;
-    delete req.query.limit;
-  }
+    if (req.query.limit) {
+        limit = req.query.limit;
+        delete req.query.limit;
+    }
 
-  if (req.query.lastID) {
-    req.query["_id"] = { $gt: parseInt(req.query.lastID) };
-    delete req.query.lastID;
-  }
+    if (req.query.lastID) {
+        req.query["_id"] = { $gt: parseInt(req.query.lastID) };
+        delete req.query.lastID;
+    }
 
-  if (req.query.search) {
-    req.query["$text"] = { $search: `\"${req.query.search}\"` };
-    delete req.query.search;
-  }
+    if (req.query.search) {
+        req.query["$text"] = { $search: `\"${req.query.search}\"` };
+        delete req.query.search;
+    }
 
-  // Meter isto case sensative
+    // Meter isto case sensative
 
 
-  Acordao.list(req.query, skip, limit)
-    .then((data) => {
-      res.status(200).json(data);
-    })
-    .catch((error) =>
-      res.status(521).json({
-        error: error,
-        message: "Erro na obtenção da lista de acordãos",
-      })
-    );
+    Acordao.list(req.query, skip, limit)
+        .then((data) => {
+            res.status(200).json(data);
+        })
+        .catch((error) =>
+            res.status(521).json({
+                error: error,
+                message: "Erro na obtenção da lista de acordãos",
+            })
+        );
 });
 
 router.get("/number", verify.userAccess, function (req, res, next) {
-  if (req.query.search) {
-    req.query["$text"] = { $search: `\"${req.query.search}\"` };
-    delete req.query.search;
-  }
+    if (req.query.search) {
+        req.query["$text"] = { $search: `\"${req.query.search}\"` };
+        delete req.query.search;
+    }
 
-  Acordao.getAcordaosNumber(req.query)
-    .then((data) => res.status(200).json(data))
-    .catch((error) => res.status(523).json({ error: "Erro na obtenção do número de acordãos" }))
+    Acordao.getAcordaosNumber(req.query)
+        .then((data) => res.status(200).json(data))
+        .catch((error) => res.status(523).json({ error: "Erro na obtenção do número de acordãos" }))
 });
 
 router.get("/relatores", verify.userAccess, function (req, res, next) {
-  Acordao.getRelatores()
-    .then((data) => res.status(200).json(data))
-    .catch((error) => res.status(523).json({ error: "Erro na obtenção de relatores" }))
+    Acordao.getRelatores()
+        .then((data) => res.status(200).json(data))
+        .catch((error) => res.status(523).json({ error: "Erro na obtenção de relatores" }))
 });
 
 router.get("/:id", verify.userAccess, function (req, res, next) {
@@ -72,21 +72,21 @@ router.get("/:id", verify.userAccess, function (req, res, next) {
 });
 
 router.post("/", verify.adminAccess, function (req, res, next) {
-  Acordao.addAcordao(req.body)
-    .then((data) => res.status(200).json(data))
-    .catch((error) => res.status(523).json({ error: "Erro na criação do acordão" }))
+    Acordao.addAcordao(req.body)
+        .then((data) => res.status(200).json(data))
+        .catch((error) => res.status(523).json({ error: "Erro na criação do acordão" }))
 });
 
 router.delete("/:id", verify.adminAccess, function (req, res, next) {
-  Acordao.deleteAcordao(req.params.id)
-    .then((data) => res.status(200).json(data))
-    .catch((error) => res.status(524).json({ error: "Erro na deleção do acordão" }))
+    Acordao.deleteAcordao(req.params.id)
+        .then((data) => res.status(200).json(data))
+        .catch((error) => res.status(524).json({ error: "Erro na deleção do acordão" }))
 });
 
 router.put("/:id", verify.adminAccess, function (req, res) {
-  Acordao.updateAcordao(req.body)
-    .then((data) => res.status(201).json(data))
-    .catch((error) => res.status(525).json({ error: "Erro a atualizar acordão." }))
+    Acordao.updateAcordao(req.body)
+        .then((data) => res.status(201).json(data))
+        .catch((error) => res.status(525).json({ error: "Erro a atualizar acordão." }))
 });
 
 module.exports = router;
