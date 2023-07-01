@@ -1,9 +1,8 @@
 import NavBar from "../components/NavBar"
-import { useState, useEffect } from "react"
+import { useState} from "react"
 import { Link } from "react-router-dom"
-import { Container, Form, FloatingLabel, Col, Row, Card } from "react-bootstrap"
+import { Container, Form, Col, Row, Card } from "react-bootstrap"
 import Button from '@mui/material/Button'
-import { MultiSelect } from "react-multi-select-component";
 import { ToastContainer, toast } from "react-toastify"
 import { PlusCircle, Trash3 } from 'react-bootstrap-icons'
 import axios from "axios"
@@ -11,10 +10,6 @@ import axios from "axios"
 var env = require("../config/env")
 
 function Insert() {
-
-    const [campos, setCampos] = useState([])
-    const [tribunais, setTribunais] = useState([])
-    const [listaDescritores, setListaDescritores] = useState([])
     const [form, setForm] = useState({
         "nome":"",
         "_id":"",
@@ -22,58 +17,8 @@ function Insert() {
         "areaTematica1": [""],
         "areaTematica2": [""]
     })
+    
     const [refresh, setRefresh] = useState("") // Atualizar o estado
-
-
-    useEffect(() => {
-        const fetchData = async () => {
-            axios.get(env.apiTribunaisAccessPoint + `?token=${localStorage.token}`)
-                .then((response) => {
-                    setTribunais(response.data)
-
-                    axios.get(env.apiTribunaisAccessPoint + "/" + response.data[0]._id + "/descritores" + `?token=${localStorage.token}`)
-                        .then((response) => {
-                            response.data.descritores.sort()
-                            setListaDescritores(
-                                response.data.descritores.map((descritor) => ({
-                                    label: descritor,
-                                    value: descritor,
-                                }))
-                            )
-                        })
-                        .catch((error) => {
-                            toast.error("Não foi possível obter a lista de descritores!", {
-                                position: toast.POSITION.TOP_CENTER
-                            })
-                        })
-                })
-                .catch((error) => {
-                    toast.error("Não foi possível obter a lista de tribunais!", {
-                        position: toast.POSITION.TOP_CENTER
-                    })
-                })
-
-            axios.get(env.apiFieldsAccessPoint + `?token=${localStorage.token}`)
-                .then((response) => {
-                    response.data.sort((a, b) => {
-                        let f1 = a.field.toLowerCase(),
-                            f2 = b.field.toLowerCase()
-
-                        if (f1 < f2) return -1
-                        if (f1 > f2) return 1
-                        return 0
-                    })
-                    setCampos(response.data)
-                })
-                .catch((error) => {
-                    toast.error("Não foi possível obter a lista de campos adicionais!", {
-                        position: toast.POSITION.TOP_CENTER
-                    })
-                })
-        }
-
-        fetchData()
-    }, [])
 
     const handleSubmit = (event) => {
         event.preventDefault()
@@ -100,14 +45,7 @@ function Insert() {
 
 
     const handleATRemoveField = (e, field, index) => {
-        var list = []
-        for (let i = 0; i < form[field].length; i++) {
-            if (i !== index) {
-                list.push(form[field][i])
-            }
-        }
-
-        form[field] = list
+        form[field].splice(index,1)
         setRefresh(new Date().toISOString())
     }
 
@@ -128,9 +66,6 @@ function Insert() {
         form[field] = e.target.value
         setRefresh(new Date().toISOString())
     }
-
-
-    console.log(form)
 
     return (
         <>
