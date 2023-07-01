@@ -38,7 +38,6 @@ function NavBar() {
 
                             <NavDropdown className='pe-5 me-5' title={<FontAwesomeIcon icon={faUser} size='lg' />} id="account-dropdown">
                                 <NavDropdown.Item href="/profile">Perfil</NavDropdown.Item>
-                                <NavDropdown.Item href="#settings">Definições</NavDropdown.Item>
                                 <NavDropdown.Divider />
                                 <NavDropdown.Item href="/" onClick={handleLogout}>Sair</NavDropdown.Item>
                             </NavDropdown>
