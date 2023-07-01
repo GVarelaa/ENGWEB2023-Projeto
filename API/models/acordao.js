@@ -60,14 +60,14 @@ var acordaoSchema = new mongoose.Schema({
   "Volume dos Acordãos do T.C.": String,
   Autor: String,
   Réu: [String],
-  "Data do Acordão 2": String
+  "Data do Acordão 2": String,
 });
 
-acordaoSchema.index({ "Processo": 1 });
+acordaoSchema.index({ Processo: 1 });
 acordaoSchema.index({ "Data do Acordão": 1 });
-acordaoSchema.index({ "Descritores": 1});
-acordaoSchema.index({ "Relator": 1 });
-acordaoSchema.index({ "tribunal": 1 });
+acordaoSchema.index({ Descritores: 1 });
+acordaoSchema.index({ Relator: 1 });
+acordaoSchema.index({ tribunal: 1 });
 acordaoSchema.index({ "$**": "text" });
 
 module.exports = mongoose.model("acordao", acordaoSchema);
