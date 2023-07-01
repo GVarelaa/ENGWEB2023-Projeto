@@ -1,6 +1,6 @@
 import NavBar from "../components/NavBar"
 import NoPage from "../pages/NoPage"
-import { useParams, Link } from "react-router-dom"
+import { useParams, Link, useNavigate  } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { Container, Form, FloatingLabel, Col, Row, Card } from "react-bootstrap"
 import Button from '@mui/material/Button'
@@ -13,12 +13,14 @@ var env = require("../config/env")
 
 function Edit() {
     var params = useParams()
+    const navigate = useNavigate();
     const [tribunais, setTribunais] = useState([])
     const [descritores, setDescritores] = useState([])
     const [form, setForm] = useState(null)
 
     const [refresh, setRefresh] = useState("")
     const [camposSelecionados, setCamposSelecionados] = useState([])
+    const [selectedDescritores, setSelectedDescritores] = useState([])
     const [campos, setCampos] = useState([])
     const [isSelected, setIsSelected] = useState(false)
 
@@ -41,6 +43,7 @@ function Edit() {
                     if (!response.data.error) {
                         record = response.data
                         setForm(response.data)
+                        setSelectedDescritores(response.data.Descritores.map(descritor => ({label: descritor, value: descritor})))
 
                         axios.get(`${env.apiTribunaisAccessPoint}/${response.data.tribunal}?token=${localStorage.token}`)
                             .then(response1 => {
@@ -66,14 +69,20 @@ function Edit() {
                         if (f1 > f2) return 1
                         return 0
                     })
-                    setCampos(response.data)
-
+                    
                     Object.keys(record).forEach(key => {
                         response.data.forEach(item => {
                             if (item.field === key) {
-                                if(Array.isArray(record[key]) && record[key].length > 0) camposSelecionados.push(item);
+                                if(Array.isArray(record[key])) {
+                                    if(record[key].length > 0) camposSelecionados.push(item)
+                                }
+                                else camposSelecionados.push(item)
                             }
                         })
+                    })
+
+                    response.data.map(item => {
+                        if(!camposSelecionados.includes(item)) campos.push(item)
                     })
 
                 })
@@ -120,12 +129,6 @@ function Edit() {
     }
 
 
-    const handleSelectedDescritoresChange = (selectedOptions) => {
-        form["Descritores"](selectedOptions.map(option => option.value))
-        setRefresh(new Date().toISOString())
-    }
-
-
     const handleAddField = () => {
         setIsSelected(true)
     }
@@ -156,7 +159,7 @@ function Edit() {
     }
 
 
-    const handleAddFieldMulti = (e, item) => {
+    const handleMultiAddField = (e, item) => {
         form[item.field] = [...form[item.field], ""]
         setRefresh(new Date().toISOString())
     }
@@ -168,7 +171,7 @@ function Edit() {
     }
 
 
-    const handleRemoveFieldMulti = (e, index, item) => {
+    const handleMultiRemoveField = (e, index, item) => {
         form[item.field].splice(index, 1)
 
         if (form[item.field].length < 1) {
@@ -188,10 +191,12 @@ function Edit() {
 
     const handleSubmit = (event) => {
         event.preventDefault()
+        form["Descritores"] = selectedDescritores.map(obj => obj.label)
 
         axios.put(env.apiAcordaosAccessPoint + `/${params.id}?token=${localStorage.token}`, form)
             .then(response => {
                 toast.success("O acórdão foi atualizado com sucesso!", { position: toast.POSITION.TOP_CENTER })
+                navigate("/")
             })
             .catch(error => {
                 toast.error("Não foi possível atualizar o acórdão!", { position: toast.POSITION.TOP_CENTER })
@@ -252,7 +257,7 @@ function Edit() {
                                             <Row className="gx-3 mb-3">
                                                 <Form.Group className="mb-3">
                                                     <Form.Label style={{ marginLeft: '10px' }}>Descritores:</Form.Label>
-                                                    <MultiSelect options={descritores} value={form["Descritores"].map(value => ({ label: value, value: value }))} onChange={handleSelectedDescritoresChange} labelledBy="Selecionar" />
+                                                    <MultiSelect options={descritores} value={selectedDescritores} onChange={setSelectedDescritores} labelledBy="Selecionar" />
                                                 </Form.Group>
                                             </Row>
 
@@ -268,14 +273,14 @@ function Edit() {
                                                                     </Form.Group>
                                                                 </Col>
                                                                 <Col md={1} className="d-flex justify-content-start">
-                                                                    <Link><Trash3 style={{ marginTop: '0.25cm', marginLeft: '-1em' }} size={20} color="black" onClick={(e) => handleRemoveFieldMulti(e, index, campos.find(item => item.field === "Área Temática 1"))} /></Link>
+                                                                    <Link><Trash3 style={{ marginTop: '0.25cm', marginLeft: '-1em' }} size={20} color="black" onClick={(e) => handleMultiRemoveField(e, index, campos.find(item => item.field === "Área Temática 1"))} /></Link>
                                                                 </Col>
                                                             </Row>
                                                         ))
                                                     }
                                                     <Row>
                                                         <div style={{ width: '50%' }}>
-                                                            <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleAddFieldMulti(e, campos.find(item => item.field === "Área Temática 1"))}>Adicionar Área Temática</Button>
+                                                            <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleMultiAddField(e, campos.find(item => item.field === "Área Temática 1"))}>Adicionar Área Temática</Button>
                                                         </div>
                                                     </Row>
                                                 </Col>
@@ -290,14 +295,14 @@ function Edit() {
                                                                     </Form.Group>
                                                                 </Col>
                                                                 <Col md={1} className="d-flex justify-content-start">
-                                                                    <Link><Trash3 style={{ marginTop: '0.25cm', marginLeft: '-1em' }} size={20} color="black" onClick={(e) => handleRemoveFieldMulti(e, index, campos.find(item => item.field === "Área Temática 2"))} /></Link>
+                                                                    <Link><Trash3 style={{ marginTop: '0.25cm', marginLeft: '-1em' }} size={20} color="black" onClick={(e) => handleMultiRemoveField(e, index, campos.find(item => item.field === "Área Temática 2"))} /></Link>
                                                                 </Col>
                                                             </Row>
                                                         ))
                                                     }
                                                     <Row>
                                                         <div style={{ width: '50%' }}>
-                                                            <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleAddFieldMulti(e, campos.find(item => item.field === "Área Temática 2"))}>Adicionar Área Temática</Button>
+                                                            <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleMultiAddField(e, campos.find(item => item.field === "Área Temática 2"))}>Adicionar Área Temática</Button>
                                                         </div>
                                                     </Row>
                                                 </Col>
@@ -357,7 +362,7 @@ function Edit() {
                                                         <Row>
                                                             <Col md={10}>
                                                                 <FloatingLabel className="form-outline" label={item.field} style={{ transform: 'scale(0.90)' }}>
-                                                                    <Form.Control className="my-3" type="text" placeholder={item.field} onChange={(e) => form[item.field] = e.target.value} />
+                                                                    <Form.Control className="my-3" type="text" placeholder={item.field} value={form[item.field]} onChange={(e) => handleChange(e.target.value, item.field)} />
                                                                 </FloatingLabel>
                                                             </Col>
                                                             <Col md={1} className="d-flex justify-content-start">
@@ -376,13 +381,13 @@ function Edit() {
                                                                                 </FloatingLabel>
                                                                             </Col>
                                                                             <Col md={1} className="d-flex justify-content-start">
-                                                                                <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => handleRemoveFieldMulti(e, index, item)} /></Link>
+                                                                                <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => handleMultiRemoveField(e, index, item)} /></Link>
                                                                             </Col>
                                                                         </Row>)
                                                                 })
                                                             }
                                                             <Row>
-                                                                <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={e => handleAddFieldMulti(e, item)}>Adicionar {item.field}</Button>
+                                                                <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={e => handleMultiAddField(e, item)}>Adicionar {item.field}</Button>
                                                             </Row>
                                                         </>
                                                 )
