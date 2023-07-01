@@ -60,9 +60,15 @@ router.get("/relatores", verify.userAccess, function (req, res, next) {
 });
 
 router.get("/:id", verify.userAccess, function (req, res, next) {
+  try{
   Acordao.getAcordao(req.params.id)
     .then((data) => res.status(200).json(data))
     .catch((error) => res.status(522).json({ error: "Erro na obtenção do acordão" }));
+  }
+  catch (e){
+    console.log(e)
+    res.jsonp({ error: e.message});
+  }
 });
 
 router.post("/", verify.adminAccess, function (req, res, next) {

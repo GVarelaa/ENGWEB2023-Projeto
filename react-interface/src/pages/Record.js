@@ -23,7 +23,8 @@ function Record() {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`${env.apiAcordaosAccessPoint}/${params.id}?token=${localStorage.token}`)
-                if (response.data) setRecord([response.data])
+                console.log(response.data)
+                if (!response.data.error) setRecord([response.data])
                 else setRecord("NoPage")
             } catch (error) {
                 console.log(error)
@@ -110,6 +111,10 @@ function Record() {
 
     return (
         <>
+            {record && (record === "NoPage"? (
+                <NoPage />
+            ) : (
+                <div>
             <ToastContainer />
             <NavBar />
             <Container>
@@ -151,10 +156,7 @@ function Record() {
                         { /* INFORMAÇÃO PRINCIPAL */ }
                         <Container className="my-4 mb-5">
                             <h4>Informação Principal</h4>
-                            <ListGroup>
-                                {record && (record === "NoPage"? (
-                                    <NoPage />
-                                ) : [
+                            <ListGroup>[
                                     record[0].Processo && (
                                         <ListGroupItem><b>Processo: </b>{record[0].Processo}</ListGroupItem>
                                     ),
@@ -200,7 +202,7 @@ function Record() {
                                     record[0]["Sumário"] && (
                                         <ListGroupItem><b>Sumário: </b>{record[0]["Sumário"]}</ListGroupItem>
                                     )
-                                ])}
+                                ]
                             </ListGroup>
                         </Container>
                         { /* OUTRAS INFORMAÇÕES */ }
@@ -291,6 +293,8 @@ function Record() {
                     </Card.Body>
                 </Card>
             </Container>
+            </div>
+            ))}
         </>
     )
 }
