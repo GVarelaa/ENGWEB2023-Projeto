@@ -15,7 +15,7 @@ module.exports.list = (query, skip, limit) => {
 module.exports.getAcordao = (id) => {
   if (isNaN(parseInt(id)))
     throw new Error('O tipo do identificador do registo apresentado não corresponde a um número!')
-  return Acordao.find({ _id: id })
+  return Acordao.findOne({ _id: id })
     .then((response) => {
       return response;
     })

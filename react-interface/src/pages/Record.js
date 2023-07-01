@@ -153,7 +153,7 @@ function Record() {
                         { /* INFORMAÇÃO PRINCIPAL */ }
                         <Container className="my-4 mb-5">
                             <h4>Informação Principal</h4>
-                            <ListGroup>[
+                            <ListGroup> {[
                                     record[0].Processo && (
                                         <ListGroupItem><b>Processo: </b>{record[0].Processo}</ListGroupItem>
                                     ),
@@ -199,7 +199,7 @@ function Record() {
                                     record[0]["Sumário"] && (
                                         <ListGroupItem><b>Sumário: </b>{record[0]["Sumário"]}</ListGroupItem>
                                     )
-                                ]
+                                ]}
                             </ListGroup>
                         </Container>
                         { /* OUTRAS INFORMAÇÕES */ }
