@@ -19,10 +19,8 @@ function Edit() {
     const [descritores, setDescritores] = useState([])
     const [form, setForm] = useState({})
 
-    const [selectedDescritores, setSelectedDescritores] = useState([])
-    const [selectedAreas1, setSelectedAreas1] = useState([])
-    const [selectedAreas2, setSelectedAreas2] = useState([])
-
+    const [refresh, setRefresh] = useState("")
+    const [selectedCampos, setSelectedCampos] = useState("")
 
     useEffect(() => {
         const fetchData = async () => {
@@ -39,9 +37,10 @@ function Edit() {
                 .then(response => {
                     if (!response.data.error) {
                         setRecord(response.data)
-                        setSelectedDescritores(response.data.Descritores)
-                        setSelectedAreas1(response.data["Área Temática 1"])
-                        setSelectedAreas2(response.data["Área Temática 2"])
+                        form["Descritores"] = response.data.Descritores
+                        form["Área Temática 1"] = response.data["Área Temática 1"]
+                        form["Área Temática 2"] = response.data["Área Temática 2"]
+                        setRefresh(new Date().toISOString())
 
                         axios.get(`${env.apiTribunaisAccessPoint}/${response.data.tribunal}?token=${localStorage.token}`)
                             .then(response => {
@@ -105,26 +104,47 @@ function Edit() {
     }
 
 
+    const handleChange = (e, field) => {
+        form[field] = e.target.value
+        setRefresh(new Date().toISOString())
+    }
+
+
     const handleSelectedDescritoresChange = (selectedOptions) => {
-        setSelectedDescritores(selectedOptions.map(option => option.value))
+        form["Descritores"](selectedOptions.map(option => option.value))
+        setRefresh(new Date().toISOString())
     }
 
 
-    const handleATAddField = (e, area) => {
-        if (area === 1) setSelectedAreas1(current => [...current, ""])
-        else if (area === 2) setSelectedAreas2(current => [...current, ""])
+    const handleAddFieldMulti = (e, field) => {
+        form[field] = [...form[field], ""]
+        setRefresh(new Date().toISOString())
     }
 
 
-    const handleATChangeField = (e, index, area) => {
-        if (area === 1) selectedAreas1[index] = e.target.value
-        else if (area === 2) selectedAreas2[index] = e.target.value
+    const handleChangeFieldMulti = (e, index, field) => {
+        form[field][index] = e.target.value
+        setRefresh(new Date().toISOString())
     }
 
 
-    const handleATRemoveField = (e, index, area) => {
-        if (area === 1) selectedAreas1.splice(index, 1)
-        else if (area === 2) selectedAreas2.splice(index, 1)
+    const handleRemoveFieldMulti = (e, index, field) => {
+        form[field].splice(index, 1)
+
+        if (field != "Área Temática 1" && field != "Área Temática 2"){
+            delete form[field]
+            setSelectedCampos(current => { return current.filter(i => i.field !== field) })
+            setCampos(current => [...current, field].sort((a, b) => {
+                let f1 = a.field.toLowerCase(),
+                    f2 = b.field.toLowerCase()
+    
+                if (f1 < f2) return -1
+                if (f1 > f2) return 1
+                return 0
+            }))
+        }
+
+        setRefresh(new Date().toISOString())
     }
 
 
@@ -192,7 +212,7 @@ function Edit() {
                                             <Row className="gx-3 mb-3">
                                                 <Form.Group className="mb-3">
                                                     <Form.Label style={{ marginLeft: '10px' }}>Descritores:</Form.Label>
-                                                    <MultiSelect options={descritores} value={selectedDescritores.map(value => ({ label: value, value: value }))} onChange={handleSelectedDescritoresChange} labelledBy="Selecionar" />
+                                                    <MultiSelect options={descritores} value={form["Descritores"].map(value => ({ label: value, value: value }))} onChange={handleSelectedDescritoresChange} labelledBy="Selecionar" />
                                                 </Form.Group>
                                             </Row>
 
@@ -200,44 +220,44 @@ function Edit() {
                                                 <Col md={6}>
                                                     <Form.Label style={{ marginLeft: '10px' }}>Área Temática 1:</Form.Label>
                                                     {
-                                                        selectedAreas1.map((area, index) => (
+                                                        form["Área Temática 1"].map((area, index) => (
                                                             <Row className="mb-3" key={index}>
                                                                 <Col md={11}>
                                                                     <Form.Group>
-                                                                        <Form.Control type="text" placeholder={"Área Temática 1 - " + (index + 1)} value={selectedAreas1[index]} onChange={(e) => handleATChangeField(e, index, 1)}/>
+                                                                        <Form.Control type="text" placeholder={"Área Temática 1 - " + (index + 1)} value={form["Área Temática 1"][index]} onChange={(e) => handleChangeFieldMulti(e, index, "Área Temática 1")}/>
                                                                     </Form.Group>
                                                                 </Col>
                                                                 <Col md={1} className="d-flex justify-content-start">
-                                                                    <Link><Trash3 style={{ marginTop: '0.25cm', marginLeft: '-1em' }} size={20} color="black" onClick={(e) => handleATRemoveField(e, index, 1)}/></Link>
+                                                                    <Link><Trash3 style={{ marginTop: '0.25cm', marginLeft: '-1em' }} size={20} color="black" onClick={(e) => handleRemoveFieldMulti(e, index, "Área Temática 1")}/></Link>
                                                                 </Col>
                                                             </Row>
                                                         ))
                                                     }
                                                     <Row>
                                                         <div style={{ width: '50%' }}>
-                                                            <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleATAddField(e, 1)}>Adicionar Área Temática</Button>
+                                                            <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleAddFieldMulti(e, "Área Temática 1")}>Adicionar Área Temática</Button>
                                                         </div>
                                                     </Row>
                                                 </Col>
                                                 <Col md={6}>
                                                     <Form.Label style={{ marginLeft: '10px' }}>Área Temática 2:</Form.Label>
                                                     {
-                                                        selectedAreas2.map((area, index) => (
+                                                        form["Área Temática 2"].map((area, index) => (
                                                             <Row className="mb-3" key={index}>
                                                                 <Col md={11}>
                                                                     <Form.Group>
-                                                                        <Form.Control type="text" placeholder={"Área Temática 2 - " + (index + 1)} value={selectedAreas2[index]} onChange={(e) => handleATChangeField(e, index, 2)}/>
+                                                                        <Form.Control type="text" placeholder={"Área Temática 2 - " + (index + 1)} value={form["Área Temática 2"][index]} onChange={(e) => handleChangeFieldMulti(e, index, "Área Temática 2")}/>
                                                                     </Form.Group>
                                                                 </Col>
                                                                 <Col md={1} className="d-flex justify-content-start">
-                                                                    <Link><Trash3 style={{ marginTop: '0.25cm', marginLeft: '-1em' }} size={20} color="black" onClick={(e) => handleATRemoveField(e, index, 2)}/></Link>
+                                                                    <Link><Trash3 style={{ marginTop: '0.25cm', marginLeft: '-1em' }} size={20} color="black" onClick={(e) => handleRemoveFieldMulti(e, index, "Área Temática 2")}/></Link>
                                                                 </Col>
                                                             </Row>
                                                         ))
                                                     }
                                                     <Row>
                                                         <div style={{ width: '50%' }}>
-                                                            <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleATAddField(e, 2)}>Adicionar Área Temática</Button>
+                                                            <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleAddFieldMulti(e, "Área Temática 2")}>Adicionar Área Temática</Button>
                                                         </div>
                                                     </Row>
                                                 </Col>
