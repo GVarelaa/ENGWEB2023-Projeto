@@ -1,6 +1,6 @@
 import NavBar from "../components/NavBar"
 import { useState, useEffect } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { Container, Form, FloatingLabel, Col, Row, Card } from "react-bootstrap"
 import Button from '@mui/material/Button'
 import { MultiSelect } from "react-multi-select-component";
@@ -11,6 +11,8 @@ import axios from "axios"
 var env = require("../config/env")
 
 function Insert() {
+    const navigate = useNavigate()
+
     const [selectedDescritores, setSelectedDescritores] = useState([])
     const [selectedAT1, setSelectedAT1] = useState([])
     const [selectedAT2, setSelectedAT2] = useState([])
@@ -42,27 +44,12 @@ function Insert() {
             axios.get(env.apiTribunaisAccessPoint + `?token=${localStorage.token}`)
                 .then((response) => {
                     setTribunais(response.data)
-
-                    axios.get(env.apiTribunaisAccessPoint + "/" + response.data[0]._id + "/descritores" + `?token=${localStorage.token}`)
-                        .then((response) => {
-                            response.data.descritores.sort()
-                            setListaDescritores(
-                                response.data.descritores.map((descritor) => ({
-                                    label: descritor,
-                                    value: descritor,
-                                }))
-                            )
-                        })
-                        .catch((error) => {
-                            toast.error("Não foi possível obter a lista de descritores!", {
-                                position: toast.POSITION.TOP_CENTER
-                            })
-                        })
+                    response.data.descritores.sort()
+                    setListaDescritores(response.data.descritores.map((descritor) => ({ label: descritor, value: descritor })))
                 })
                 .catch((error) => {
-                    toast.error("Não foi possível obter a lista de tribunais!", {
-                        position: toast.POSITION.TOP_CENTER
-                    })
+                    console.log("to")
+                    toast.error("Não foi possível obter a lista de tribunais!", { position: toast.POSITION.TOP_CENTER })
                 })
 
             axios.get(env.apiFieldsAccessPoint + `?token=${localStorage.token}`)
@@ -78,9 +65,7 @@ function Insert() {
                     setCampos(response.data)
                 })
                 .catch((error) => {
-                    toast.error("Não foi possível obter a lista de campos adicionais!", {
-                        position: toast.POSITION.TOP_CENTER
-                    })
+                    toast.error("Não foi possível obter a lista de campos adicionais!", { position: toast.POSITION.TOP_CENTER })
                 })
         }
 
@@ -88,38 +73,25 @@ function Insert() {
     }, [])
 
 
+    function convertFromISO8601(date) {
+        var parts = date.split("-")
+        var year = parts[0], month = parts[1], day = parts[2]
+      
+        return day + "/" + month + "/" + year
+      }
+
+
     const handleTribunal = (e) => {
         form["tribunal"] = e.target.value
         setRefresh(new Date().toISOString())
 
-        axios.get(env.apiTribunaisAccessPoint + "/" + e.target.value + "/descritores" + `?token=${localStorage.token}`)
+        axios.get(env.apiTribunaisAccessPoint + "/" + e.target.value + `?token=${localStorage.token}`)
             .then((response) => {
+                response.data.descritores.sort()
                 setListaDescritores(response.data.descritores.map((descritor) => ({ label: descritor, value: descritor })))
             })
             .catch((error) => {
-                toast.error("Não foi possível obter a lista de descritores!", {
-                    position: toast.POSITION.TOP_CENTER
-                })
-            })
-    }
-
-
-    const handleSubmit = (event) => {
-        event.preventDefault()
-        var descritores = []
-        selectedDescritores.map(obj => descritores.push(obj.label))
-        form["Descritores"] = descritores
-
-        axios.post(env.apiAcordaosAccessPoint + `?token=${localStorage.token}`, form)
-            .then((response) => {
-                toast.success("O acórdão foi adicionado com sucesso!", {
-                    position: toast.POSITION.TOP_CENTER
-                })
-            })
-            .catch((error) => {
-                toast.error("Não foi possível adicionar o acórdão!", {
-                    position: toast.POSITION.TOP_CENTER
-                })
+                toast.error("Não foi possível obter as informações do tribunal!", { position: toast.POSITION.TOP_CENTER })
             })
     }
 
@@ -213,7 +185,22 @@ function Insert() {
     }
 
 
-    console.log(form)
+    const handleSubmit = (event) => {
+        event.preventDefault()
+        var descritores = []
+        selectedDescritores.map(obj => descritores.push(obj.label))
+        form["Descritores"] = descritores
+
+        axios.post(env.apiAcordaosAccessPoint + `?token=${localStorage.token}`, form)
+            .then((response) => {
+                toast.success("O acórdão foi adicionado com sucesso!", { position: toast.POSITION.TOP_CENTER })
+                navigate('/')
+            })
+            .catch((error) => {
+                toast.error("Não foi possível adicionar o acórdão!", { position: toast.POSITION.TOP_CENTER })
+            })
+    }
+
 
     return (
         <>
@@ -236,12 +223,12 @@ function Insert() {
                                     <Col md={6}>
                                         <Form.Group className="mb-3">
                                             <Form.Label style={{ marginLeft: '10px' }}>Data do Acordão:</Form.Label>
-                                            <Form.Control required type="date" placeholder="Data do Acórdão" onChange={(e) => form["Data do Acordão"] = e.target.value} />
+                                            <Form.Control required type="date" placeholder="Data do Acórdão" onChange={(e) => form["Data do Acordão"] = convertFromISO8601(e.target.value)} />
                                         </Form.Group>
                                     </Col>
                                 </Row>
 
-                                <Row>
+                                <Row className="gx-3 mb-3">
                                     <Col md={6}>
                                         <Form.Group className="mb-3">
                                             <Form.Label style={{ marginLeft: '10px' }}>Tribunal:</Form.Label>
@@ -260,15 +247,14 @@ function Insert() {
                                     </Col>
                                 </Row>
 
-                                <Row>
+                                <Row className="gx-3 mb-3">
                                     <Col md={6}>
                                         <>
-                                            <Row>
+                                            <Row className="mb-3">
                                                 <Col md={11}>
-                                                    <Form.Group className="mb-3">
-                                                        <Form.Label style={{ marginLeft: '10px' }}>Área Temática 1</Form.Label>
-                                                        <Form.Control className="my-3" type="text" placeholder={"Área Temática 1 " + 1} value={form["Área Temática 1"][0]} onChange={(e) => handleMultiChangeField(e, "Área Temática 1", 0)} />
-
+                                                    <Form.Group>
+                                                        <Form.Label style={{ marginLeft: '10px' }}>Área Temática 1:</Form.Label>
+                                                        <Form.Control type="text" placeholder={"Área Temática 1 - " + 1} value={form["Área Temática 1"][0]} onChange={(e) => handleMultiChangeField(e, "Área Temática 1", 0)} />
                                                     </Form.Group>
                                                 </Col>
                                             </Row>
@@ -277,16 +263,14 @@ function Insert() {
                                                     {
                                                         return (
                                                             index !== 0 &&
-                                                            <Row>
+                                                            <Row className="mb-3">
                                                                 <Col md={11}>
-                                                                    <Form.Group className="mb-3">
-                                                                        <Form.Label style={{ marginLeft: '10px' }}>{"Área Temática 1 " + (index + 1)}</Form.Label>
-                                                                        <Form.Control className="my-3" type="text" placeholder={"Área Temática 1 " + (index + 1)} value={form["Área Temática 1"][index]} onChange={(e) => handleMultiChangeField(e, "Área Temática 1", index)} />
-
+                                                                    <Form.Group>
+                                                                        <Form.Control type="text" placeholder={"Área Temática 1 - " + (index + 1)} value={form["Área Temática 1"][index]} onChange={(e) => handleMultiChangeField(e, "Área Temática 1", index)} />
                                                                     </Form.Group>
                                                                 </Col>
                                                                 <Col md={1} className="d-flex justify-content-start">
-                                                                    <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => { handleATRemoveField(e, "Área Temática 1", index) }} /></Link>
+                                                                    <Link><Trash3 style={{ marginTop: '0.25cm', marginLeft: '-1em' }} size={20} color="black" onClick={e => { handleATRemoveField(e, "Área Temática 1", index) }} /></Link>
                                                                 </Col>
                                                             </Row>
                                                         )
@@ -294,17 +278,19 @@ function Insert() {
                                                 })
                                             }
                                             <Row>
-                                                <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={e => handleMultiAddField(e, "Área Temática 1")}>Adicionar {"Área Temática 1"}</Button>
+                                                <div style={{ width: '50%' }}>
+                                                    <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleMultiAddField(e, "Área Temática 1")}>Adicionar {"Área Temática 1"}</Button>
+                                                </div>
                                             </Row>
                                         </>
                                     </Col>
                                     <Col md={6}>
                                         <>
-                                            <Row>
+                                            <Row className="mb-3">
                                                 <Col md={11}>
-                                                    <Form.Group className="mb-3">
-                                                        <Form.Label style={{ marginLeft: '10px' }}>Área Temática 2</Form.Label>
-                                                        <Form.Control className="my-3" type="text" placeholder={"Área Temática 2 " + 1} value={form["Área Temática 2"][0]} onChange={(e) => handleMultiChangeField(e, "Área Temática 2", 0)} />
+                                                    <Form.Group>
+                                                        <Form.Label style={{ marginLeft: '10px' }}>Área Temática 2:</Form.Label>
+                                                        <Form.Control type="text" placeholder={"Área Temática 2 - " + 1} value={form["Área Temática 2"][0]} onChange={(e) => handleMultiChangeField(e, "Área Temática 2", 0)} />
                                                     </Form.Group>
                                                 </Col>
                                             </Row>
@@ -316,12 +302,11 @@ function Insert() {
                                                             <Row>
                                                                 <Col md={11}>
                                                                     <Form.Group className="mb-3">
-                                                                        <Form.Label style={{ marginLeft: '10px' }}>{"Área Temática 2 " + (index + 1)}</Form.Label>
-                                                                        <Form.Control className="my-3" type="text" placeholder={"Área Temática 2 " + (index + 1)} value={form["Área Temática 2"][index]} onChange={(e) => handleMultiChangeField(e, "Área Temática 2", index)} />
+                                                                        <Form.Control type="text" placeholder={"Área Temática 2 - " + (index + 1)} value={form["Área Temática 2"][index]} onChange={(e) => handleMultiChangeField(e, "Área Temática 2", index)} />
                                                                     </Form.Group>
                                                                 </Col>
                                                                 <Col md={1} className="d-flex justify-content-start">
-                                                                    <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => { handleATRemoveField(e, "Área Temática 2", index) }} /></Link>
+                                                                    <Link><Trash3 style={{ marginTop: '0.25cm', marginLeft: '-1em' }} size={20} color="black" onClick={e => { handleATRemoveField(e, "Área Temática 2", index) }} /></Link>
                                                                 </Col>
                                                             </Row>
                                                         )
@@ -329,41 +314,55 @@ function Insert() {
                                                 })
                                             }
                                             <Row>
-                                                <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={e => handleMultiAddField(e, "Área Temática 2")}>Adicionar {"Área Temática 2"}</Button>
+                                            <div style={{ width: '50%' }}>
+                                                    <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleMultiAddField(e, "Área Temática 2")}>Adicionar {"Área Temática 2"}</Button>
+                                                </div>
                                             </Row>
                                         </>
                                     </Col>
                                 </Row>
 
-                                <Form.Group className="mb-3">
-                                    <Form.Label style={{ marginLeft: '10px' }}>Descritores:</Form.Label>
-                                    <MultiSelect options={listaDescritores} value={selectedDescritores} onChange={setSelectedDescritores} labelledBy="Selecionar" />
-                                </Form.Group>
+                                <Row className="gx-3 mb-3">
+                                    <Form.Group className="mb-3">
+                                        <Form.Label style={{ marginLeft: '10px' }}>Descritores:</Form.Label>
+                                        <MultiSelect options={listaDescritores} value={selectedDescritores} onChange={setSelectedDescritores} labelledBy="Selecionar" />
+                                    </Form.Group>
+                                </Row>
 
-                                <Form.Group className="mb-3 mt-3">
-                                    <Form.Label style={{ marginLeft: '10px' }}>Votação:</Form.Label>
-                                    <Form.Control required type="text" placeholder="Votação" onChange={(e) => form["Votação"] = e.target.value} />
-                                </Form.Group>
+                                <Row className="gx-3 mb-3">
+                                    <Form.Group className="mb-3">
+                                        <Form.Label style={{ marginLeft: '10px' }}>Votação:</Form.Label>
+                                        <Form.Control required type="text" placeholder="Votação" onChange={(e) => form["Votação"] = e.target.value} />
+                                    </Form.Group>
+                                </Row>
 
-                                <Form.Group className="mb-3">
-                                    <Form.Label style={{ marginLeft: '10px' }}>Decisão</Form.Label>
-                                    <Form.Control required type="text" placeholder="Decisão" onChange={(e) => form["Decisão"] = e.target.value} />
-                                </Form.Group>
+                                <Row className="gx-3 mb-3">
+                                    <Form.Group className="mb-3">
+                                        <Form.Label style={{ marginLeft: '10px' }}>Decisão:</Form.Label>
+                                        <Form.Control required type="text" placeholder="Decisão" onChange={(e) => form["Decisão"] = e.target.value} />
+                                    </Form.Group>
+                                </Row>
 
-                                <Form.Group>
-                                    <Form.Label style={{ marginLeft: '10px' }}>Meio Processual:</Form.Label>
-                                    <Form.Control required type="text" placeholder="Meio Processual" onChange={(e) => form["Meio Processual"] = e.target.value} />
-                                </Form.Group>
+                                <Row className="gx-3 mb-3">
+                                    <Form.Group>
+                                        <Form.Label style={{ marginLeft: '10px' }}>Meio Processual:</Form.Label>
+                                        <Form.Control required type="text" placeholder="Meio Processual" onChange={(e) => form["Meio Processual"] = e.target.value} />
+                                    </Form.Group>
+                                </Row>
 
-                                <Form.Group className="my-3">
-                                    <Form.Label style={{ marginLeft: '10px' }}>Sumário:</Form.Label>
-                                    <textarea required class="form-control" style={{ height: '200px' }} placeholder="Sumário" onChange={(e) => form["Sumário"] = e.target.value} />
-                                </Form.Group>
+                                <Row className="gx-3 mb-3">
+                                    <Form.Group className="my-3">
+                                        <Form.Label style={{ marginLeft: '10px' }}>Sumário:</Form.Label>
+                                        <textarea required class="form-control" style={{ height: '200px' }} placeholder="Sumário" onChange={(e) => form["Sumário"] = e.target.value} />
+                                    </Form.Group>
+                                </Row>
 
-                                <Form.Group className="my-3">
-                                    <Form.Label style={{ marginLeft: '10px' }}>Decisão Texto Integral:</Form.Label>
-                                    <textarea required class="form-control" style={{ height: '200px' }} placeholder="Decisão Texto Integral" onChange={(e) => form["Decisão Texto Integral"] = e.target.value} />
-                                </Form.Group>
+                                <Row className="gx-3 mb-3">
+                                    <Form.Group className="my-3">
+                                        <Form.Label style={{ marginLeft: '10px' }}>Decisão Texto Integral:</Form.Label>
+                                        <textarea required class="form-control" style={{ height: '200px' }} placeholder="Decisão Texto Integral" onChange={(e) => form["Decisão Texto Integral"] = e.target.value} />
+                                    </Form.Group>
+                                </Row>
                             </Container>
 
                             <Container className="my-4 mb-5">

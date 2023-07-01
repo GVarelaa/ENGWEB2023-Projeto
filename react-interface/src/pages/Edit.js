@@ -35,7 +35,7 @@ function Edit() {
                     if (!response.data.error){
                         setRecord([response.data[0]])
 
-                        axios.get(env.apiTribunaisAccessPoint + "/" + response.data[0].tribunal + "/descritores" + `?token=${localStorage.token}`)
+                        axios.get(env.apiTribunaisAccessPoint + "/" + response.data[0].tribunal + `?token=${localStorage.token}`)
                             .then(response => {
                                 response.data.descritores.sort()
                                 setDescritores(
@@ -79,7 +79,7 @@ function Edit() {
 
     function convertToISO8601(date) {
         var parts = date.split("/");
-        var day = parts[0]; var month = parts[1]; var year = parts[2];
+        var day = parts[0], month = parts[1], year = parts[2]
       
         if (day.length === 1) { day = "0" + day }
         if (month.length === 1) { month = "0" + month }
@@ -92,8 +92,9 @@ function Edit() {
         console.log(e.target.value)
         form["tribunal"] = e.target.value
 
-        axios.get(env.apiTribunaisAccessPoint + "/" + e.target.value + "/descritores" + `?token=${localStorage.token}`)
+        axios.get(env.apiTribunaisAccessPoint + "/" + e.target.value + `?token=${localStorage.token}`)
             .then(response => {
+                response.data.descritores.sort()
                 setDescritores(response.data.descritores.map((descritor) => ({ label: descritor, value: descritor })))
             })
             .catch(error => {

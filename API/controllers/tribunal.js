@@ -6,6 +6,12 @@ module.exports.list = () => {
             .catch(error => { return error })
 }
 
+module.exports.getTribunal = id => {
+    return Tribunal.findOne({_id: id})
+            .then(response => { return response })
+            .catch(error => { return error })
+}
+
 module.exports.addTribunal = t => {
     return Tribunal.create(t)
             .then(response => { return response })
