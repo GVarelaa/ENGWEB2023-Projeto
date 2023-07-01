@@ -1,5 +1,6 @@
 import NavBar from "../components/NavBar";
 import { Container,Row } from "react-bootstrap";
+import image_error from '../no_page.png'
 
 const NoPage = () => {
   return (
@@ -7,7 +8,7 @@ const NoPage = () => {
       <NavBar />
       <Container className="d-flex justify-content-center align-items-center">
         <Row className="col-md-8">
-        <img src="no_page.png" />
+          <img src={image_error} alt="Imagem de erro " />
         </Row>
       </Container>
       <Container className="d-flex justify-content-center align-items-center">
