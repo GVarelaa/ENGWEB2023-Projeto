@@ -27,7 +27,6 @@ router.get("/", verify.userAccess, function (req, res, next) {
         delete req.query.search;
     }
 
-    // Meter isto case sensative
 
 
     Acordao.list(req.query, skip, limit)

@@ -22,7 +22,6 @@ var AcordaosDetailRouter = require("./routes/acordaodetails");
 var app = express();
 
 app.use(cors());
-
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
