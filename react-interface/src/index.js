@@ -8,6 +8,7 @@ import Record from "./pages/Record"
 import Edit from "./pages/Edit"
 import Insert from "./pages/Insert"
 import Profile from "./pages/Profile"
+import AddTribunal from "./pages/addTribunal"
 import Favorites from "./pages/Favorites"
 import Descricao from "./pages/Descricao"
 import RouterGuard from "./components/RouterGuard"
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="/favorites" element={<RouterGuard level="10"> <Favorites/> </RouterGuard>}/>
           <Route path="/descricoes" element={<RouterGuard level="10"> <Descricao/> </RouterGuard>}/>
           <Route path="/insert" element={<RouterGuard level="20"> <Insert/> </RouterGuard>}/>
+          <Route path="/addTribunal" element={<RouterGuard level="100"> <AddTribunal/> </RouterGuard>}/>
           <Route path="/edit/:id" element={<RouterGuard level="100"> <Edit/> </RouterGuard>}/>
           <Route path="/:id" element={<RouterGuard level="10"> <Record/> </RouterGuard>}/>
           <Route path="*" element={<NoPage/>}/>  // Proteger esta merda

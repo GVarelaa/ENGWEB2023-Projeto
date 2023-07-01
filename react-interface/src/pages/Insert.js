@@ -126,28 +126,14 @@ function Insert() {
 
 
     const handleATRemoveField = (e, field, index) => {
-        var list = []
-        for (let i = 0; i < form[field].length; i++) {
-            if (i !== index) {
-                list.push(form[field][i])
-            }
-        }
-
-        form[field] = list
+        form[field].splice(index, 1)
         setRefresh(new Date().toISOString())
     }
 
 
     const handleMultiRemoveField = (e, item, index) => {
         if (form[item.field].length > 1) {
-            var list = []
-            for (let i = 0; i < form[item.field].length; i++) {
-                if (i !== index) {
-                    list.push(form[item.field][i])
-                }
-            }
-
-            form[item.field] = list
+            form[item.field].splice(index, 1)
         }
         else {
             delete form[item.field]
@@ -277,7 +263,7 @@ function Insert() {
                                             }
                                             <Row>
                                                 <div style={{ width: '50%' }}>
-                                                    <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleMultiAddField(e, "Área Temática 1")}>Adicionar {"Área Temática 1"}</Button>
+                                                    <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleMultiAddField(e, "Área Temática 1")}>Adicionar Área Temática</Button>
                                                 </div>
                                             </Row>
                                         </>
@@ -312,8 +298,8 @@ function Insert() {
                                                 })
                                             }
                                             <Row>
-                                                <div style={{ width: '50%' }}>
-                                                    <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleMultiAddField(e, "Área Temática 2")}>Adicionar {"Área Temática 2"}</Button>
+                                            <div style={{ width: '50%' }}>
+                                                    <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleMultiAddField(e, "Área Temática 2")}>Adicionar Área Temática 2</Button>
                                                 </div>
                                             </Row>
                                         </>
