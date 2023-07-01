@@ -15,6 +15,7 @@ function Home() {
     const [favorites, setFavorites] = useState([])
     const [page, setPage] = useState(1)
     const [pagesNumber, setPagesNumber] = useState(0)
+    const [recordsNumber, setRecordsNumber] = useState(0)
     const [search, setSearch] = useState("?")
     const [onSearch, setOnSearch] = useState(false)
     const [searchParams] = useSearchParams()
@@ -23,25 +24,21 @@ function Home() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                var lastID = -1
-
-                if (searchParams.get('start')){
-                    setPage(Math.ceil(searchParams.get('start') / limit) + 1)
-                    lastID = searchParams.get('start')
+                const response1 = await axios.get(env.apiAcordaosAccessPoint + `/number?token=${localStorage.token}`)
+                setRecordsNumber(response1.data)
+                setPagesNumber(Math.ceil(response1.data / limit))
+                
+                var lastID = response1.data
+                if (searchParams.get('page')){
+                    setPage(searchParams.get('page'))
+                    lastID = response1.data - ((searchParams.get('page')-1) * limit)
                 }
                     
-                const response = await axios.get(`${env.apiAcordaosAccessPoint}?lastID=${lastID}&limit=${limit}&token=${localStorage.token}`)
-                setData(response.data)
+                const response2 = await axios.get(`${env.apiAcordaosAccessPoint}?lastID=${lastID}&limit=${limit}&token=${localStorage.token}`)
+                setData(response2.data)
             } catch (error) {
                 toast.error("Não foi possível obter a lista de acórdãos!", { position: toast.POSITION.TOP_CENTER })
             }
-        }
-
-        const fetchPagesNumber = async () => {
-            try {
-                const response = await axios.get(env.apiAcordaosAccessPoint + `/number?token=${localStorage.token}`)
-                setPagesNumber(Math.ceil(response.data / limit))
-            } catch (error) { }
         }
 
         const fetchFavorites = async () => {
@@ -54,7 +51,6 @@ function Home() {
         }
 
         fetchData()
-        fetchPagesNumber()
         fetchFavorites()
     }, [])
 
@@ -69,7 +65,7 @@ function Home() {
 
         try {
             if (!onSearch) {
-                const lastID = ((page - 1) * limit) - 1;
+                const lastID = recordsNumber - ((page-1) * limit)
                 const response = await axios.get(env.apiAcordaosAccessPoint + `?lastID=${lastID}&limit=${limit}&token=${localStorage.token}`);
                 setData(response.data);
             }

@@ -10,22 +10,10 @@ router.get('/', verify.userAccess, function (req, res, next) {
         .catch(error => res.status(523).json({ error: "Erro na obtenção da lista de tribunais" }))
 })
 
-router.get('/:id/descritores', verify.userAccess, function (req, res, next) {
-    Tribunal.getDescritores(req.params.id)
+router.get('/:id', verify.userAccess, function (req, res, next) {
+    Tribunal.getTribunal(req.params.id)
         .then(data => res.status(200).json(data))
-        .catch(error => res.status(522).json({ error: "Erro na obtenção dos descritores" }))
-})
-
-router.get('/:id/areatematica1', verify.userAccess, function (req, res, next) {
-    Tribunal.getAreaTematica1(req.params.id)
-        .then(data => res.status(200).json(data))
-        .catch(error => res.status(522).json({ error: "Erro na obtenção das áreas temáticas" }))
-})
-
-router.get('/:id/areatematica2', verify.userAccess, function (req, res, next) {
-    Tribunal.getAreaTematica2(req.params.id)
-        .then(data => res.status(200).json(data))
-        .catch(error => res.status(522).json({ error: "Erro na obtenção das áreas temáticas" }))
+        .catch(error => res.status(522).json({ error: "Erro na obtenção do tribunal" }))
 })
 
 router.delete('/:id', verify.adminAccess, function (req, res, next) {

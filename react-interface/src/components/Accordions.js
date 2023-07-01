@@ -73,7 +73,7 @@ function Accordions({ data, setData, favorites, setFavorites, token, page }) {
 
         handleHideModal();
     }
-    
+
 
     return (
         <Accordion className='mb-4'>
@@ -83,15 +83,15 @@ function Accordions({ data, setData, favorites, setFavorites, token, page }) {
                         <Accordion.Header>
                             <Container><b>Processo: </b>{obj.Processo}</Container>
                             <Container className='d-flex justify-content-end px-3'>
-                                <Link to={`/${obj._id}?returnStart=${data[0]._id}`}> <Eye size={20} color='black' className='mx-3' /> </Link>
-                                {favorites.includes(obj._id)
-                                    ? <Link> <HeartFill size={20} color='black' className='mx-3' onClick={(event) => handleFavorite(event, obj._id)} /> </Link>
-                                    : <Link> <Heart size={20} color='black' className='mx-3' onClick={(event) => handleFavorite(event, obj._id)} /> </Link>
+                                <Link to={`/${obj._id}?returnPage=${page}`}> <Eye size={20} color='black' className='mx-3' /> </Link>
+                                {favorites.includes(obj._id.toString())
+                                    ? <Link> <HeartFill size={20} color='black' className='mx-3' onClick={(event) => handleFavorite(event, obj._id.toString())} /> </Link>
+                                    : <Link> <Heart size={20} color='black' className='mx-3' onClick={(event) => handleFavorite(event, obj._id.toString())} /> </Link>
                                 }
                                 <Link to={"/edit/" + obj._id}> <Pencil size={20} color='black' className='mx-3' /> </Link>
                                 {token.level === 100 &&
                                     <>
-                                        <Link><Trash3 size={20} color='black' className='mx-3' onClick={(event) => handleShowModal(event, obj._id)} /></Link>
+                                        <Link><Trash3 size={20} color='black' className='mx-3' onClick={(event) => handleShowModal(event, obj._id.toString())} /></Link>
                                         <Modal show={showModal} onHide={handleHideModal}>
                                             <Modal.Header closeButton>
                                                 <Modal.Title>Confirmação de Remoção</Modal.Title>
