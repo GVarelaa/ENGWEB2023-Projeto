@@ -43,13 +43,9 @@ function Insert() {
         const fetchData = async () => {
             axios.get(env.apiTribunaisAccessPoint + `?token=${localStorage.token}`)
                 .then((response) => {
-<<<<<<< HEAD
-                    console.log(response.data)
-=======
                     response.data.find(obj => obj._id === response.data[0]._id).descritores.sort()
                     setListaDescritores(response.data.find(obj => obj._id === response.data[0]._id).descritores.map((descritor) => ({ label: descritor, value: descritor })))
                     response.data.forEach(obj => { delete obj.descritores })
->>>>>>> 1effdfdda7d28bcfafc49889584f7f1ee595e26f
                     setTribunais(response.data)
                 })
                 .catch((error) => {})
@@ -187,8 +183,6 @@ function Insert() {
     }
 
 
-<<<<<<< HEAD
-=======
     const handleSubmit = (event) => {
         event.preventDefault()
         var descritores = []
@@ -206,7 +200,6 @@ function Insert() {
     }
 
 
->>>>>>> 1effdfdda7d28bcfafc49889584f7f1ee595e26f
     return (
         <>
             <ToastContainer />
