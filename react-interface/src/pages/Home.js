@@ -144,7 +144,7 @@ function Home() {
                                     <Container className='mt-4'>
                                         <Accordions data={data} setData={setData} favorites={favorites} setFavorites={setFavorites} token={decodedToken} page={page} />
                                         <Container className='d-flex justify-content-center mb-4'>
-                                            <Pagination className="mt-3" page={page} onChange={handleChangePage} count={pagesNumber} shape="rounded" />
+                                            <PaginationControl className="mt-3" page={page} onChange={handleChangePage} count={data.length} shape="rounded" />
                                         </Container>
                                     </Container>
                                 </Card.Body>

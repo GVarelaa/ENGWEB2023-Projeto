@@ -5,7 +5,7 @@ services:
     build: ./react-interface
     restart: always
     ports:
-      - "8070:3000"
+      - "8073:8073"
     networks:
       - Acordaosnet
 
@@ -27,7 +27,7 @@ services:
     image: mongo
     restart: always
     ports:
-      - "27018:27017"
+      - "27017:27017"
     volumes:
       - AcordaosData:/data/db
     networks:

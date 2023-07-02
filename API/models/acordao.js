@@ -15,7 +15,7 @@ var LegislacoesSchema = new mongoose.Schema({
 });
 
 var acordaoSchema = new mongoose.Schema({
-  _id: Number,
+  _id: String,
   Processo: String,
   Relator: String,
   Descritores: [String],
