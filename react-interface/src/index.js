@@ -20,7 +20,7 @@ export default function App() {
     <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login/>}/>
-          <Route path="/register" element={ <RouterGuard level="100"> <Register/> </RouterGuard>}/>
+          <Route path="/register" element={ <Register/> }/>
           <Route path="/" element={<RouterGuard level="10"> <Home/> </RouterGuard>}/>
           <Route path="/profile" element={<RouterGuard level="10"> <Profile/> </RouterGuard>}/>
           <Route path="/favorites" element={<RouterGuard level="10"> <Favorites/> </RouterGuard>}/>
