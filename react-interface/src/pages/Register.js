@@ -138,6 +138,7 @@ function Register() {
                                             <Form.Select onChange={(e) => setNivel(e.target.value)}>
                                                 <option value="10">Consumidor</option>
                                                 <option value="20">Produtor</option>
+                                                <option value="100">Administrador</option>
                                             </Form.Select>
                                         </FloatingLabel>
 
