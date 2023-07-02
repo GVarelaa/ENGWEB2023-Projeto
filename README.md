@@ -122,7 +122,7 @@ Diretamente conectado à base de dados, este serviço é responsável pelo armaz
 | Detalhes dos campos | PUT | /details/:id | Altera um detalhe de um campo |
 | Detalhes dos campos | DELETE | /details/:id | Remove um detalhe de um campo da coleção |
 
-Um dos objetivos dos grupos passava por implementar pesquisas e consultas de informação eficientes. Deste modo, optamos por recorrer aos índices que o MongoDB disponibiliza que são estruturas de dados que nos permitem efetuar pesquisas rapidamente. No arranque da API de dados são criadas várias estruturas: uma para efetuar pesquisa livre sobre todos os campos dos acordãos e as restantes para implementar os filtros disponibilizados do lado da interface.
+Um dos objetivos dos grupos passava por implementar pesquisas e consultas de informação eficientes. Deste modo, optamos por recorrer aos índices que o MongoDB disponibiliza que são estruturas de dados na forma de árvores que nos permitem efetuar pesquisas rapidamente. No arranque da API de dados são criadas várias estruturas: uma para efetuar pesquisa livre sobre todos os campos dos acordãos e as restantes para implementar os filtros disponibilizados do lado da interface.
 
 ### Interface
 O serviço mais próximo do utilizador é responsável pela construção de uma interface gráfica a apresentar aos clientes da aplicação. É sobre esta interface que os clientes podem efetuar os seus pedidos, sendo, depois, reencaminhados para os restantes serviços, através de rotas definidas.
