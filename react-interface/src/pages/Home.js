@@ -142,7 +142,7 @@ function Home() {
                             <Card className='d-flex justify-content-center' style={{ 'boxShadow': '0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)' }} >
                                 <Card.Body>
                                     <Container className='mt-4'>
-                                        <Accordions data={data} setData={setData} favorites={favorites} setFavorites={setFavorites} token={decodedToken} page={page} />
+                                        <Accordions data={data} setData={setData} favorites={favorites} setFavorites={setFavorites} token={decodedToken} page={page} search={search}/>
                                         <Container className='d-flex justify-content-center mb-4'>
                                             <PaginationControl page={page} between={4} total={recordsNumber} limit={limit} changePage={handleChangePage} ellipsis={1} />
                                         </Container>
