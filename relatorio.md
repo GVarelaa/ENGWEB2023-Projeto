@@ -117,6 +117,10 @@ Diretamente conectado à base de dados, este serviço é responsável pelo armaz
 | Tribunais | POST | /tribunais | Adiciona um novo tribunal à coleção |
 | Tribunais | PUT | /tribunais/:id | Altera um tribunal com o id passado como parâmetro |
 | Tribunais | DELETE | /tribunais/:id | Remove um tribunal com o id passado como parâmetro |
+| Detalhes dos campos | GET | /details | Devolve todos os detalhes dos campos presentes na coleção |
+| Detalhes dos campos | POST | /details | Adiciona um novo detalhe de um campo à coleção |
+| Detalhes dos campos | PUT | /details/:id | Altera um detalhe de um campo |
+| Detalhes dos campos | DELETE | /details/:id | Remove um detalhe de um campo da coleção |
 
 
 ### Interface
