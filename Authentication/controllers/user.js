@@ -99,16 +99,15 @@ module.exports.updateFavorite = (username, favorite) => {
 }
 
 
-module.exports.removeFavorite = (username, favorite) => {
-    return User
-        	.updateOne({username: username}, {$pull : {favorites: favorite}})
-            .then(response => {
-                return response
-            })
-            .catch(error => {
-                return error
-            })
-}
+module.exports.removeFavorite = (username, id) => {
+    return User.updateOne({ username: username }, { $pull: { favorites: { _id: id } } })
+      .then(response => {
+        return response;
+      })
+      .catch(error => {
+        return error;
+      });
+  };
 
 
 module.exports.updateAccess = (username, date) => {

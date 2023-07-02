@@ -36,13 +36,14 @@ function Favorites() {
                 var queryString = "?"
                 var skip = (page - 1) * limit
                 for (var i = 0; i < favorites.length; i++) {
-                    queryString += "_id=" + favorites[i] + "&"
+                    queryString += "_id=" + favorites[i]["_id"] + "&"
                 }
 
                 try {
                     const response = await axios.get(env.apiAcordaosAccessPoint + queryString + `skip=${skip}&limit=${limit}&token=${localStorage.token}`)
                     setRecordsNumber(favorites.length)
                     setData(response.data)
+
                     setFavorites(favorites)
                 } catch (error) {
                     toast.error('Não foi possível obter a lista de acórdãos!', {
@@ -80,7 +81,7 @@ function Favorites() {
                         <Container className='mt-4'>
                             {data.length>=1 ?(
                                 <div>
-                            <Accordions data={data} setData={setData} favorites={favorites} setFavorites={setFavorites} token={decodedToken} />
+                            <Accordions page_type="Fav" data={data} setData={setData} favorites={favorites} setFavorites={setFavorites} token={decodedToken} />
                             <Container className='d-flex justify-content-center mb-4'>
                                 <PaginationControl page={page} between={4} total={recordsNumber} limit={limit} changePage={handleChangePage} ellipsis={1} />
                             </Container>
