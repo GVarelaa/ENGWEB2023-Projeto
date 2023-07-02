@@ -1,11 +1,37 @@
 # Base de Dados de Acordãos
 
+#### Universidade do Minho
+#### Licenciatura em Engenharia Informática
+
+#### Trabalho Prático - Engenharia Web
+
+#### Autores:
+- A96455 - Nuno Guilherme Cruz Varela - [@GVarelaa](https://github.com/GVarelaa)
+- A97393 - Gabriela Santos Ferreira da Cunha - [@gabrielasfc](https://github.com/gabrielasfc)
+- A97496 - Miguel Ângelo Silva Senra - [@MiguelSenra](https://github.com/MiguelSenra)
+
+## índice
+- [Índice](#índice)
+- [Introdução](#introdução)
+- [Conclusão](#conclusão)
+- [Anexos](#anexos)
+
+
+
 ## Introdução
 No âmbito do projeto da unidade curricular de Engenharia Web, foi desenvolvida uma plataforma de auxílio ao Ministério da Justiça Português, com vista a unanimizar a consulta dos conjuntos de acórdãos que cada tribunal, com autonomia própria, disponibiliza periodicamente.
 Cada tribunal tem a sua própria base de dados, resultando num conjunto distinto de 14 ficheiros JSON. Incialmente, foi efetuado o tratamento destes dados e criada uma base de dados unificada. Em seguida, foram desenvolvidos os serviços de autenticação e API, com recurso ao Express.js, e interface, utilizando React. 
 
 ## Manipulação dos Dados
 Para ser possível realizar o carregamento de todos os dados fornecidos foram, primeiramente, realizados scripts em Python para o processamento, parsing, manipulação e normalização dos dados. 
+
+
+## Serviço de Autenticação
+O serviço de autenticação é destinado ao registo e autenticação dos utilizadores. Sendo independente dos dados relativos aos acórdãos, pudemos começar o desenvolvimento deste serviço enquanto efetuavamos o tratamento dos dados. A coleção dos utilizadores é formada por documentos com os seguintes campos:
+
+
+## Conclusão
+
 
 ## Anexos
 ### Manual de Utilização
