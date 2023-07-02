@@ -74,7 +74,7 @@ function Record() {
     const handleFavorite = async (event, id) => {
         try {
             if (favorites.includes(id)) {
-                await axios.delete(`${env.authAccessPoint}/${decodedToken.username}/favorites/${id}?token=${localStorage.token}`)
+                await axios.put(`${env.authAccessPoint}/${decodedToken.username}/removeFavorite?token=${localStorage.token}`, {favorites: id})
 
                 setFavorites((current) => {
                     return current.filter((item) => item !== id)
@@ -85,7 +85,7 @@ function Record() {
                 })
             }
             else {
-                await axios.post(`${env.authAccessPoint}/${decodedToken.username}/favorites?token=${localStorage.token}`, { favorite: id });
+                await axios.put(`${env.authAccessPoint}/${decodedToken.username}/favorites?token=${localStorage.token}`, { favorites: id });
 
                 setFavorites((current) => [...current, id])
 

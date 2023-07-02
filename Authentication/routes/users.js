@@ -288,9 +288,8 @@ router.post("/image/:id", (req, res) => {
     }
 });
 
-router.post("/:id/favorites", verify.userAccess, function (req, res) {
-    console.log("favoritos");
-    User.updateFavorite(req.params.id, req.body.favorite)
+router.put("/:id/favorites", verify.userAccess, function (req, res) {
+    User.updateFavorite(req.params.id, req.body.favorites)
         .then((data) => res.status(200).jsonp(data))
         .catch((error) =>
             res
@@ -299,18 +298,15 @@ router.post("/:id/favorites", verify.userAccess, function (req, res) {
         );
 });
 
-router.delete(
-    "/:user/favorites/:favorite",
-    verify.userAccess,
-    function (req, res) {
-        User.removeFavorite(req.params.user, req.params.favorite)
-            .then((data) => res.status(200).jsonp(data))
-            .catch((error) =>
-                res
-                    .status(506)
-                    .jsonp({ error: error, message: "Erro na deleção de um favorito" })
-            );
-    }
+router.put("/:id/removeFavorite", verify.userAccess, function (req, res) {
+    User.removeFavorite(req.params.id, req.body.favorites)
+        .then((data) => res.status(200).jsonp(data))
+        .catch((error) =>
+            res
+                .status(506)
+                .jsonp({ error: error, message: "Erro na deleção de um favorito" })
+        );
+}
 );
 
 module.exports = router;
