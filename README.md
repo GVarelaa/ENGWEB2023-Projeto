@@ -72,7 +72,7 @@ O serviço de autenticação é destinado ao registo e autenticação dos utiliz
 | GET | /users/:id | Devolve um utilizador consoante o id passado no parâmetro |
 | GET | /users/:id/favorites | Devolve os favorites de um utilizador passado como parâmetro |
 | GET | /users/check-email/:email | Verifica se o email passado como parâmetro já existe |
-| GET | /users/check-username/:username | Verifica se o username passodo como parâmetro já existe |
+| GET | /users/check-username/:username | Verifica se o username passado como parâmetro já existe |
 | GET | /users/login/facebook | Redireciona para a autenticação por Facebook |
 | GET | /users/login/facebook/callback | Rota callback da autenticação do Facebook |
 | GET | /users/login/google | Redireciona para a autenticação por Google |
