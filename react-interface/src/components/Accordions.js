@@ -141,7 +141,9 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
 
                                         <Form>
                                             <div >
-                                                <textarea type="text" placeholder="Descrição" style={{ "height": "200px", "width": "400px", "marginLeft": "50px" }} onChange={(e) => { setDescricaoFav(e.target.value) }} />
+                                                <Form.Group className="my-3 mx-3">
+                                                    <Form.Control type="text" placeholder="Descrição" as="textarea" rows={10} onChange={(e) => { setDescricaoFav(e.target.value) }} />
+                                                </Form.Group>
                                             </div>
                                             <Modal.Footer>
                                                 <Button variant="default" onClick={(event) => handleFavorite(event, obj._id.toString())}>Adicionar aos Favoritos</Button>
@@ -154,7 +156,7 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
                                 {token.level === 100 &&
                                     <>
                                         <Link><Trash3 size={20} color='black' className='mx-3' onClick={(event) => handleShowModal(event, obj._id.toString())} /></Link>
-                                        <Modal show={showModal && obj._id == deleteItemID } onHide={handleHideModal}>
+                                        <Modal show={showModal && obj._id == deleteItemID} onHide={handleHideModal}>
                                             <Modal.Header closeButton>
                                                 <Modal.Title>Confirmação de Remoção</Modal.Title>
                                             </Modal.Header>
