@@ -28,6 +28,48 @@ Cada tribunal tem a sua própria base de dados, resultando num conjunto distinto
 
 ## Manipulação dos Dados
 Para ser possível realizar o carregamento de todos os dados fornecidos foram, primeiramente, realizados scripts em Python para o processamento, parsing, manipulação e normalização dos dados. 
+Antes de poder começar a realizar o tratamento dos dados, diretamente, foi necessário realizar uma análise e uma investigação sobre os dados que tínhamos em mãos. O nosso conhecimento pela área não é muito grande pelo que foi necessário fazer uma investigação acerca do significado de cada um. 
+Desta forma, conseguimos gerar um ficheiro que indicava todos os campos distintos que um ficheiro possuía juntamente com o tipo de dados que guardava verficando se existia algum tipo de inconsistência no tipo de dados dentro do mesmo ficheiro que acabou por nunca se verificar.
+
+
+##Agrupamento dos valores em dicionários
+Ao verificar os campos de cada um dos ficheiros através do relatório gerado no tópico anterior, verificámos que alguns dos ficheiros possuíam informação que era única daquele acórdão e não apareciam em mais nenhum. Pelo que apurámos, segundo o url que foi disponibilizado, aquelas informações pertencem ao atributo 'Decisão Texto Integral'. Assim, de forma a distinguir estes atributos dos outros, para uma melhor organização aquando da apresentação do acórdão, construímos um novo atributo cujo nome é "Informação Auxiliar" que é um dicionário com toda esta informação extra. Assim, para além de poder tratar destes casos, será possível disponibilizar na interface uma forma do utilizador guardar dados que não se enquadram nos principais mas que o mesmo pode considerar fazer sentido para aquele acórdão.
+
+##Análise de acórdãos repetidos
+Durante a análise, apercebemo-nos da presença de alguns registos que estavam duplicando, possuindo exatamente os mesmos campos e os mesmos valores. Desta forma, utilizámos um script que percorria todos os registos de cada um dos ficheiros verificando se havia registos duplicados.
+
+
+##Correção de nomes de atributos para alguns valores
+Através da visualização manual de alguns dos ficheiros foi possível notar que alguns atributos possuíam um valor não correspondente ao tipo de atributo. Para além de causar problemas na hora de observar os campos do acórdão, que apesar de não ser da nossa responsabilidade pode ser corrigido, poderia causar dúvida em quem por vezes estivesse a adicionar novos acórdãos à base de dados. Este processo foi realizado manualmente, pelo que não é garantido que todas as inconsistências fossem corrigidas. Para resolver este problema utilizámos a funcionalidade find and replace disponibilizada pela ferramenta utilizada.
+
+##Limpeza de Campos Vazios
+Foi também possível observar que alguns campos no respetivo valor possuíam uma string vazia, ou seja, sem qualquer informação relevante ao processo. Considerando que iremos utilizar uma base de dados não relacional, o MongoDB, não necessitamos de colocar todos os campos, tendo eles valor ou não na base de dados. 
+
+##Limpeza da variável texto Integral
+Durante a análise, houve um caso que nos surpreendeu. Na maior parte dos \emph{datasets}, percebemos a existência de 2 variáveis que estavam relacionadas. Em primeiro lugar, tínhamos a variável 'Texto Integral' e depois a variável 'Decisão Texto Integral'. A primeira variável é uma variável booleana, que apenas possuía 2 valores (S(Sim) e N(Não)). Quando o valor desta variável era N, não existia o segundo atributo, mas se esta possuísse o valor S, então o atributo 'Decisão Texto Integral' já estava presente. Desta forma, este campo booleano pode ser removido visto que o valor do segundo atributo é auto-suficiente e pode ser guardado tal como está,sem ser necessária qualquer outro tipo de informação que indique a presença do mesmo.
+
+##Junção de campos que eram semelhantes 
+De forma a garantir uma uniformização da nossa base de dados, sem possuir ambiguidades nem redundâncias, e de forma a permitir uma uniformização da informação de cada um dos acórdãos, foi necessário determinar os campos cujo nome era diferente mas o valor era correspondente ao mesmo atributo. Houve um exemplo que foi muito claro. Em alguns dos tribunais existia o atributo "Data do Acordão" e noutros existia o atributo "Data do Acórdão". Numa uniformização automática não era possível resolver este problema pelo que estes casos foram tratados individualemente através de outros scripts..
+
+##Tratamento das datas
+As datas ao longo dos vários ficheiros apresentavam um formato fora do convencional (mm/dd/aaaa). Consequentemente, de forma a minimizar possíveis ambiguidades tanto no lado do cliente como no nosso, decidimos alterar para o formato mais utilizado (dd/mm/aaaa). Para realizar este processo utilizámos, mais uma vez, o script muda_data.py. Para além da troca de ordem do mês e do dia, houve também a necessidade de também alterar o separador dos valores em alguns campos, podendo até ser dentro do mesmo ficheiro (mm-dd-aaaa). Ainda assim, de forma a prevenir outros formatos que pudessem aparecer e não fossem observados por nós colocámos uma secção no \emph{script} de forma a visualização a formatação da data que aparecia. O script, já foi resultado do tratamento de um dos ficheiros de pelo que já podemos ver alguns dos formatos que estavam disponíveis. Os primeiros 3 já foram apresentados acima. De notar ainda um quarto formato que apareceu onde o ano era apenas definido por 2 dígitos e não 4. Isto foi visualizado com a tal secção extra que mostrou este formato já que não se enquadrava em nenhum dos anteriores. Neste caso, como na visualização, foi visível o aparecimento de anos antes de 2000, então forçámos o aparecimento do ano (19xx). 
+
+##Tratamento dos campos em listas
+Foi possível denotar, durante a análise de dados que alguns nos campos correspondiam na verdade a listas, mas estavam expressos numa única string onde os vários valores estavam agrupados por separadores. Dentro de cada ficheiro, o separador era praticamente igual para todos os campos podendo haver uma ou outra exceção. Para tal, realizámos uma análise para verificar quais os separadores de cada um dos ficheiros, Este foi dos processos mais demorados do tratamento mas foi daqueles que permitiu uma melhor usabilidade e uniformização dos dados do sistema. 
+
+##Referência a outros acórdãos
+Houve algumas situações que nos chamaram à atenção. Em alguns atributos de acórdãos do tribunal da relação de Lisboa, foi visível que o seu valor era "ver acórdão STJ". A nossa primeira suspeita foi que se pudesse tratar da identificação de um outro acórdão o que poderia ser interessante, visto que futuramente poderia permitir a navegação entre vários acórdãos. 
+FALAR DO PROCESSAMENTO A REALIZAR.
+
+- remoção de campos desnecessários
+Alguns dos atributos presentes nos acórdãos referenciavam a data/ano em que o acórdão se tornou disponível. Também foi possível observar que todos os registos possuíam o atributo url que era referente ao \emph{link} onde o acórdão estava disponível no seu sistema. Considerando que o nosso objetivo é agregar toda esta informação numa única base de dados de forma a que este pudesse ser o sistema judicial único, a referência a outros sistemas passaria a não fazer sentido pelo facto de toda a informação estar lá disponibilizada. 
+
+- Escolha da chave principal 
+Antes de realizar a importação dos registos para o \emph{mongodb}, necessitámos de definir um identificador $"$\_id$"$. Analisando todos os campos que tínhamos disponíveis, aquele que nos pareceu mais propício era o campo 'Processo'. Para tal, teríamos que garantir que os mesmo não possuía valores duplicados. Através de um \emph{script python} fizemos essa verificação dentro de cada um dos ficheiros de base de dados. No entanto, alguns valores de Processo apareciam repetidos, o que inviabilizou esta abordagem. Assim, considerando que nenhum dos outros campos pertencia a todos os registos e os que pertenciam também não eram únicos, adotámos a estratégia de definir o campo para cada um dos acórdãos através de um contador.  
+
+- Concatenação de ficheiros
+
+Com todas estas alterações foi possível garantir uma redução do tamanho da base de dados o que depois irá ter com certeza influência do tempo de resposta às \emph{queries} para apresentar informação na interface.
 
 
 ## Arquitetura Aplicacional
