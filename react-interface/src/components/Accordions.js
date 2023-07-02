@@ -1,21 +1,33 @@
 import { useEffect, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
-import { Accordion, ListGroup, ListGroupItem, Modal, Button, Container } from 'react-bootstrap'
+import { Link} from 'react-router-dom'
+import { Accordion, ListGroup, ListGroupItem, Modal, Button, Container,Form, Row, Col} from 'react-bootstrap'
 import { Eye, Pencil, Trash3, Heart, HeartFill } from 'react-bootstrap-icons'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import env from '../config/env'
 
 
-function Accordions({ data, setData, favorites, setFavorites, token, page, search }) {
+function Accordions({ data, setData, favorites, setFavorites, token, page, search, page_type }) {
     const [tribunais, setTribunais] = useState({})
     const [showModal, setShowModal] = useState(false)
+    const [showModalFav, setShowModalFav] = useState(false)
+    const [descricaoFav, setDescricaoFav] = useState(false)
+    const [FavItemID, setFavItemID] = useState(null)
     const [deleteItemID, setDeleteItemID] = useState(null)
     const [refresh, setRefresh] = useState("")
 
-    
     useEffect(() => {
         const fetchData = async () => {
+            var dictionary = {};
+            for (var i = 0; i < favorites.length; i++) {
+              var elem = favorites[i];
+              if ("Descricao" in elem) {
+                dictionary[elem["_id"]] = elem["Descricao"];
+              } else {
+                dictionary[elem["_id"]] = "";
+              }
+            }
+            setFavorites(dictionary)
             axios.get(env.apiTribunaisAccessPoint + `?token=${localStorage.token}`)
                     .then(response => {
                         response.data.forEach(obj => {
@@ -31,22 +43,40 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
         fetchData()
     }, [])
 
+    const handleShowModalFav = (event, id) => {
+        setShowModalFav(true)
+        setFavItemID(id)
+    }
+
+
+    const handleHideModalFav = (event) => {
+        setShowModalFav(false)
+        setFavItemID(null)
+    }
 
     const handleFavorite = async (event, id) => {
         try {
-            if (favorites.includes(id)) {
-                await axios.put(env.authAccessPoint + `/${token.username}/removeFavorite?token=${localStorage.token}`, {favorites: id})
-
+            if (id in favorites) {
+                await axios.put(env.authAccessPoint + `/${token.username}/removeFavorite?token=${localStorage.token}`, { favorites: id });
                 setFavorites(current => {
-                    return current.filter((item) => item != id)
-                })
-
-                toast.success('O acórdão foi removido da lista de favoritos com sucesso!', { position: toast.POSITION.TOP_CENTER })
-            }
+                  const updatedFavorites = { ...current };
+                  delete updatedFavorites[id];
+                  return updatedFavorites;
+                });
+                
+                toast.success('O acórdão foi removido da lista de favoritos com sucesso!', { position: toast.POSITION.TOP_CENTER });
+              }
             else {
-                await axios.put(env.authAccessPoint + `/${token.username}/favorites?token=${localStorage.token}`, { favorites: id })
-
-                setFavorites(current => [...current, id])
+                if (descricaoFav){
+                    await axios.put(env.authAccessPoint + `/${token.username}/favorites?token=${localStorage.token}`, { favorites: {"_id":id,"Descricao":descricaoFav} })
+                    setDescricaoFav(null)
+                    favorites[id]=descricaoFav
+                }
+                else {
+                    await axios.put(env.authAccessPoint + `/${token.username}/favorites?token=${localStorage.token}`, { favorites: {"_id":id} })
+                }
+                favorites[id]=""
+                handleHideModalFav()
 
                 toast.success('O acórdão foi adicionado à lista de favoritos com sucesso!', { position: toast.POSITION.TOP_CENTER })
             }
@@ -88,10 +118,10 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
         setRefresh(new Date().toISOString())
     }
 
+
     
     return (
         <Accordion className='mb-4'>
-
             {data.map((obj, index) => {
                 return (
                     <Accordion.Item eventKey={index}>
@@ -99,12 +129,30 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
                             <Container><b>Processo: </b>{obj.Processo}</Container>
                             <Container className='d-flex justify-content-end px-3'>
                                 <Link to={`/${obj._id}?returnPage=${page}` + (search && search !== "?" ? "&" + search.slice(1) : "")}> <Eye size={20} color='black' className='mx-3' /> </Link>
-                                {favorites.includes(obj._id.toString())
+                                {obj._id.toString() in favorites
                                     ? <Link> <HeartFill size={20} color='black' className='mx-3' onClick={(event) => handleFavorite(event, obj._id.toString())} /> </Link>
-                                    : <Link> <Heart size={20} color='black' className='mx-3' onClick={(event) => handleFavorite(event, obj._id.toString())} /> </Link>
+                                    : <Link> <Heart size={20} color='black' className='mx-3' onClick={(event)=>handleShowModalFav(event,obj._id.toString())} /> </Link>
                                 }
+                                <>
+                                    <Modal show={showModalFav && FavItemID===obj._id} onHide={handleHideModalFav}>
+                                        <Modal.Header closeButton>
+                                            <Modal.Title>Adicionar uma descrição</Modal.Title>
+                                        </Modal.Header>
+
+                                        <Form>
+                                            <div >
+                                                <textarea type="text" placeholder="Descrição" style={{ "height": "200px","width":"400px","marginLeft":"50px"}} onChange={(e) => {setDescricaoFav(e.target.value)}} />
+                                            </div>
+                                            <Modal.Footer>
+                                                <Button variant="default" onClick={(event)=>handleFavorite(event,obj._id.toString())}>Adicionar aos Favoritos</Button>
+                                                <Button variant="danger" onClick={handleHideModalFav}>Cancelar</Button>
+                                            </Modal.Footer>
+                                        </Form>
+                                    </Modal>
+                                </>
+
                                 <Link to={"/edit/" + obj._id}> <Pencil size={20} color='black' className='mx-3' /> </Link>
-                                {token.level === 100 &&
+                                {token.level === 100 && obj._id===deleteItemID &&
                                     <>
                                         <Link><Trash3 size={20} color='black' className='mx-3' onClick={(event) => handleShowModal(event, obj._id.toString())} /></Link>
                                         <Modal show={showModal} onHide={handleHideModal}>
@@ -123,6 +171,7 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
                                 }
                             </Container>
                         </Accordion.Header>
+                        {page_type!=="Fav" ? ( 
                         <Accordion.Body>
                             <ListGroup>
                                 <ListGroupItem><b>Data: </b>{obj["Data do Acordão"]}</ListGroupItem>
@@ -135,6 +184,13 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
                                 </ListGroupItem>
                             </ListGroup>
                         </Accordion.Body>
+                        ):(
+                            <Accordion.Body>
+                                <ListGroup>
+                                    <ListGroupItem><b>Descrição: </b>{favorites[obj._id]}</ListGroupItem>
+                                </ListGroup>
+                            </Accordion.Body>
+                        )}
                     </Accordion.Item>
                 )
             })}

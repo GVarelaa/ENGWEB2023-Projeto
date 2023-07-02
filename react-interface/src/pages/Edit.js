@@ -2,7 +2,7 @@ import NavBar from "../components/NavBar"
 import NoPage from "../pages/NoPage"
 import { useParams, Link, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
-import { Container, Form, FloatingLabel, Col, Row, Card } from "react-bootstrap"
+import { Container, Form, Col, Row, Card } from "react-bootstrap"
 import Button from '@mui/material/Button'
 import { MultiSelect } from "react-multi-select-component";
 import { ToastContainer, toast } from "react-toastify"
