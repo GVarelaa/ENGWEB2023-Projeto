@@ -1,6 +1,6 @@
 import NavBar from "../components/NavBar"
 import NoPage from "../pages/NoPage"
-import { useParams, Link, useNavigate  } from "react-router-dom"
+import { useParams, Link, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { Container, Form, FloatingLabel, Col, Row, Card } from "react-bootstrap"
 import Button from '@mui/material/Button'
@@ -43,7 +43,7 @@ function Edit() {
                     if (!response.data.error) {
                         record = response.data
                         setForm(response.data)
-                        setSelectedDescritores(response.data.Descritores.map(descritor => ({label: descritor, value: descritor})))
+                        setSelectedDescritores(response.data.Descritores.map(descritor => ({ label: descritor, value: descritor })))
 
                         axios.get(`${env.apiTribunaisAccessPoint}/${response.data.tribunal}?token=${localStorage.token}`)
                             .then(response1 => {
@@ -69,12 +69,12 @@ function Edit() {
                         if (f1 > f2) return 1
                         return 0
                     })
-                    
+
                     Object.keys(record).forEach(key => {
                         response.data.forEach(item => {
                             if (item.field === key) {
-                                if(Array.isArray(record[key])) {
-                                    if(record[key].length > 0) camposSelecionados.push(item)
+                                if (Array.isArray(record[key])) {
+                                    if (record[key].length > 0) camposSelecionados.push(item)
                                 }
                                 else camposSelecionados.push(item)
                             }
@@ -82,7 +82,7 @@ function Edit() {
                     })
 
                     response.data.map(item => {
-                        if(!camposSelecionados.includes(item)) campos.push(item)
+                        if (!camposSelecionados.includes(item)) campos.push(item)
                     })
 
                 })
@@ -359,35 +359,44 @@ function Edit() {
                                                 return (
                                                     item.multiselect === "false"
                                                         ?
-                                                        <Row>
-                                                            <Col md={10}>
-                                                                <FloatingLabel className="form-outline" label={item.field} style={{ transform: 'scale(0.90)' }}>
-                                                                    <Form.Control className="my-3" type="text" placeholder={item.field} value={form[item.field]} onChange={(e) => handleChange(e.target.value, item.field)} />
-                                                                </FloatingLabel>
+                                                        <Row className=" mb-3">
+                                                            <Col md={11}>
+                                                                <Form.Group className="mt-3">
+                                                                    <Form.Label style={{ marginLeft: '10px' }}>{item.field}:</Form.Label>
+                                                                    <Form.Control required type="text" placeholder={item.field} value={form[item.field]} onChange={(e) => handleChange(e.target.value, item.field)} />
+                                                                </Form.Group>
                                                             </Col>
                                                             <Col md={1} className="d-flex justify-content-start">
-                                                                <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => handleRemoveFieldSingle(e, item)} /></Link>
+                                                                <Link><Trash3 style={{ marginTop: '1.5cm', marginLeft: '-1em' }} size={20} color="black" onClick={e => handleRemoveFieldSingle(e, item)} /></Link>
                                                             </Col>
                                                         </Row>
                                                         :
                                                         <>
-                                                            {
-                                                                form[item.field].map((value, index) => {
+                                                            <Row>
+                                                                <Form.Group className="mt-3">
+                                                                    <Form.Label style={{ marginLeft: '10px' }}>{item.field}:</Form.Label>
+                                                                </Form.Group>
+                                                                {form[item.field].map((value, index) => {
                                                                     return (
-                                                                        <Row>
+                                                                        <Row className="mb-2">
                                                                             <Col md={11}>
-                                                                                <FloatingLabel className="form-outline" label={item.field + " " + (index + 1)} style={{ transform: 'scale(0.90)' }}>
-                                                                                    <Form.Control className="my-3" type="text" placeholder={item.field + " " + (index + 1)} value={form[item.field][index]} onChange={(e) => handleChangeFieldMulti(e, index, item)} />
-                                                                                </FloatingLabel>
+                                                                                <Form.Group>
+                                                                                <Form.Control required type="text" placeholder={item.field + " " + (index + 1)} value={form[item.field][index]} onChange={(e) => handleChangeFieldMulti(e, index, item.field)} />
+                                                                                </Form.Group>
                                                                             </Col>
                                                                             <Col md={1} className="d-flex justify-content-start">
-                                                                                <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => handleMultiRemoveField(e, index, item)} /></Link>
+                                                                                <Link>
+                                                                                    <Trash3 style={{ marginTop: '0.25cm', marginLeft: '-1em' }} size={20} color="black" onClick={e => handleMultiRemoveField(e, index, item)} />
+                                                                                </Link>
                                                                             </Col>
-                                                                        </Row>)
-                                                                })
-                                                            }
+                                                                        </Row>
+                                                                    );
+                                                                })}
+                                                            </Row>
                                                             <Row>
-                                                                <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={e => handleMultiAddField(e, item)}>Adicionar {item.field}</Button>
+                                                                <div className="mb-3 d-flex justify-content-start padding-bottom">
+                                                                    <Button className="mx-2" variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={e => handleMultiAddField(e, item)}>Adicionar {item.field}</Button>
+                                                                </div>
                                                             </Row>
                                                         </>
                                                 )

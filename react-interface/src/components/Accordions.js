@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Accordion, ListGroup, ListGroupItem, Modal, Button, Container } from 'react-bootstrap'
 import { Eye, Pencil, Trash3, Heart, HeartFill } from 'react-bootstrap-icons'
@@ -8,9 +8,29 @@ import env from '../config/env'
 
 
 function Accordions({ data, setData, favorites, setFavorites, token, page, search }) {
-    const [showModal, setShowModal] = useState(false);
-    const [deleteItemID, setDeleteItemID] = useState(null);
+    const [tribunais, setTribunais] = useState({})
+    const [showModal, setShowModal] = useState(false)
+    const [deleteItemID, setDeleteItemID] = useState(null)
     const [refresh, setRefresh] = useState("")
+
+    
+    useEffect(() => {
+        const fetchData = async () => {
+            axios.get(env.apiTribunaisAccessPoint + `?token=${localStorage.token}`)
+                    .then(response => {
+                        response.data.forEach(obj => {
+                            tribunais[obj._id] = obj.nome
+                        })
+                        setRefresh(new Date().toISOString())
+                    })
+                    .catch(error => {
+                        toast.error("Não foi possível obter a lista de tribunais!", { position: toast.POSITION.TOP_CENTER })
+                    })
+        }
+
+        fetchData()
+    }, [])
+
 
     const handleFavorite = async (event, id) => {
         try {
@@ -21,23 +41,17 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
                     return current.filter((item) => item != id)
                 })
 
-                toast.success('O acórdão foi removido da lista de favoritos com sucesso!', {
-                    position: toast.POSITION.TOP_CENTER
-                })
+                toast.success('O acórdão foi removido da lista de favoritos com sucesso!', { position: toast.POSITION.TOP_CENTER })
             }
             else {
                 await axios.put(env.authAccessPoint + `/${token.username}/favorites?token=${localStorage.token}`, { favorites: id })
 
                 setFavorites(current => [...current, id])
 
-                toast.success('O acórdão foi adicionado à lista de favoritos com sucesso!', {
-                    position: toast.POSITION.TOP_CENTER
-                })
+                toast.success('O acórdão foi adicionado à lista de favoritos com sucesso!', { position: toast.POSITION.TOP_CENTER })
             }
         } catch (error) {
-            toast.error('Não foi possível adicionar o acórdão à lista de favoritos!', {
-                position: toast.POSITION.TOP_CENTER
-            })
+            toast.error('Não foi possível adicionar o acórdão à lista de favoritos!', { position: toast.POSITION.TOP_CENTER })
         }
 
     }
@@ -74,7 +88,7 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
         setRefresh(new Date().toISOString())
     }
 
-
+    
     return (
         <Accordion className='mb-4'>
 
@@ -112,6 +126,7 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
                         <Accordion.Body>
                             <ListGroup>
                                 <ListGroupItem><b>Data: </b>{obj["Data do Acordão"]}</ListGroupItem>
+                                <ListGroupItem><b>Tribunal: </b>{tribunais.hasOwnProperty(obj.tribunal) ? tribunais[obj.tribunal] : obj.tribunal}</ListGroupItem>
                                 <ListGroupItem><b>Relator: </b>{obj.Relator}</ListGroupItem>
                                 <ListGroupItem><b>Descritores: </b>
                                     <ListGroup className='list-group-flush'>
