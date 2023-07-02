@@ -1,9 +1,10 @@
 var express = require("express");
 var router = express.Router();
 var Acordao = require("../controllers/acordao_details");
+var verify = require("../verify/verify")
 
 /* GET home page. */
-router.get("/",verify.userAccess, function (req, res, next) {
+router.get("/", verify.userAccess, function (req, res, next) {
   Acordao.list()
     .then((data) => {
       res.status(200).jsonp(data);
@@ -39,7 +40,7 @@ router.put("/:id", verify.userAccess, function (req, res, next) {
     );
 });
 
-router.delete("/:id",verify.userAccess,  function (req, res, next) {
+router.delete("/:id", verify.userAccess, function (req, res, next) {
   Acordao.deleteAcordao(req.params.id)
     .then((data) => res.status(200).json(data))
     .catch((error) =>

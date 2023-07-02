@@ -73,7 +73,7 @@ router.get("/:id", verify.userAccess, function (req, res, next) {
     }
 })
 
-router.post("/", verify.adminAccess, function (req, res, next) {
+router.post("/", verify.producerAccess, function (req, res, next) {
     Acordao.addAcordao(req.body)
         .then((data) => res.status(200).json(data))
         .catch((error) => res.status(523).json({ error: "Erro na criação do acordão" }))
