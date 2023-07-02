@@ -1,7 +1,7 @@
-import { useParams, useSearchParams, Link, Navigate } from "react-router-dom"
+import { useParams, useSearchParams, Link, useNavigate, Navigate } from "react-router-dom"
 import { useState, useEffect, React } from "react"
 import Button from "@mui/material/Button"
-import { Container, ListGroup, ListGroupItem, Card, Modal } from "react-bootstrap"
+import { Container, ListGroup, ListGroupItem, Card, Modal, Form } from "react-bootstrap"
 import { Button as BootstrapButton } from "react-bootstrap"
 import { Pencil, Trash3, Heart, HeartFill, ArrowLeftShort } from "react-bootstrap-icons"
 import { ToastContainer, toast } from "react-toastify"
@@ -13,11 +13,15 @@ import jwt_decode from "jwt-decode"
 
 function Record() {
     var params = useParams()
+    const navigate = useNavigate()
     const [tribunais, setTribunais] = useState({})
     const [searchParams] = useSearchParams()
     const [record, setRecord] = useState(null)
     const [favorites, setFavorites] = useState([])
     const [showModal, setShowModal] = useState(false)
+    const [showModalFav, setShowModalFav] = useState(false)
+    const [descricaoFav, setDescricaoFav] = useState(false)
+    const [FavItemID, setFavItemID] = useState(null)
     const [deleteItemID, setDeleteItemID] = useState(null)
     const [returnURL, setReturnURL] = useState("")
     const [refresh, setRefresh] = useState("")
@@ -29,24 +33,33 @@ function Record() {
                 if (!response.data.error) setRecord(response.data)
                 else setRecord("NoPage")
                 console.log(response.data)
-            } catch (error) {}
+            } catch (error) { }
 
             axios.get(env.apiTribunaisAccessPoint + `?token=${localStorage.token}`)
-                    .then(response => {
-                        response.data.forEach(obj => {
-                            tribunais[obj._id] = obj.nome
-                        })
-                        setRefresh(new Date().toISOString())
+                .then(response => {
+                    response.data.forEach(obj => {
+                        tribunais[obj._id] = obj.nome
                     })
-                    .catch(error => {
-                        toast.error("Não foi possível obter a lista de tribunais!", { position: toast.POSITION.TOP_CENTER })
-                    })
+                    setRefresh(new Date().toISOString())
+                })
+                .catch(error => {
+                    toast.error("Não foi possível obter a lista de tribunais!", { position: toast.POSITION.TOP_CENTER })
+                })
         }
 
         const fetchFavorites = async () => {
             try {
                 const response = await axios.get(`${env.authAccessPoint}/${decodedToken.username}/favorites?token=${localStorage.token}`)
-                setFavorites(response.data.favorites)
+                var dictionary = {};
+                for (var i = 0; i < response.data.favorites.length; i++) {
+                    var elem = response.data.favorites[i];
+                    if ("Descricao" in elem) {
+                        dictionary[elem["_id"]] = elem["Descricao"];
+                    } else {
+                        dictionary[elem["_id"]] = "";
+                    }
+                }
+                setFavorites(dictionary)
             } catch (error) {
                 toast.error("Não foi possível obter a lista de favoritos!", {
                     position: toast.POSITION.TOP_CENTER
@@ -87,32 +100,48 @@ function Record() {
 
     const handleFavorite = async (event, id) => {
         try {
-            if (favorites.includes(id)) {
-                await axios.put(`${env.authAccessPoint}/${decodedToken.username}/removeFavorite?token=${localStorage.token}`, {favorites: id})
+            if (id in favorites) {
+                await axios.put(env.authAccessPoint + `/${decodedToken.username}/removeFavorite?token=${localStorage.token}`, { favorites: id });
+                setFavorites(current => {
+                    const updatedFavorites = { ...current };
+                    delete updatedFavorites[id];
+                    return updatedFavorites;
+                });
 
-                setFavorites((current) => {
-                    return current.filter((item) => item !== id)
-                })
-
-                toast.success("O acórdão foi removido da lista de favoritos com sucesso!", {
-                    position: toast.POSITION.TOP_CENTER
-                })
+                toast.success('O acórdão foi removido da lista de favoritos com sucesso!', { position: toast.POSITION.TOP_CENTER });
             }
             else {
-                await axios.put(`${env.authAccessPoint}/${decodedToken.username}/favorites?token=${localStorage.token}`, { favorites: id });
+                if (descricaoFav) {
+                    await axios.put(env.authAccessPoint + `/${decodedToken.username}/favorites?token=${localStorage.token}`, { favorites: { "_id": id, "Descricao": descricaoFav } })
+                    setDescricaoFav(null)
+                    favorites[id] = descricaoFav
+                }
+                else {
+                    await axios.put(env.authAccessPoint + `/${decodedToken.username}/favorites?token=${localStorage.token}`, { favorites: { "_id": id } })
+                }
+                favorites[id] = ""
+                handleHideModalFav()
 
-                setFavorites((current) => [...current, id])
-
-                toast.success("O acórdão foi adicionado à lista de favoritos com sucesso!", {
-                    position: toast.POSITION.TOP_CENTER
-                })
+                toast.success('O acórdão foi adicionado à lista de favoritos com sucesso!', { position: toast.POSITION.TOP_CENTER })
             }
         } catch (error) {
-            toast.error("Não foi possível adicionar o acórdão à lista de favoritos!", {
-                position: toast.POSITION.TOP_CENTER
-            })
+            toast.error('Não foi possível adicionar o acórdão à lista de favoritos!', { position: toast.POSITION.TOP_CENTER })
         }
+
     }
+
+
+    const handleShowModalFav = (event, id) => {
+        setShowModalFav(true)
+        setFavItemID(id)
+    }
+
+
+    const handleHideModalFav = (event) => {
+        setShowModalFav(false)
+        setFavItemID(null)
+    }
+
 
     const handleShowModal = (event, id) => {
         setDeleteItemID(id)
@@ -126,13 +155,13 @@ function Record() {
 
     const handleDelete = async (event, id) => {
         try {
-            await axios.delete(env.apiAcordaosAccessPoint + `/${id}`)
+            await axios.delete(`${env.apiAcordaosAccessPoint}/${id}/?token=${localStorage.token}`)
 
             toast.success('O acórdão foi removido com sucesso!', {
                 position: toast.POSITION.TOP_CENTER
             })
 
-            return <Navigate to="/" />
+            navigate('/')
         } catch (error) {
             toast.error('Não foi possível remover o acórdão!', {
                 position: toast.POSITION.TOP_CENTER
@@ -140,6 +169,7 @@ function Record() {
         }
 
         handleHideModal()
+        setRefresh(new Date().toISOString())
     }
 
 
@@ -161,11 +191,28 @@ function Record() {
                         <Card className='d-flex justify-content-center' style={{ 'boxShadow': '0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)' }} >
                             <Card.Body>
                                 <div className="d-flex justify-content-end mb-4">
-                                    {favorites.includes(params.id) ? (
-                                        <Button variant="outline-dark" startIcon={<HeartFill />} onClick={(event) => handleFavorite(event, params.id)}>Adicionar aos Favoritos</Button>
-                                    ) : (
-                                        <Button variant="outline-dark" startIcon={<Heart />} onClick={(event) => handleFavorite(event, params.id)}>Adicionar aos Favoritos</Button>
-                                    )}
+                                    {params.id in favorites ? <Button variant="outline-dark" startIcon={<HeartFill />} onClick={(event) => handleFavorite(event, params.id)}>Adicionar aos Favoritos</Button>
+                                        : <Button variant="outline-dark" startIcon={<Heart />} onClick={(event) => handleShowModalFav(event, params.id)}>Adicionar aos Favoritos</Button>
+                                    }
+                                    <>
+                                        <Modal show={showModalFav && FavItemID == params.id} onHide={handleHideModalFav}>
+                                            <Modal.Header closeButton>
+                                                <Modal.Title>Adicionar uma descrição</Modal.Title>
+                                            </Modal.Header>
+
+                                            <Form>
+                                                <div >
+                                                    <Form.Group className="my-3 mx-3">
+                                                        <Form.Control type="text" placeholder="Descrição" as="textarea" rows={10} onChange={(e) => { setDescricaoFav(e.target.value) }} />
+                                                    </Form.Group>
+                                                </div>
+                                                <Modal.Footer>
+                                                    <BootstrapButton variant="default" onClick={(event) => handleFavorite(event, params.id.toString())}>Adicionar aos Favoritos</BootstrapButton>
+                                                    <BootstrapButton variant="danger" onClick={handleHideModalFav}>Cancelar</BootstrapButton>
+                                                </Modal.Footer>
+                                            </Form>
+                                        </Modal>
+                                    </>
                                     <Link to={"/edit/" + params.id} style={{ 'textDecoration': 'none', 'color': 'inherit' }}>
                                         <Button variant="outline-dark" startIcon={<Pencil />}>Editar Acórdão</Button>
                                     </Link>
@@ -248,7 +295,7 @@ function Record() {
                                         record["Decisão Texto Integral"] && (
                                             <ListGroupItem><b>Decisão Texto Integral: </b>{record["Decisão Texto Integral"]}</ListGroupItem>
                                         )
-                                        
+
                                     ]}
                                     </ListGroup>
                                 </Container>
@@ -314,20 +361,20 @@ function Record() {
                                                     )
                                                 }
                                             } else if (record[key] && key !== "_id") {
-                                                if (key==="Referência Processo")
-                                                return (
-                                                    <ListGroupItem key={key}>
-                                                        <b>{key}: </b>
-                                                        {record[key]}
-                                                    </ListGroupItem>
-                                                )
+                                                if (key === "Referência Processo")
+                                                    return (
+                                                        <ListGroupItem key={key}>
+                                                            <b>{key}: </b>
+                                                            {record[key]}
+                                                        </ListGroupItem>
+                                                    )
                                                 else
-                                                return (
-                                                    <ListGroupItem key={key}>
-                                                        <b>{key}: </b>
-                                                        {record[key]}
-                                                    </ListGroupItem>
-                                                )
+                                                    return (
+                                                        <ListGroupItem key={key}>
+                                                            <b>{key}: </b>
+                                                            {record[key]}
+                                                        </ListGroupItem>
+                                                    )
                                             }
                                             return null
                                         }).filter((item) => {
