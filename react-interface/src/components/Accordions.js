@@ -119,7 +119,6 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
     }
 
 
-
     return (
         <Accordion className='mb-4'>
             {data.map((obj, index) => {

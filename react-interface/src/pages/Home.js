@@ -105,7 +105,7 @@ function Home() {
 
     const handleSearch = async (event) => {
         event.preventDefault()
-        setPage(0)
+        setPage(1)
 
         if (search === "?") setOnSearch(false)
         else setOnSearch(true)
@@ -124,7 +124,6 @@ function Home() {
         }
     }
 
-    console.log(data)
 
     return (
         <>
