@@ -36,16 +36,6 @@ module.exports.getAcordaosNumber = (query) => {
         });
 };
 
-module.exports.getRelatores = () => {
-    return Acordao.distinct("Relator")
-        .then((response) => {
-            return response;
-        })
-        .catch((error) => {
-            return error;
-        });
-};
-
 module.exports.addAcordao = (acordao) => {
     return Acordao.find().sort({_id:-1}).limit(1)
         .then((response1) => {

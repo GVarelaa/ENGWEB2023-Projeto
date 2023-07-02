@@ -196,27 +196,6 @@ router.post("/register", function (req, res) {
 });
 
 
-
-router.put("/:id", verify.userAccess, function (req, res) {
-    User.updateUser(req.body.username, req.body)
-        .then((data) => res.status(200).jsonp(data))
-        .catch((error) =>
-            res
-                .status(503)
-                .jsonp({ error: error, message: "Erro na atualização do utilizador" })
-        );
-});
-
-router.delete("/:id", verify.adminAccess, function (req, res) {
-    User.deleteUser(req.params.id)
-        .then((data) => res.status(200).jsonp(data))
-        .catch((error) =>
-            res
-                .status(504)
-                .jsonp({ error: error, message: "Erro na deleção do utilizador" })
-        );
-});
-
 router.post("/login", passport.authenticate("local"), function (req, res) {
     User.updateAccess(
         req.user.username,
@@ -252,16 +231,10 @@ router.post("/image/:id", (req, res) => {
         image.mv(path.join(assetsFolder, "i_" + req.params.id));
     }
     else {
-        console.log("OLE")
-        console.log(path.join(assetsFolder, "i_" + req.params.id))
         fs.unlink(path.join(assetsFolder, "i_" + req.params.id), (err => {
             if (err) console.log(err);
             else {
                 console.log("\nDeleted file: example_file.txt");
-
-                // Get the files in current directory
-                // after deletion
-                //getFilesInDirectory();
             }
         }))
     }
@@ -306,5 +279,28 @@ router.put("/:id/removeFavorite", verify.userAccess, function (req, res) {
         );
 }
 );
+
+router.put("/:id", verify.userAccess, function (req, res) {
+    User.updateUser(req.body.username, req.body)
+        .then((data) => res.status(200).jsonp(data))
+        .catch((error) =>
+            res
+                .status(503)
+                .jsonp({ error: error, message: "Erro na atualização do utilizador" })
+        );
+});
+
+
+
+router.delete("/:id", verify.adminAccess, function (req, res) {
+    User.deleteUser(req.params.id)
+        .then((data) => res.status(200).jsonp(data))
+        .catch((error) =>
+            res
+                .status(504)
+                .jsonp({ error: error, message: "Erro na deleção do utilizador" })
+        );
+});
+
 
 module.exports = router;

@@ -29,7 +29,7 @@ router.get("/", verify.userAccess, function (req, res, next) {
 
     Object.keys(req.query).forEach(key => {
         if (typeof req.query[key] === 'string' && key !== "_id") {
-            req.query[key] = {$regex: req.query[key], $options: "i"}
+            req.query[key] = { $regex: req.query[key], $options: "i" }
         }
     })
 
@@ -54,12 +54,6 @@ router.get("/number", verify.userAccess, function (req, res, next) {
     Acordao.getAcordaosNumber(req.query)
         .then((data) => res.status(200).json(data))
         .catch((error) => res.status(523).json({ error: "Erro na obtenção do número de acordãos" }))
-})
-
-router.get("/relatores", verify.userAccess, function (req, res, next) {
-    Acordao.getRelatores()
-        .then((data) => res.status(200).json(data))
-        .catch((error) => res.status(523).json({ error: "Erro na obtenção de relatores" }))
 })
 
 router.get("/:id", verify.userAccess, function (req, res, next) {
