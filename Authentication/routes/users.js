@@ -245,27 +245,6 @@ router.post("/login", passport.authenticate("local"), function (req, res) {
         });
 });
 
-router.post("/changepassword", verify.userAccess, function (req, res) {
-    User.getUser(req.body.username)
-        .then((user) => {
-            user.changePassword(
-                req.body.oldpassword,
-                req.body.newpassword,
-                function (error) {
-                    if (error)
-                        res
-                            .status(500)
-                            .jsonp({ error: "Erro na alteração da password: " + error });
-                    else res.status(201).jsonp();
-                }
-            );
-        })
-        .catch((error) => {
-            res
-                .status(500)
-                .jsonp({ error: "Erro na alteração da password: " + error });
-        });
-});
 
 router.post("/image/:id", (req, res) => {
     if (req.files) {
@@ -286,6 +265,25 @@ router.post("/image/:id", (req, res) => {
             }
         }))
     }
+});
+
+
+router.put("/:id/password", verify.userAccess, function (req, res) {
+    User.getUser(req.params.id)
+        .then((user) => {
+            user.changePassword(
+                req.body.oldpassword,
+                req.body.newpassword,
+                function (error) {
+                    if (error)
+                        res.status(500).jsonp({ error: "Erro na alteração da password: " + error });
+                    else res.status(201).jsonp();
+                }
+            );
+        })
+        .catch((error) => {
+            res.status(500).jsonp({ error: "Erro na alteração da password: " + error });
+        });
 });
 
 router.put("/:id/favorites", verify.userAccess, function (req, res) {

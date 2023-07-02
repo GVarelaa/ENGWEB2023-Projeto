@@ -69,8 +69,7 @@ function Profile() {
 
         if (showPasswordInputs) {
             if (passwordAtual != null && passwordNova != null) {
-                axios.post(env.authAccessPoint + `/changepassword?token=${localStorage.token}`, {
-                    username: username,
+                axios.put(env.authAccessPoint + `/${username}/password?token=${localStorage.token}`, {
                     oldpassword: passwordAtual,
                     newpassword: passwordNova,
                 })

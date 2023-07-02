@@ -79,6 +79,7 @@ A solução arquitetural concebida baseia-se em 3 serviços aplicacionais hetero
 O serviço de autenticação é destinado ao registo e autenticação dos utilizadores, garantindo a segurança da aplicação. Sendo independente dos dados relativos aos acórdãos, pudemos começar o desenvolvimento deste serviço enquanto efetuavamos o tratamento dos dados. Para gerir os utilizadores e as respetivas sessões foram utilizados os módulos passport-local e jsonwebtoken. Através da atribuição de um token a cada utilizador, garantimos que apenas utilizadores autorizados podem aceder a determinadas rotas e realizar ações específicas, de acordo com os seus níveis de acesso. A coleção dos utilizadores é formada por documentos com os seguintes campos:
 
 | Método | Rota    | Descrição |
+| -------|---------|-----------|
 | GET | /users     | Devolve os utilizadores presentes na coleção de utilizadores |
 | GET | /users/:id | Devolve um utilizador consoante o id passado no parâmetro |
 | GET | /users/:id/favorites | Devolve os favorites de um utilizador passado como parâmetro |
@@ -90,10 +91,21 @@ O serviço de autenticação é destinado ao registo e autenticação dos utiliz
 | GET | /users/login/google/callback | Rota callback da autenticação do Google |
 | POST | /users | Adiciona um utilizador à coleção de utilizadores |
 | POST | /users/register | Adiciona um utilizador à coleção de utilizadores (registo) |
+| POST | /users/login | Autentica um utilizador |
+| POST | /users/image/:id | Guarda uma imagem de um utilizador passado por parâmetro |
+| PUT | /users/:id | Altera as informações de um utilizador
+| PUT | /users/:id/password | Altera a password de um utilizador |
+| PUT | /users/:id/favorites | Adiciona um favorito ao utilizador passado por parâmetro |
+| PUT | /users/:id/removeFavorite | Remove um favorite ao utilizador passado por parâmetro |
+| DELETE | /users/:id | Remove um utilizador passado por parâmetro da coleção |
 
 ### API de Dados
-Diretamente conectado à base de dados, este serviço é responsável pelo armazenamento e gestão dos dados da aplicação. A base de dados foi criada com recurso ao software MongoDB, armazenando informações dos utilizadores e dos acórdãos. A API fornece, assim, endpoints para a leitura, criação, atualização e exclusão de dados, permitindo que a aplicação interaja com a base de dados de forma segura e eficiente. Todo este serviço encontra-se protegido de forma a que os pedidos só possam ser realizados sob a existência de token válido. Para além disso, existem verificações relativas ao nível de acesso do utilizador correspondente ao token, uma vez que alguns pedidos são exclusivos a uma determinada gama de
-utilizadores.
+Diretamente conectado à base de dados, este serviço é responsável pelo armazenamento e gestão dos dados da aplicação. A base de dados foi criada com recurso ao software MongoDB, armazenando informações dos utilizadores e dos acórdãos. A API fornece, assim, endpoints para a leitura, criação, atualização e exclusão de dados, permitindo que a aplicação interaja com a base de dados de forma segura e eficiente. Todo este serviço encontra-se protegido de forma a que os pedidos só possam ser realizados sob a existência de token válido. Para além disso, existem verificações relativas ao nível de acesso do utilizador correspondente ao token, uma vez que alguns pedidos são exclusivos a uma determinada gama de utilizadores. Este serviço tem ainda acesso às seguintes coleções presentes na base de dados:
+- **Acordãos (acordaos)** : coleção que contém informação sobre todos os acordãos
+- **Utilizadores (users)** : coleção que possui todos os utilizadores registados
+- **Campos (fields)** : coleção que contém todos os campos que podem estar presentes nos acordãos
+- **Tribnais (tribunals)** : coleção que contém todos os tribunais e respetivos descritores
+- **Detalhes dos campos (acordaos_details)** : coleção com informação relativa aos vários campos dos acordãos
 
 
 ### Interface
