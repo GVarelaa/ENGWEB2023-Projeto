@@ -45,6 +45,7 @@ function Insert() {
                 .then((response) => {
                     response.data.find(obj => obj._id === response.data[0]._id).descritores.sort()
                     setListaDescritores(response.data.find(obj => obj._id === response.data[0]._id).descritores.map((descritor) => ({ label: descritor, value: descritor })))
+                    form["tribunal"] = response.data[0]._id
                     response.data.forEach(obj => { delete obj.descritores })
                     setTribunais(response.data)
                 })
@@ -185,9 +186,23 @@ function Insert() {
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        var descritores = []
-        selectedDescritores.map(obj => descritores.push(obj.label))
-        form["Descritores"] = descritores
+        form["Descritores"] = selectedDescritores.map(obj => { return obj.label })
+
+        var lesgislacoes = {}, jurisprudencias = {}
+        Object.keys(form).forEach(key => {
+            if (key === "Legislação Nacional" || key === "Legislação Comunitária" || key === "Legislação Estrangeira") {
+                lesgislacoes[key] = form[key]
+                delete form[key]
+            }
+            else if (key === "Jurisprudência Nacional" || key === "Jurisprudência Internacional" || key === "Jurisprudência Estrangeira" ||
+                key === "Jurisprudência Constitucional" || key === "Outra Jurisprudência") {
+                jurisprudencias[key] = form[key]
+                delete form[key]
+            }
+        })
+
+        if (Object.keys(lesgislacoes).length > 0) form["Legislações"] = lesgislacoes
+        if (Object.keys(jurisprudencias).length > 0) form["Jurisprudências"] = jurisprudencias
 
         axios.post(env.apiAcordaosAccessPoint + `?token=${localStorage.token}`, form)
             .then((response) => {
@@ -199,7 +214,7 @@ function Insert() {
             })
     }
 
-
+    console.log(form)
     return (
         <>
             <ToastContainer />

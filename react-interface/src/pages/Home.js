@@ -57,6 +57,7 @@ function Home() {
                 else {
                     const response2 = await axios.get(`${env.apiAcordaosAccessPoint}?lastID=${lastID}&limit=${limit}&token=${localStorage.token}`)
                     setData(response2.data)
+                    console.log(response2)
                 }
             } catch (error) {
                 toast.error("Não foi possível obter a lista de acórdãos!", { position: toast.POSITION.TOP_CENTER })

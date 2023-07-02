@@ -47,9 +47,9 @@ module.exports.getRelatores = () => {
 };
 
 module.exports.addAcordao = (acordao) => {
-    return Acordao.find().count()
+    return Acordao.find().sort({_id:-1}).limit(1)
         .then((response1) => {
-            acordao["_id"] = response1
+            acordao["_id"] = parseInt(response1[0]._id, 10) + 1
             Acordao.create(acordao)
                 .then((response2) => {
                     return response2;
@@ -75,7 +75,7 @@ module.exports.deleteAcordao = (id) => {
 };
 
 module.exports.updateAcordao = (acordao) => {
-    return Acordao.updateOne({ _id: acordao._id }, acordao)
+    return Acordao.updateOne({ _id: acordao._id }, {$set: acordao})
         .then((response) => {
             return response;
         })
