@@ -3,7 +3,7 @@ var router = express.Router();
 var Acordao = require("../controllers/acordao_details");
 
 /* GET home page. */
-router.get("/", function (req, res, next) {
+router.get("/",verify.userAccess, function (req, res, next) {
   Acordao.list()
     .then((data) => {
       res.status(200).jsonp(data);
@@ -16,7 +16,7 @@ router.get("/", function (req, res, next) {
     );
 });
 
-router.post("/", function (req, res, next) {
+router.post("/", verify.userAccess, function (req, res, next) {
   Acordao.addAcordao(req.body)
     .then((data) => {
       console.log(data);
@@ -29,7 +29,7 @@ router.post("/", function (req, res, next) {
     );
 });
 
-router.put("/:id", function (req, res, next) {
+router.put("/:id", verify.userAccess, function (req, res, next) {
   Acordao.alteraAcordao(req.params.id, req.body)
     .then((data) => res.status(200).json(data))
     .catch((error) =>
@@ -39,7 +39,7 @@ router.put("/:id", function (req, res, next) {
     );
 });
 
-router.delete("/:id", function (req, res, next) {
+router.delete("/:id",verify.userAccess,  function (req, res, next) {
   Acordao.deleteAcordao(req.params.id)
     .then((data) => res.status(200).json(data))
     .catch((error) =>
