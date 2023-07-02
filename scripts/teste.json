@@ -1,0 +1,356 @@
+{
+  "Processo": [
+    "jtre_acordaos.json",
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "jtcampc(a|t)_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jtrg_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json",
+    "jtca_acordaos.json",
+    "jdgpj_acordaos.json"
+  ],
+  "Relator": [
+    "jtre_acordaos.json",
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "jtcampc(a|t)_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jtrg_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json",
+    "jtca_acordaos.json",
+    "jdgpj_acordaos.json"
+  ],
+  "Descritores": [
+    "jtre_acordaos.json",
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "jtcampc(a|t)_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jtrg_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json",
+    "jtca_acordaos.json",
+    "jdgpj_acordaos.json"
+  ],
+  "Data do Acordão": [
+    "jtre_acordaos.json",
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "jtcampc(a|t)_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jtrg_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json",
+    "jtca_acordaos.json",
+    "jdgpj_acordaos.json"
+  ],
+  "Votação": [
+    "jtre_acordaos.json",
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jtrg_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json",
+    "jtca_acordaos.json"
+  ],
+  "Sumário": [
+    "jtre_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jtrg_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json",
+    "jtca_acordaos.json"
+  ],
+  "Decisão Texto Integral": [
+    "jtre_acordaos.json",
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jtrg_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json",
+    "jtca_acordaos.json",
+    "jdgpj_acordaos.json"
+  ],
+  "tribunal": [
+    "jtre_acordaos.json",
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "jtcampc(a|t)_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jtrg_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json",
+    "jtca_acordaos.json",
+    "jdgpj_acordaos.json"
+  ],
+  "_id": [
+    "jtre_acordaos.json",
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "jtcampc(a|t)_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jtrg_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json",
+    "jtca_acordaos.json",
+    "jdgpj_acordaos.json"
+  ],
+  "Decisão": [
+    "jtre_acordaos.json",
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jtrg_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json",
+    "jtca_acordaos.json",
+    "jdgpj_acordaos.json"
+  ],
+  "Meio Processual": [
+    "jtre_acordaos.json",
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jtrg_acordaos.json",
+    "jstj_acordaos.json",
+    "jtca_acordaos.json"
+  ],
+  "Legislações": [
+    "jtre_acordaos.json",
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jtrg_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json"
+  ],
+  "Área Temática 1": [
+    "jtre_acordaos.json",
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcampc(a|t)_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jtrg_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json"
+  ],
+  "Referências Internacionais": [
+    "jtre_acordaos.json",
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtrl_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json"
+  ],
+  "Jurisprudências": [
+    "jtre_acordaos.json",
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jtrg_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json"
+  ],
+  "Tribunal Recorrido": [
+    "jtre_acordaos.json",
+    "jtrp_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jstj_acordaos.json"
+  ],
+  "Processo no Tribunal Recorrido": [
+    "jtre_acordaos.json",
+    "jtrp_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jstj_acordaos.json"
+  ],
+  "Referência Processo": [
+    "jtre_acordaos.json",
+    "jtrp_acordaos.json",
+    "jtrl_acordaos.json",
+    "jstj_acordaos.json"
+  ],
+  "Indicações Eventuais": [
+    "jtre_acordaos.json",
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json"
+  ],
+  "Nº Convencional": [
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jtrg_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json",
+    "jtca_acordaos.json"
+  ],
+  "Nº do Documento": [
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jtrg_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json"
+  ],
+  "Requerente": [
+    "jcon_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "atco1_acordaos.json",
+    "jdgpj_acordaos.json"
+  ],
+  "Requerido": [
+    "jcon_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "atco1_acordaos.json",
+    "jdgpj_acordaos.json"
+  ],
+  "Data de Entrada": [
+    "jcon_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "jtcampc(a|t)_acordaos.json",
+    "jtrl_acordaos.json",
+    "jstj_acordaos.json"
+  ],
+  "Objecto": ["jcon_acordaos.json", "jsta_acordaos.json", "jtcn_acordaos.json"],
+  "Área Temática 2": [
+    "jcon_acordaos.json",
+    "jsta_acordaos.json",
+    "atco1_acordaos.json"
+  ],
+  "Doutrina": [
+    "jcon_acordaos.json",
+    "jsta_acordaos.json",
+    "jstj_acordaos.json"
+  ],
+  "Recusa Aplicação": ["jcon_acordaos.json", "jsta_acordaos.json"],
+  "Referência a Pareceres": [
+    "jcon_acordaos.json",
+    "jsta_acordaos.json",
+    "atco1_acordaos.json"
+  ],
+  "Privacidade": [
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "jtrg_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json"
+  ],
+  "Apêndice": ["jcon_acordaos.json", "jsta_acordaos.json"],
+  "Data do Apêndice": ["jcon_acordaos.json", "jsta_acordaos.json"],
+  "Informação Auxiliar": [
+    "jcon_acordaos.json",
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "jtcampc(a|t)_acordaos.json",
+    "jtrl_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json",
+    "jtca_acordaos.json",
+    "jdgpj_acordaos.json"
+  ],
+  "Referências Publicação": [
+    "jcon_acordaos.json",
+    "jtrp_acordaos.json",
+    "jsta_acordaos.json",
+    "jtrc_acordaos.json",
+    "jtrl_acordaos.json",
+    "atco1_acordaos.json",
+    "jstj_acordaos.json"
+  ],
+  "Reclamações": ["jtrp_acordaos.json"],
+  "Apenso": [
+    "jtrp_acordaos.json",
+    "jtcn_acordaos.json",
+    "jtrl_acordaos.json",
+    "jstj_acordaos.json"
+  ],
+  "Data da Decisão": ["jtrp_acordaos.json", "jdgpj_acordaos.json"],
+  "Recurso": [
+    "jtrp_acordaos.json",
+    "jtrl_acordaos.json",
+    "jstj_acordaos.json",
+    "jdgpj_acordaos.json"
+  ],
+  "Juízo ou Secção": [
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "jtcampc(a|t)_acordaos.json",
+    "jtrg_acordaos.json",
+    "jtca_acordaos.json",
+    "jdgpj_acordaos.json"
+  ],
+  "Tribunal": [
+    "jsta_acordaos.json",
+    "jtcn_acordaos.json",
+    "jdgpj_acordaos.json"
+  ],
+  
+  "Parecer Ministério Publico": ["jtcn_acordaos.json"],
+  "Acordão": ["atco1_acordaos.json"],
+  "Volume dos Acordãos do T.C.": ["atco1_acordaos.json"]
+}
