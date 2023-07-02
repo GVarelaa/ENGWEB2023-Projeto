@@ -33,8 +33,8 @@ function Insert() {
         "Meio Processual": "",
         "Sumário": "",
         "Decisão Texto Integral": "",
-        "Área Temática 1": [""],
-        "Área Temática 2": [""]
+        "Área Temática 1": [],
+        "Área Temática 2": []
     })
     const [refresh, setRefresh] = useState("") // Atualizar o estado
 
@@ -126,14 +126,28 @@ function Insert() {
 
 
     const handleATRemoveField = (e, field, index) => {
-        form[field].splice(index, 1)
+        var list = []
+        for (let i = 0; i < form[field].length; i++) {
+            if (i !== index) {
+                list.push(form[field][i])
+            }
+        }
+
+        form[field] = list
         setRefresh(new Date().toISOString())
     }
 
 
     const handleMultiRemoveField = (e, item, index) => {
         if (form[item.field].length > 1) {
-            form[item.field].splice(index, 1)
+            var list = []
+            for (let i = 0; i < form[item.field].length; i++) {
+                if (i !== index) {
+                    list.push(form[item.field][i])
+                }
+            }
+
+            form[item.field] = list
         }
         else {
             delete form[item.field]
@@ -234,19 +248,22 @@ function Insert() {
                                 <Row className="gx-3 mb-3">
                                     <Col md={6}>
                                         <>
-                                            <Row className="mb-3">
+                                            <Row>
                                                 <Col md={11}>
                                                     <Form.Group>
                                                         <Form.Label style={{ marginLeft: '10px' }}>Área Temática 1:</Form.Label>
-                                                        <Form.Control type="text" placeholder={"Área Temática 1 - " + 1} value={form["Área Temática 1"][0]} onChange={(e) => handleMultiChangeField(e, "Área Temática 1", 0)} />
                                                     </Form.Group>
                                                 </Col>
+                                            </Row>
+                                            <Row>
+                                                <div style={{ width: '50%' }}>
+                                                    <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleMultiAddField(e, "Área Temática 1")}>Adicionar {"Área Temática 1"}</Button>
+                                                </div>
                                             </Row>
                                             {
                                                 form["Área Temática 1"].map((value, index) => {
                                                     {
                                                         return (
-                                                            index !== 0 &&
                                                             <Row className="mb-3">
                                                                 <Col md={11}>
                                                                     <Form.Group>
@@ -261,28 +278,26 @@ function Insert() {
                                                     }
                                                 })
                                             }
-                                            <Row>
-                                                <div style={{ width: '50%' }}>
-                                                    <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleMultiAddField(e, "Área Temática 1")}>Adicionar Área Temática</Button>
-                                                </div>
-                                            </Row>
                                         </>
                                     </Col>
                                     <Col md={6}>
                                         <>
-                                            <Row className="mb-3">
+                                            <Row>
                                                 <Col md={11}>
                                                     <Form.Group>
                                                         <Form.Label style={{ marginLeft: '10px' }}>Área Temática 2:</Form.Label>
-                                                        <Form.Control type="text" placeholder={"Área Temática 2 - " + 1} value={form["Área Temática 2"][0]} onChange={(e) => handleMultiChangeField(e, "Área Temática 2", 0)} />
                                                     </Form.Group>
                                                 </Col>
+                                            </Row>
+                                            <Row>
+                                                <div style={{ width: '50%' }}>
+                                                    <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleMultiAddField(e, "Área Temática 2")}>Adicionar Área Temática 2</Button>
+                                                </div>
                                             </Row>
                                             {
                                                 form["Área Temática 2"].map((value, index) => {
                                                     {
                                                         return (
-                                                            index !== 0 &&
                                                             <Row>
                                                                 <Col md={11}>
                                                                     <Form.Group className="mb-3">
@@ -297,11 +312,6 @@ function Insert() {
                                                     }
                                                 })
                                             }
-                                            <Row>
-                                            <div style={{ width: '50%' }}>
-                                                    <Button className="mb-3" variant="outline-dark" startIcon={<PlusCircle />} style={{ fontSize: '12px' }} onClick={e => handleMultiAddField(e, "Área Temática 2")}>Adicionar Área Temática 2</Button>
-                                                </div>
-                                            </Row>
                                         </>
                                     </Col>
                                 </Row>
@@ -364,35 +374,44 @@ function Insert() {
                                     return (
                                         item.multiselect === "false"
                                             ?
-                                            <Row>
-                                                <Col md={10}>
-                                                    <FloatingLabel className="form-outline" label={item.field} style={{ transform: 'scale(0.90)' }}>
-                                                        <Form.Control className="my-3" type="text" placeholder={item.field} onChange={(e) => form[item.field] = e.target.value} />
-                                                    </FloatingLabel>
+                                            <Row className=" mb-3">
+                                                <Col md={11}>
+                                                    <Form.Group className="mt-3">
+                                                        <Form.Label style={{ marginLeft: '10px' }}>{item.field}:</Form.Label>
+                                                        <Form.Control required type="text" placeholder={item.field} onChange={(e) => form[item.field] = e.target.value} />
+                                                    </Form.Group>
                                                 </Col>
                                                 <Col md={1} className="d-flex justify-content-start">
-                                                    <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => handleSingleRemoveField(e, item)} /></Link>
+                                                    <Link><Trash3 style={{ marginTop: '1.5cm', marginLeft: '-1em' }} size={20} color="black" onClick={e => handleSingleRemoveField(e, item)} /></Link>
                                                 </Col>
                                             </Row>
                                             :
                                             <>
-                                                {
-                                                    form[item.field].map((value, index) => {
+                                                <Row>
+                                                    <Form.Group className="mt-3">
+                                                        <Form.Label style={{ marginLeft: '10px' }}>{item.field}:</Form.Label>
+                                                    </Form.Group>
+                                                    {form[item.field].map((value, index) => {
                                                         return (
-                                                            <Row>
+                                                            <Row className="mb-2">
                                                                 <Col md={11}>
-                                                                    <FloatingLabel className="form-outline" label={item.field + " " + (index + 1)} style={{ transform: 'scale(0.90)' }}>
-                                                                        <Form.Control className="my-3" type="text" placeholder={item.field + " " + (index + 1)} value={form[item.field][index]} onChange={(e) => handleMultiChangeField(e, item.field, index)} />
-                                                                    </FloatingLabel>
+                                                                    <Form.Group>
+                                                                        <Form.Control required type="text" placeholder={item.field + " " + (index + 1)} value={form[item.field][index]} onChange={(e) => handleMultiChangeField(e, item.field, index)} />
+                                                                    </Form.Group>
                                                                 </Col>
                                                                 <Col md={1} className="d-flex justify-content-start">
-                                                                    <Link><Trash3 style={{ marginTop: '2em', marginLeft: '-3em' }} size={25} color="black" onClick={e => handleMultiRemoveField(e, item, index)} /></Link>
+                                                                    <Link>
+                                                                        <Trash3 style={{ marginTop: '0.25cm', marginLeft: '-1em' }} size={20} color="black" onClick={e => handleMultiRemoveField(e, item, index)} />
+                                                                    </Link>
                                                                 </Col>
-                                                            </Row>)
-                                                    })
-                                                }
+                                                            </Row>
+                                                        );
+                                                    })}
+                                                </Row>
                                                 <Row>
-                                                    <Button variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={e => handleMultiAddField(e, item.field)}>Adicionar {item.field}</Button>
+                                                    <div className="mb-3 d-flex justify-content-start padding-bottom">
+                                                        <Button className="mx-2" variant="outline-dark" startIcon={<PlusCircle />} style={{ padding: '0.3rem 0.6rem', fontSize: '12px' }} onClick={e => handleMultiAddField(e, item.field)}>Adicionar {item.field}</Button>
+                                                    </div>
                                                 </Row>
                                             </>
                                     )

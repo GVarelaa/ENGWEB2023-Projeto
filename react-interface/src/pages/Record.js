@@ -13,20 +13,33 @@ import jwt_decode from "jwt-decode"
 
 function Record() {
     var params = useParams()
+    const [tribunais, setTribunais] = useState({})
     const [searchParams] = useSearchParams()
     const [record, setRecord] = useState(null)
     const [favorites, setFavorites] = useState([])
     const [showModal, setShowModal] = useState(false)
     const [deleteItemID, setDeleteItemID] = useState(null)
     const [returnURL, setReturnURL] = useState("")
+    const [refresh, setRefresh] = useState("")
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`${env.apiAcordaosAccessPoint}/${params.id}?token=${localStorage.token}`)
-                if (!response.data.error) setRecord([response.data])
+                if (!response.data.error) setRecord(response.data)
                 else setRecord("NoPage")
-            } catch (error) { }
+            } catch (error) {}
+
+            axios.get(env.apiTribunaisAccessPoint + `?token=${localStorage.token}`)
+                    .then(response => {
+                        response.data.forEach(obj => {
+                            tribunais[obj._id] = obj.nome
+                        })
+                        setRefresh(new Date().toISOString())
+                    })
+                    .catch(error => {
+                        toast.error("Não foi possível obter a lista de tribunais!", { position: toast.POSITION.TOP_CENTER })
+                    })
         }
 
         const fetchFavorites = async () => {
@@ -74,7 +87,7 @@ function Record() {
     const handleFavorite = async (event, id) => {
         try {
             if (favorites.includes(id)) {
-                await axios.delete(`${env.authAccessPoint}/${decodedToken.username}/favorites/${id}?token=${localStorage.token}`)
+                await axios.put(`${env.authAccessPoint}/${decodedToken.username}/removeFavorite?token=${localStorage.token}`, {favorites: id})
 
                 setFavorites((current) => {
                     return current.filter((item) => item !== id)
@@ -85,7 +98,7 @@ function Record() {
                 })
             }
             else {
-                await axios.post(`${env.authAccessPoint}/${decodedToken.username}/favorites?token=${localStorage.token}`, { favorite: id });
+                await axios.put(`${env.authAccessPoint}/${decodedToken.username}/favorites?token=${localStorage.token}`, { favorites: id });
 
                 setFavorites((current) => [...current, id])
 
@@ -176,51 +189,64 @@ function Record() {
                                 <Container className="my-4 mb-5">
                                     <h4>Informação Principal</h4>
                                     <ListGroup> {[
-                                        record[0].Processo && (
-                                            <ListGroupItem><b>Processo: </b>{record[0].Processo}</ListGroupItem>
+                                        record.Processo && (
+                                            <ListGroupItem><b>Processo: </b>{record.Processo}</ListGroupItem>
                                         ),
-                                        record[0].tribunal && (
-                                            <ListGroupItem><b>Tribunal: </b>{record[0].tribunal}</ListGroupItem>
+                                        record["Data do Acordão"] && (
+                                            <ListGroupItem><b>Data: </b>{record["Data do Acordão"]}</ListGroupItem>
                                         ),
-                                        record[0].Relator && (
-                                            <ListGroupItem><b>Relator: </b>{record[0].Relator}</ListGroupItem>
+                                        record.tribunal && (
+                                            <ListGroupItem><b>Tribunal: </b>{tribunais.hasOwnProperty(record.tribunal) ? tribunais[record.tribunal] : record.tribunal}</ListGroupItem>
                                         ),
-                                        record[0]["Data do Acordão"] && (
-                                            <ListGroupItem><b>Data: </b>{record[0]["Data do Acordão"]}</ListGroupItem>
+                                        record.Relator && (
+                                            <ListGroupItem><b>Relator: </b>{record.Relator}</ListGroupItem>
                                         ),
-                                        record[0]["Área Temática 1"].length !== 0 && (
+                                        record["Área Temática 1"].length !== 0 && (
                                             <ListGroupItem key="area-tematica-1">
                                                 <b>Área Temática 1: </b>
                                                 <ListGroup className="list-group-flush">
-                                                    {record[0]["Área Temática 1"].map((obj) => (
+                                                    {record["Área Temática 1"].map((obj) => (
                                                         <ListGroupItem key={obj}>{obj}</ListGroupItem>
                                                     ))}
                                                 </ListGroup>
                                             </ListGroupItem>
                                         ),
-                                        record[0]["Área Temática 2"].length !== 0 && (
+                                        record["Área Temática 2"].length !== 0 && (
                                             <ListGroupItem>
                                                 <b>Área Temática 2: </b>
                                                 <ListGroup className="list-group-flush">
-                                                    {record[0]["Área Temática 2"].map((obj) => (
+                                                    {record["Área Temática 2"].map((obj) => (
                                                         <ListGroupItem key={obj}>{obj}</ListGroupItem>
                                                     ))}
                                                 </ListGroup>
                                             </ListGroupItem>
                                         ),
-                                        record[0].Descritores.length !== 0 && (
+                                        record.Descritores.length !== 0 && (
                                             <ListGroupItem>
                                                 <b>Descritores: </b>
                                                 <ListGroup className="list-group-flush">
-                                                    {record[0].Descritores.map((obj) => (
+                                                    {record.Descritores.map((obj) => (
                                                         <ListGroupItem key={obj}>{obj}</ListGroupItem>
                                                     ))}
                                                 </ListGroup>
                                             </ListGroupItem>
                                         ),
-                                        record[0]["Sumário"] && (
-                                            <ListGroupItem><b>Sumário: </b>{record[0]["Sumário"]}</ListGroupItem>
+                                        record["Votação"] && (
+                                            <ListGroupItem><b>Votação: </b>{record["Votação"]}</ListGroupItem>
+                                        ),
+                                        record["Decisão"] && (
+                                            <ListGroupItem><b>Decisão: </b>{record["Decisão"]}</ListGroupItem>
+                                        ),
+                                        record["Meio Processual"] && (
+                                            <ListGroupItem><b>Meio Processual: </b>{record["Meio Processual"]}</ListGroupItem>
+                                        ),
+                                        record["Sumário"] && (
+                                            <ListGroupItem><b>Sumário: </b>{record["Sumário"]}</ListGroupItem>
+                                        ),
+                                        record["Decisão Texto Integral"] && (
+                                            <ListGroupItem><b>Decisão Texto Integral: </b>{record["Decisão Texto Integral"]}</ListGroupItem>
                                         )
+                                        
                                     ]}
                                     </ListGroup>
                                 </Container>
@@ -228,16 +254,16 @@ function Record() {
                                 <Container className="my-4">
                                     <h4>Outras Informações</h4>
                                     <ListGroup>
-                                        {record && record !== "NoPage" && Object.keys(record[0]).map((key) => {
-                                            if (typeof record[0][key] === "object") {
+                                        {record && record !== "NoPage" && Object.keys(record).map((key) => {
+                                            if (typeof record[key] === "object") {
                                                 if (key === "Jurisprudências" || key === "Legislações") {
-                                                    return Object.keys(record[0][key]).map((subKey) => {
-                                                        if (subKey !== "_id" && record[0][key][subKey].length > 0) {
+                                                    return Object.keys(record[key]).map((subKey) => {
+                                                        if (subKey !== "_id" && record[key][subKey].length > 0) {
                                                             return (
                                                                 <ListGroupItem key={`${key}-${subKey}`}>
                                                                     <b>{subKey}: </b>
                                                                     <ListGroup className="list-group-flush">
-                                                                        {record[0][key][subKey].map((obj) => (
+                                                                        {record[key][subKey].map((obj) => (
                                                                             <ListGroupItem key={obj}>{obj}</ListGroupItem>
                                                                         ))}
                                                                     </ListGroup>
@@ -250,13 +276,13 @@ function Record() {
                                                     return (
                                                         <Container className="my-4">
                                                             <h4 style={{ 'margin-top': '1.5rem' }}>Informação Auxiliar</h4>
-                                                            {Object.keys(record[0][key]).map((subKey) => {
-                                                                if (typeof subKey === Object && record[0][key][subKey].length > 0) {
+                                                            {Object.keys(record[key]).map((subKey) => {
+                                                                if (typeof subKey === Object && record[key][subKey].length > 0) {
                                                                     return (
                                                                         <ListGroupItem key={`${key}-${subKey}`}>
                                                                             <b>{subKey}: </b>
                                                                             <ListGroup className="list-group-flush">
-                                                                                {record[0][key][subKey].map((obj) => (
+                                                                                {record[key][subKey].map((obj) => (
                                                                                     <ListGroupItem key={obj}>{obj}</ListGroupItem>
                                                                                 ))}
                                                                             </ListGroup>
@@ -266,30 +292,30 @@ function Record() {
                                                                     return (
                                                                         <ListGroupItem subKey={subKey}>
                                                                             <b>{subKey}: </b>
-                                                                            {record[0][key][subKey]}
+                                                                            {record[key][subKey]}
                                                                         </ListGroupItem>
                                                                     )
                                                                 }
                                                             })}
                                                         </Container>
                                                     )
-                                                } else if (record[0][key].length !== 0) {
+                                                } else if (record[key].length !== 0) {
                                                     return (
                                                         <ListGroupItem key={key}>
                                                             <b>{key}: </b>
                                                             <ListGroup className="list-group-flush">
-                                                                {record[0][key].map((obj) => (
+                                                                {record[key].map((obj) => (
                                                                     <ListGroupItem key={obj}>{obj}</ListGroupItem>
                                                                 ))}
                                                             </ListGroup>
                                                         </ListGroupItem>
                                                     )
                                                 }
-                                            } else if (record[0][key] && key !== "_id") {
+                                            } else if (record[key] && key !== "_id") {
                                                 return (
                                                     <ListGroupItem key={key}>
                                                         <b>{key}: </b>
-                                                        {record[0][key]}
+                                                        {record[key]}
                                                     </ListGroupItem>
                                                 )
                                             }
@@ -297,13 +323,17 @@ function Record() {
                                         }).filter((item) => {
                                             const keysDisplayed = [
                                                 "Processo",
+                                                "Data do Acordão",
                                                 "tribunal",
                                                 "Relator",
-                                                "Data do Acordão",
                                                 "Área Temática 1",
                                                 "Área Temática 2",
                                                 "Descritores",
-                                                "Sumário"
+                                                "Votação",
+                                                "Decisão",
+                                                "Meio Processual",
+                                                "Sumário",
+                                                "Decisão Texto Integral"
                                             ]
                                             return !keysDisplayed.includes(item?.key)
                                         })}

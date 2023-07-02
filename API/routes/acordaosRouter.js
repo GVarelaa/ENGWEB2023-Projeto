@@ -28,10 +28,11 @@ router.get("/", verify.userAccess, function (req, res, next) {
     }
 
     Object.keys(req.query).forEach(key => {
-        if (typeof req.query[key] === 'string') {
+        if (typeof req.query[key] === 'string' && key !== "_id") {
             req.query[key] = {$regex: req.query[key], $options: "i"}
         }
     })
+
 
     Acordao.list(req.query, skip, limit)
         .then((data) => {

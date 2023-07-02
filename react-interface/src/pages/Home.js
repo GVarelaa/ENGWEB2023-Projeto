@@ -121,7 +121,7 @@ function Home() {
             toast.error("Não foi possível obter a lista de acórdãos!", { position: toast.POSITION.TOP_CENTER })
         }
     }
-    
+
 
     return (
         <>
@@ -138,20 +138,20 @@ function Home() {
                         </Card>
                     </Col>
                     <Col md={9}>
-                        {data.length>=1 ?(
+                        {data.length >= 1 ? (
                             <Card className='d-flex justify-content-center' style={{ 'boxShadow': '0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)' }} >
                                 <Card.Body>
                                     <Container className='mt-4'>
-                                        <Accordions data={data} setData={setData} favorites={favorites} setFavorites={setFavorites} token={decodedToken} page={page} />
+                                        <Accordions data={data} setData={setData} favorites={favorites} setFavorites={setFavorites} token={decodedToken} page={page} search={search}/>
                                         <Container className='d-flex justify-content-center mb-4'>
-                                            <PaginationControl className="mt-3" page={page} onChange={handleChangePage} count={data.length} shape="rounded" />
+                                            <PaginationControl page={page} between={4} total={recordsNumber} limit={limit} changePage={handleChangePage} ellipsis={1} />
                                         </Container>
                                     </Container>
                                 </Card.Body>
                             </Card>
-                        ):(
+                        ) : (
                             <div>
-                                <Card className="d-flex justify-content-center mb-3" style={{ "boxShadow": "0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)","height": "3rem" }}>
+                                <Card className="d-flex justify-content-center mb-3" style={{ "boxShadow": "0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)", "height": "3rem" }}>
                                     <Card.Body>
                                         <div className="d-flex justify-content-center mt-2">Sem acórdãos disponíveis de momento!</div>
                                     </Card.Body>
