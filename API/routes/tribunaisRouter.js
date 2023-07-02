@@ -31,6 +31,7 @@ router.put('/:id', verify.adminAccess, function (req, res, next) {
 
 
 router.post('/', verify.adminAccess, function (req, res, next) {
+    console.log(req.body)
     Tribunal.addTribunal(req.body)
         .then(data => res.status(201).json(data))
         .catch(error => res.status(526).json({ error: "Erro a adicionar tribunal." }))

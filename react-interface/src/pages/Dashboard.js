@@ -1,40 +1,30 @@
 import NavBar from "../components/NavBar"
-import { useState} from "react"
+import { useState } from "react"
 import { Link } from "react-router-dom"
 import { Container, Form, Col, Row, Card } from "react-bootstrap"
 import Button from '@mui/material/Button'
 import { ToastContainer, toast } from "react-toastify"
 import { PlusCircle, Trash3, Plus } from 'react-bootstrap-icons'
 import axios from "axios"
+import env from "../config/env"
 
-var env = require("../config/env")
 
-function Insert() {
+function Dashboard() {
     const [form, setForm] = useState({
-        "nome":"",
-        "_id":"",
-        "descritores": [""],
-        "areaTematica1": [""],
-        "areaTematica2": [""]
+        "nome": "",
+        "_id": "",
+        "descritores": [""]
     })
-    
+
     const [refresh, setRefresh] = useState("") // Atualizar o estado
 
     const handleSubmit = (event) => {
         event.preventDefault()
         axios.post(env.apiTribunaisAccessPoint + `?token=${localStorage.token}`, form)
             .then((response) => {
-                console.log(response.data)
-                if (response===form){
-                    toast.success("O tribunal foi adicionado com sucesso!", {
-                        position: toast.POSITION.TOP_CENTER
-                    })
-                }
-                else {
-                    toast.error("Não foi possível adicionar o tribunal!", {
-                        position: toast.POSITION.TOP_CENTER
-                    })
-                }
+                toast.success("O tribunal foi adicionado com sucesso!", {
+                    position: toast.POSITION.TOP_CENTER
+                })
             })
             .catch((error) => {
                 toast.error("Não foi possível adicionar o tribunal!", {
@@ -45,7 +35,7 @@ function Insert() {
 
 
     const handleRemoveDescritor = (e, index) => {
-        form["descritores"].splice(index,1)
+        form["descritores"].splice(index, 1)
         setRefresh(new Date().toISOString())
     }
 
@@ -93,7 +83,7 @@ function Insert() {
                                     </Col>
                                 </Row>
                                 <Row className="gx-3 mb-3">
-                                <Col md={6}>
+                                    <Col md={6}>
                                         <>
                                             <Row>
                                                 <Col md={11}>
@@ -130,7 +120,7 @@ function Insert() {
                                 </Row>
                             </Container>
                             <div className="mb-3 d-flex justify-content-start padding-bottom">
-                                <Button type="submit" className="mx-2" variant="outline-dark" startIcon={<Plus/>}>Registar</Button>
+                                <Button type="submit" className="mx-2" variant="outline-dark" startIcon={<Plus />}>Registar</Button>
                             </div>
                         </Form>
                     </Card.Body>
@@ -140,4 +130,4 @@ function Insert() {
     )
 }
 
-export default Insert
+export default Dashboard
