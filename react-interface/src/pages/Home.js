@@ -51,13 +51,11 @@ function Home() {
 
                     const skip = (page - 1) * limit;
                     const response2 = await axios.get(env.apiAcordaosAccessPoint + `${search}&skip=${skip}&limit=${limit}&token=${localStorage.token}`)
-                    response2.data=[]
                     setData(response2.data)
                     setSearch(search)
                 }
                 else {
                     const response2 = await axios.get(`${env.apiAcordaosAccessPoint}?lastID=${lastID}&limit=${limit}&token=${localStorage.token}`)
-                    response2.data=[]
                     setData(response2.data)
                 }
             } catch (error) {
