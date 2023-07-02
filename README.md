@@ -28,7 +28,7 @@ Cada tribunal tem a sua própria base de dados, resultando num conjunto distinto
 Para ser possível realizar o carregamento de todos os dados fornecidos foram, primeiramente, realizados scripts em Python para o processamento, parsing, manipulação e normalização dos dados. Dado que o nosso conhecimento sobre a área não é muito extenso, foi necessário realizar uma análise e uma investigação acerca do significado de cada um dos campos.  Desta forma, conseguimos gerar um ficheiro que indicava todos os campos distintos que um ficheiro possuía juntamente com o tipo de dados que guardava, verificando se existia alguma inconsistência no tipo de dados dentro do mesmo ficheiro, o que acabou por nunca se verificar.
 
 ### Agrupamento dos valores em dicionários
-Ao verificar os campos de cada um dos ficheiros, verificamos que alguns possuíam informação exclusiva aos mesmos. Pelo que apurámos, segundo o url que foi disponibilizado, estas informações pertenciam ao atributo 'Decisão Texto Integral'. Assim, para uma melhor organização aquando da apresentação do acórdão, construímos um novo atributo cujo nome é "Informação Auxiliar" que é um dicionário com toda esta informação extra.
+Ao verificar os campos de cada um dos ficheiros, verificamos que alguns possuíam informação exclusiva aos mesmos. Pelo que apuramos, segundo o url que foi disponibilizado, estas informações pertenciam ao atributo 'Decisão Texto Integral'. Assim, para uma melhor organização aquando da apresentação do acórdão, construímos um novo atributo cujo nome é "Informação Auxiliar" que é um dicionário com toda esta informação extra.
 
 ### Análise de acórdãos repetidos
 Durante a análise, apercebemo-nos da presença de alguns registos que estavam duplicados, possuindo exatamente os mesmos campos e os mesmos valores. Desta forma, utilizamos um script que percorria todos os registos de cada um dos ficheiros verificando se havia registos duplicados e removendo-os em caso afirmativo.
@@ -46,19 +46,16 @@ Durante a análise, na maior parte dos datasets, apercebemo-nos da existência d
 De forma a garantir uma uniformização da nossa base de dados, sem possuir ambiguidades nem redundâncias, e de forma a permitir uma uniformização da informação de cada um dos acórdãos, foi necessário determinar os campos cujo nome era diferente mas o valor era correspondente ao mesmo atributo. Houve um exemplo que foi muito claro: o atributo "Data do Acordão" e o atributo "Data do Acórdão". Numa uniformização automática não era possível resolver este problema pelo que estes casos foram tratados individualemente através de outros scripts.
 
 ### Tratamento das datas
-As datas ao longo dos vários ficheiros apresentavam um formato fora do convencional (mm/dd/aaaa) ou (mm-dd-aaaa). Consequentemente, de forma a minimizar possíveis ambiguidades tanto no lado do cliente como no nosso, decidimos alterar para o formato mais utilizado (dd/mm/aaaa). De notar ainda um quarto formato que apareceu onde o ano era apenas definido por 2 dígitos e não 4, respetivos aos anos antes de 2000, onde forçámos o aparecimento do ano (19xx). 
+As datas ao longo dos vários ficheiros apresentavam um formato fora do convencional (mm/dd/aaaa) ou (mm-dd-aaaa). Consequentemente, de forma a minimizar possíveis ambiguidades tanto no lado do cliente como no nosso, decidimos alterar para o formato mais utilizado (dd/mm/aaaa). De notar ainda um quarto formato que apareceu onde o ano era apenas definido por 2 dígitos e não 4, respetivos aos anos antes de 2000, onde forçamos o aparecimento do ano (19xx). 
 
 ### Tratamento dos campos em listas
-Foi possível denotar que alguns campos correspondiam a listas mas estavam expressos numa única string onde os vários valores estavam agrupados por separadores. Dentro de cada ficheiro, o separador era praticamente igual para todos os campos podendo haver uma ou outra exceção. Para tal, realizámos uma análise para verificar quais os separadores de cada um dos ficheiros. Este foi dos processos mais demorados do tratamento mas permitiu uma melhor usabilidade e uniformização dos dados do sistema. 
-
-### Referência a outros acórdãos
-Em alguns atributos de acórdãos do Tribunal da Relação de Lisboa, o seu valor era "ver acórdão STJ". A nossa primeira suspeita foi que se pudesse tratar da identificação de um outro acórdão, o que poderia ser interessante visto que futuramente poderia permitir a navegação entre vários acórdãos. Contudo, nenhuma das referências se relevou importante visto nenhum dos acórdãos referidos estavam disponibilizados. Consequentemente, não realizamos nenhum tipo de tratamento para estes casos. Como existe um outro campo "Referência Processo", que também faz referência a estes acórdãos, decidimos adicionar os valores do primeiro atributo a esta lista caso se mostrassem relevantes.
+Foi possível denotar que alguns campos correspondiam a listas mas estavam expressos numa única string onde os vários valores estavam agrupados por separadores. Dentro de cada ficheiro, o separador era praticamente igual para todos os campos podendo haver uma ou outra exceção. Para tal, realizamos uma análise para verificar quais os separadores de cada um dos ficheiros. Este foi dos processos mais demorados do tratamento mas permitiu uma melhor usabilidade e uniformização dos dados do sistema. 
 
 ### Remoção de campos desnecessários
 Alguns dos atributos presentes nos acórdãos referenciavam a data/ano em que o acórdão se tornou disponível. Também foi possível observar que todos os registos possuíam o atributo url que era referente ao link onde o acórdão estava disponível no seu sistema. Considerando que o nosso objetivo é agregar toda esta informação numa única base de dados, a referência a outros sistemas passaria a não ser relevante pelo facto de toda a informação estar disponibilizada neste mesmo sistema.
 
 ### Escolha da chave principal 
-Antes de realizar a importação dos registos, necessitámos de definir um identificador "_id". Analisando todos os campos que tínhamos disponíveis, aquele que nos pareceu mais propício era o campo 'Processo'. Para tal, teríamos que garantir que não existissem valores duplicados. No entanto, alguns valores repetiam-se, apesar dos registos serem diferentes, o que inviabilizou esta abordagem. Assim, considerando que nenhum dos outros campos eram comuns a todos os registos e, se o fossem, também não eram únicos, adotamos a estratégia de definir o identificador através de um contador, com o cuidado de garantir que os identificadores não fossem repetidos posteriormente. 
+Antes de realizar a importação dos registos, necessitamos de definir um identificador "_id". Analisando todos os campos que tínhamos disponíveis, aquele que nos pareceu mais propício era o campo 'Processo'. Para tal, teríamos que garantir que não existissem valores duplicados. No entanto, alguns valores repetiam-se, apesar dos registos serem diferentes, o que inviabilizou esta abordagem. Assim, considerando que nenhum dos outros campos eram comuns a todos os registos e, se o fossem, também não eram únicos, adotamos a estratégia de definir o identificador através de um contador, com o cuidado de garantir que os identificadores não fossem repetidos posteriormente. 
 
 ## Arquitetura Aplicacional
 A solução arquitetural concebida baseia-se em 3 serviços aplicacionais heterogéneos, proporcionando uma melhor manutenção e escabilidade do projeto e facilitando o seu desenvolvimento. Cada serviço contém funcionalidades específicas e desempenha um diferente papel no funcionamento da aplicação. 
@@ -90,7 +87,7 @@ Diretamente conectado à base de dados, este serviço é responsável pelo armaz
 
 | Coleção | Método | Rota | Descrição |
 |---------|--------|------|-----------|
-| Acordãos | GET | /acordaos | Devolve os acordaos da coleção filtrados por uma query string |
+| Acordãos | GET | /acordaos | Devolve os acordãos da coleção filtrados por uma query string |
 | Acordãos | GET | /acordaos/number | Devolve o número de acordãos presentes na coleção |
 | Acordãos | GET | /acordaos/:id | Devolve o acordão com o id passado como parâmetro |
 | Acordãos | POST | /acordaos | Adiciona um acordão à coleção |
