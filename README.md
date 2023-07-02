@@ -153,10 +153,12 @@ Para ter acesso aos logs (primeiro plano):
 docker-compose up --build
 ```
 
-5. Mova-se para a pasta ``data``:
+4. Mova-se para a pasta ``data``:
 ```bash
 cd data
 ```
+
+5. Transfira os [ficheiros](https://mega.nz/folder/RA1xFChZ#1nIryTRdZmmrBbHXI_cukw) diretamente para a pasta.
 
 6. Conceda permissões ao script:
 ```bash
