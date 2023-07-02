@@ -37,6 +37,7 @@ A solução arquitetural concebida baseia-se em 3 serviços aplicacionais hetero
 O serviço de autenticação é destinado ao registo e autenticação dos utilizadores, garantindo a segurança da aplicação. Sendo independente dos dados relativos aos acórdãos, pudemos começar o desenvolvimento deste serviço enquanto efetuavamos o tratamento dos dados. Para gerir os utilizadores e as respetivas sessões foram utilizados os módulos passport-local e jsonwebtoken. Através da atribuição de um token a cada utilizador, garantimos que apenas utilizadores autorizados podem aceder a determinadas rotas e realizar ações específicas, de acordo com os seus níveis de acesso. A coleção dos utilizadores é formada por documentos com os seguintes campos:
 
 | Método | Rota    | Descrição |
+| -------|---------|-----------|
 | GET | /users     | Devolve os utilizadores presentes na coleção de utilizadores |
 | GET | /users/:id | Devolve um utilizador consoante o id passado no parâmetro |
 | GET | /users/:id/favorites | Devolve os favorites de um utilizador passado como parâmetro |
