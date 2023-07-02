@@ -312,6 +312,14 @@ function Record() {
                                                     )
                                                 }
                                             } else if (record[key] && key !== "_id") {
+                                                if (key==="Referência Processo")
+                                                return (
+                                                    <ListGroupItem key={key}>
+                                                        <b>{key}: </b>
+                                                        {record[key]}
+                                                    </ListGroupItem>
+                                                )
+                                                else
                                                 return (
                                                     <ListGroupItem key={key}>
                                                         <b>{key}: </b>
