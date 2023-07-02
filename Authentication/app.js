@@ -11,8 +11,8 @@ require("dotenv").config();
 const fileUpload = require("express-fileupload");
 
 var mongoose = require("mongoose");
-var mongoDB = "mongodb://127.0.0.1/ProjetoEngWeb";
-//var mongoDB = process.env.MONGODB_URL;
+//var mongoDB = "mongodb://127.0.0.1/ProjetoEngWeb";
+var mongoDB = process.env.MONGODB_URL;
 mongoose.connect(mongoDB, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
