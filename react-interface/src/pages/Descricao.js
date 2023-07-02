@@ -134,28 +134,6 @@ function Descricao() {
     setEdit("add");
   };
 
-  const handleAddRegisto = async (event) => {
-    event.preventDefault();
-    const data = new FormData(event.target);
-    try {
-      await axios.post(
-        env.apiDescricaoAccessPoint + `?token=${localStorage.token}`,
-        iteratorToDictionary(data.entries())
-      );
-
-      toast.success("O registo foi inserido com sucesso", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-
-      setEdit(null);
-    } catch (error) {
-      toast.error("Não foi possível inserir o registo!", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    }
-    return <Navigate to="/descricoes" />;
-  };
-
   function Lista(obj) {
     return (
       <div className="d-flex flex-row">
@@ -329,60 +307,6 @@ function Descricao() {
                   </div>
                 ) : (
                   <ListGroupItem>{record}</ListGroupItem>
-                )}
-                {decodedToken.level >= 100 && (
-                  <div>
-                    {Edit === "add" ? (
-                      <div ref={formRef}>
-                        <Form onSubmit={handleAddRegisto}>
-                          <FloatingLabel
-                            controlId="floatingInput"
-                            className="mb-3 form-outline"
-                            label="Nome"
-                          >
-                            <Form.Control
-                              type="text"
-                              placeholder="Nome"
-                              name="Nome"
-                            />
-                          </FloatingLabel>
-                          <FloatingLabel
-                            className="mb-3 form-outline"
-                            label="Descrição"
-                          >
-                            <textarea
-                              class="form-control"
-                              id="outlined-uncontrolled"
-                              name="Desc"
-                              style={{ height: "200px" }}
-                            />
-                          </FloatingLabel>
-                          <div className="mb-5 d-flex justify-content-center padding-bottom">
-                            <Button type="submit" variant="outline-dark">
-                              Salvar
-                            </Button>
-                            <Button
-                              type="button"
-                              onClick={handleCancel}
-                              variant="outline-dark"
-                            >
-                              Cancelar
-                            </Button>
-                          </div>
-                        </Form>
-                      </div>
-                    ) : (
-                      <div>
-                        <hr />
-                        <Button
-                          variant="outline-dark"
-                          onClick={handleAddButton}
-                        >
-                          Adicionar um novo registo
-                        </Button>
-                      </div>
-                    )}
-                  </div>
                 )}
               </ListGroup>
             </Container>

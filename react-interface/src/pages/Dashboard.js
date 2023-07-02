@@ -1,10 +1,10 @@
 import NavBar from "../components/NavBar"
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { Container, Form, Col, Row, Card } from "react-bootstrap"
+import { useState} from "react"
+import { Link} from "react-router-dom"
+import { Container, Form, Col, Row, Card} from "react-bootstrap"
 import Button from '@mui/material/Button'
 import { ToastContainer, toast } from "react-toastify"
-import { PlusCircle, Trash3, Plus } from 'react-bootstrap-icons'
+import { PlusCircle, Trash3, Plus, Check} from 'react-bootstrap-icons'
 import axios from "axios"
 import env from "../config/env"
 
@@ -19,7 +19,6 @@ function Dashboard() {
     const [refresh, setRefresh] = useState("") // Atualizar o estado
 
     const handleSubmit = (event) => {
-        event.preventDefault()
         axios.post(env.apiTribunaisAccessPoint + `?token=${localStorage.token}`, form)
             .then((response) => {
                 toast.success("O tribunal foi adicionado com sucesso!", {
@@ -57,16 +56,47 @@ function Dashboard() {
         setRefresh(new Date().toISOString())
     }
 
-    return (
+    function iteratorToDictionary(iterator) {
+        const dictionary = {};
+    
+        for (const item of iterator) {
+          const [key, value] = item;
+          dictionary[key] = value;
+        }
+    
+        return dictionary;
+      }
+
+    const handleAddRegisto = async (event) => {
+        event.preventDefault()
+        const data = new FormData(event.target);
+        try {
+          await axios.post(
+            env.apiDescricaoAccessPoint + `?token=${localStorage.token}`,
+            iteratorToDictionary(data.entries())
+          );
+          toast.success("O registo foi inserido com sucesso", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+    
+        } catch (error) {
+          toast.error("Não foi possível inserir o registo!", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+        }
+        event.target=null
+      };
+
+      return (
         <>
             <ToastContainer />
             <NavBar />
-            <Container>
+            <Container className="mb-4">
                 <hr className="mt-4 mb-4" />
                 <Card className='d-flex justify-content-center' style={{ 'box-shadow': '0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)' }} >
                     <Card.Body>
                         <Form onSubmit={handleSubmit}>
-                            <Container className="my-4 mb-4">
+                            <Container className="my-4 mb-6">
                                 <h4 className="mb-4">Adicionar Tribunal</h4>
                                 <Row className="gx-3 mb-3">
                                     <Col md={6}>
@@ -118,10 +148,37 @@ function Dashboard() {
                                         </>
                                     </Col>
                                 </Row>
+                                <div className="mb-3 d-flex justify-content-start padding-bottom">
+                                <   Button type="submit" className="mx-2" variant="outline-dark" startIcon={<Plus />}>Registar</Button>
+                                </div>
                             </Container>
+                        </Form>
+                    </Card.Body>
+                </Card>
+            </Container>
+            <Container className="mb-5">
+                <Card className='d-flex justify-content-center' style={{ 'box-shadow': '0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)' }} >
+                    <Card.Body>
+                        <Form onSubmit={handleAddRegisto}>
+                            <Container className="my-4 mb-4">
+                                <h4 className="mb-4">Adicionar Campo </h4>
+                            <Form.Label controlId="floatingInput"
+                            className="form-outline"
+                                label="Nome">Nome do Atributo:</Form.Label>
+                                    <Form.Group className="mb-3">
+                                        <Form.Control required type="text" placeholder="Nome" name="Nome" />
+                                    </Form.Group>
+                                    <Form.Group className="mb-3">
+                                    <Form.Label style={{ marginLeft: '10px' }}>Descrição:</Form.Label>
+                                        <Form.Control class="form-control"
+                                id="outlined-uncontrolled"
+                                name="Desc"
+                                as="textarea" rows={6}/>
+                                    </Form.Group>
                             <div className="mb-3 d-flex justify-content-start padding-bottom">
-                                <Button type="submit" className="mx-2" variant="outline-dark" startIcon={<Plus />}>Registar</Button>
+                                <   Button type="submit" className="mx-2" variant="outline-dark" startIcon={<Plus />}>Registar</Button>
                             </div>
+                        </Container>
                         </Form>
                     </Card.Body>
                 </Card>
@@ -129,5 +186,4 @@ function Dashboard() {
         </>
     )
 }
-
 export default Dashboard
