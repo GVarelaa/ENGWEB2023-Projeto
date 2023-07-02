@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Navigate, Link } from 'react-router-dom'
-import { Container, Card,Button } from 'react-bootstrap'
+import { Container, Card,Button,Row } from 'react-bootstrap'
 import { PaginationControl } from 'react-bootstrap-pagination-control';
 import { ToastContainer, toast } from 'react-toastify'
 import NavBar from '../components/NavBar'
@@ -8,6 +8,7 @@ import Accordions from '../components/Accordions'
 import axios from 'axios'
 import env from '../config/env'
 import jwt_decode from 'jwt-decode'
+import Fav_Image from '../heart.png'
 
 
 function Favorites() {
@@ -91,6 +92,9 @@ function Favorites() {
                                             <div className="d-flex justify-content-center mt-2">Ainda não adicionou acórdãos aos favoritos. </div>
                                         </Card.Body>
                                     </Card>
+                                    <div className="d-flex justify-content-center mb-3">
+                                            <img src={Fav_Image} alt="Imagem de erro " style={{"width":"200px","height":"auto"}} />
+                                    </div>
                                     <div className="d-flex justify-content-center">
                                         <Link to="/"> 
                                             <Button type="button" variant="outline-dark">

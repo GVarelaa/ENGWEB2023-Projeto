@@ -9,6 +9,7 @@ import Search from "../components/Search"
 import axios from "axios"
 import env from "../config/env"
 import jwt_decode from "jwt-decode"
+import Aco_Image from '../acordao.png'
 
 function Home() {
     const [data, setData] = useState([])
@@ -50,11 +51,13 @@ function Home() {
 
                     const skip = (page - 1) * limit;
                     const response2 = await axios.get(env.apiAcordaosAccessPoint + `${search}&skip=${skip}&limit=${limit}&token=${localStorage.token}`)
+                    response2.data=[]
                     setData(response2.data)
                     setSearch(search)
                 }
                 else {
                     const response2 = await axios.get(`${env.apiAcordaosAccessPoint}?lastID=${lastID}&limit=${limit}&token=${localStorage.token}`)
+                    response2.data=[]
                     setData(response2.data)
                 }
             } catch (error) {
@@ -150,13 +153,16 @@ function Home() {
                                 </Card.Body>
                             </Card>
                         ) : (
-                            <div>
+                            <Card className='d-flex justify-content-center' style={{ 'boxShadow': '0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)' }} >
                                 <Card className="d-flex justify-content-center mb-3" style={{ "boxShadow": "0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%)", "height": "3rem" }}>
                                     <Card.Body>
                                         <div className="d-flex justify-content-center mt-2">Sem acórdãos disponíveis de momento!</div>
                                     </Card.Body>
                                 </Card>
-                            </div>
+                                <div className="d-flex justify-content-center mb-3">
+                                    <img src={Aco_Image} alt="Imagem de erro " style={{"width":"400px","height":"auto"}} />
+                                </div>
+                            </Card>
                         )}
                     </Col>
                 </Row>
