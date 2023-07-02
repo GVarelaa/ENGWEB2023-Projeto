@@ -41,6 +41,20 @@ function Edit() {
             axios.get(`${env.apiAcordaosAccessPoint}/${params.id}?token=${localStorage.token}`)
                 .then(response => {
                     if (!response.data.error) {
+                        if ("Legislações" in response.data) {
+                            Object.keys(response.data["Legislações"]).forEach(key => {
+                                if (response.data["Legislações"][key].length > 0) response.data[key] = response.data["Legislações"][key]
+                            })
+                            delete response.data["Legislações"]
+                        }
+
+                        if ("Jurisprudências" in response.data) {
+                            Object.keys(response.data["Jurisprudências"]).forEach(key => {
+                                if (response.data["Jurisprudências"][key].length > 0) response.data[key] = response.data["Jurisprudências"][key]
+                            })
+                            delete response.data["Jurisprudências"]
+                        }
+
                         record = response.data
                         setForm(response.data)
                         setSelectedDescritores(response.data.Descritores.map(descritor => ({ label: descritor, value: descritor })))
@@ -165,8 +179,8 @@ function Edit() {
     }
 
 
-    const handleChangeFieldMulti = (e, index, item) => {
-        form[item.field][index] = e.target.value
+    const handleChangeFieldMulti = (e, index, field) => {
+        form[field][index] = e.target.value
         setRefresh(new Date().toISOString())
     }
 
@@ -193,18 +207,32 @@ function Edit() {
         event.preventDefault()
         form["Descritores"] = selectedDescritores.map(obj => obj.label)
 
+        var lesgislacoes = {}, jurisprudencias = {}
+        Object.keys(form).forEach(key => {
+            if (key === "Legislação Nacional" || key === "Legislação Comunitária" || key === "Legislação Estrangeira") {
+                lesgislacoes[key] = form[key]
+                delete form[key]
+            }
+            else if (key === "Jurisprudência Nacional" || key === "Jurisprudência Internacional" || key === "Jurisprudência Estrangeira" ||
+                key === "Jurisprudência Constitucional" || key === "Outra Jurisprudência") {
+                jurisprudencias[key] = form[key]
+                delete form[key]
+            }
+        })
+
+        if (Object.keys(lesgislacoes).length > 0) form["Legislações"] = lesgislacoes
+        if (Object.keys(jurisprudencias).length > 0) form["Jurisprudências"] = jurisprudencias
+       
         axios.put(env.apiAcordaosAccessPoint + `/${params.id}?token=${localStorage.token}`, form)
             .then(response => {
                 toast.success("O acórdão foi atualizado com sucesso!", { position: toast.POSITION.TOP_CENTER })
+                setRefresh(new Date().toISOString())
                 navigate("/")
             })
             .catch(error => {
                 toast.error("Não foi possível atualizar o acórdão!", { position: toast.POSITION.TOP_CENTER })
             })
     }
-
-    console.log(form)
-    console.log(camposSelecionados)
 
     return (
         <>
@@ -381,7 +409,7 @@ function Edit() {
                                                                         <Row className="mb-2">
                                                                             <Col md={11}>
                                                                                 <Form.Group>
-                                                                                <Form.Control required type="text" placeholder={item.field + " " + (index + 1)} value={form[item.field][index]} onChange={(e) => handleChangeFieldMulti(e, index, item.field)} />
+                                                                                    <Form.Control required type="text" placeholder={item.field + " " + (index + 1)} value={form[item.field][index]} onChange={(e) => handleChangeFieldMulti(e, index, item.field)} />
                                                                                 </Form.Group>
                                                                             </Col>
                                                                             <Col md={1} className="d-flex justify-content-start">

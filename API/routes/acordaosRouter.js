@@ -33,7 +33,6 @@ router.get("/", verify.userAccess, function (req, res, next) {
         }
     })
 
-
     Acordao.list(req.query, skip, limit)
         .then((data) => {
             res.status(200).json(data)
