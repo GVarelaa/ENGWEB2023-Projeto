@@ -36,6 +36,18 @@ A solução arquitetural concebida baseia-se em 3 serviços aplicacionais hetero
 ### Autenticação
 O serviço de autenticação é destinado ao registo e autenticação dos utilizadores, garantindo a segurança da aplicação. Sendo independente dos dados relativos aos acórdãos, pudemos começar o desenvolvimento deste serviço enquanto efetuavamos o tratamento dos dados. Para gerir os utilizadores e as respetivas sessões foram utilizados os módulos passport-local e jsonwebtoken. Através da atribuição de um token a cada utilizador, garantimos que apenas utilizadores autorizados podem aceder a determinadas rotas e realizar ações específicas, de acordo com os seus níveis de acesso. A coleção dos utilizadores é formada por documentos com os seguintes campos:
 
+| Método | Rota    | Descrição |
+| GET | /users     | Devolve os utilizadores presentes na coleção de utilizadores |
+| GET | /users/:id | Devolve um utilizador consoante o id passado no parâmetro |
+| GET | /users/:id/favorites | Devolve os favorites de um utilizador passado como parâmetro |
+| GET | /users/check-email/:email | Verifica se o email passado como parâmetro já existe |
+| GET | /users/check-username/:username | Verifica se o username passodo como parâmetro já existe |
+| GET | /users/login/facebook | Redireciona para a autenticação por Facebook |
+| GET | /users/login/facebook/callback | Rota callback da autenticação do Facebook |
+| GET | /users/login/google | Redireciona para a autenticação por Google |
+| GET | /users/login/google/callback | Rota callback da autenticação do Google |
+| POST | /users | Adiciona um utilizador à coleção de utilizadores |
+| POST | /users/register | Adiciona um utilizador à coleção de utilizadores (registo) |
 
 ### API de Dados
 Diretamente conectado à base de dados, este serviço é responsável pelo armazenamento e gestão dos dados da aplicação. A base de dados foi criada com recurso ao software MongoDB, armazenando informações dos utilizadores e dos acórdãos. A API fornece, assim, endpoints para a leitura, criação, atualização e exclusão de dados, permitindo que a aplicação interaja com a base de dados de forma segura e eficiente. Todo este serviço encontra-se protegido de forma a que os pedidos só possam ser realizados sob a existência de token válido. Para além disso, existem verificações relativas ao nível de acesso do utilizador correspondente ao token, uma vez que alguns pedidos são exclusivos a uma determinada gama de
