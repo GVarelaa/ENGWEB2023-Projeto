@@ -126,17 +126,7 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
                 return (
                     <Accordion.Item eventKey={index}>
                         <Accordion.Header>
-                            {page_type==="Fav" ?(
-                            <Container>
-                                    <b>Processo: </b>{obj.Processo}
-                                    <div>
-                                        <b>Descrição: </b>
-                                        {favorites[obj._id]}
-                                    </div>
-                            </Container>
-                            ):(
                             <Container><b>Processo: </b>{obj.Processo}</Container>
-                            )}
                             <Container className='d-flex justify-content-end px-3'>
                                 <Link to={`/${obj._id}?returnPage=${page}` + (search && search !== "?" ? "&" + search.slice(1) : "")}> <Eye size={20} color='black' className='mx-3' /> </Link>
                                 {obj._id.toString() in favorites
@@ -150,7 +140,7 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
                                         </Modal.Header>
 
                                         <Form>
-                                            <div class="mr-5 ml-5">
+                                            <div >
                                                 <textarea type="text" placeholder="Descrição" style={{ "height": "200px","width":"400px","marginLeft":"50px"}} onChange={(e) => {setDescricaoFav(e.target.value)}} />
                                             </div>
                                             <Modal.Footer>
@@ -181,6 +171,7 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
                                 }
                             </Container>
                         </Accordion.Header>
+                        {page_type!=="Fav" ? ( 
                         <Accordion.Body>
                             <ListGroup>
                                 <ListGroupItem><b>Data: </b>{obj["Data do Acordão"]}</ListGroupItem>
@@ -193,6 +184,13 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
                                 </ListGroupItem>
                             </ListGroup>
                         </Accordion.Body>
+                        ):(
+                            <Accordion.Body>
+                                <ListGroup>
+                                    <ListGroupItem><b>Descrição: </b>{favorites[obj._id]}</ListGroupItem>
+                                </ListGroup>
+                            </Accordion.Body>
+                        )}
                     </Accordion.Item>
                 )
             })}
