@@ -134,7 +134,7 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
                                     : <Link> <Heart size={20} color='black' className='mx-3' onClick={(event) => handleShowModalFav(event, obj._id.toString())} /> </Link>
                                 }
                                 <>
-                                    <Modal show={showModalFav && FavItemID === obj._id} onHide={handleHideModalFav}>
+                                    <Modal show={showModalFav && FavItemID == obj._id} onHide={handleHideModalFav}>
                                         <Modal.Header closeButton>
                                             <Modal.Title>Adicionar uma descrição</Modal.Title>
                                         </Modal.Header>
@@ -151,10 +151,10 @@ function Accordions({ data, setData, favorites, setFavorites, token, page, searc
                                     </Modal>
                                 </>
                                 {token.level === 100 && <Link to={"/edit/" + obj._id}> <Pencil size={20} color='black' className='mx-3' /> </Link>}
-                                {token.level === 100 && obj._id === deleteItemID &&
+                                {token.level === 100 &&
                                     <>
                                         <Link><Trash3 size={20} color='black' className='mx-3' onClick={(event) => handleShowModal(event, obj._id.toString())} /></Link>
-                                        <Modal show={showModal} onHide={handleHideModal}>
+                                        <Modal show={showModal && obj._id == deleteItemID } onHide={handleHideModal}>
                                             <Modal.Header closeButton>
                                                 <Modal.Title>Confirmação de Remoção</Modal.Title>
                                             </Modal.Header>
