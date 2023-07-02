@@ -92,8 +92,30 @@ O serviço de autenticação é destinado ao registo e autenticação dos utiliz
 | POST | /users/register | Adiciona um utilizador à coleção de utilizadores (registo) |
 
 ### API de Dados
-Diretamente conectado à base de dados, este serviço é responsável pelo armazenamento e gestão dos dados da aplicação. A base de dados foi criada com recurso ao software MongoDB, armazenando informações dos utilizadores e dos acórdãos. A API fornece, assim, endpoints para a leitura, criação, atualização e exclusão de dados, permitindo que a aplicação interaja com a base de dados de forma segura e eficiente. Todo este serviço encontra-se protegido de forma a que os pedidos só possam ser realizados sob a existência de token válido. Para além disso, existem verificações relativas ao nível de acesso do utilizador correspondente ao token, uma vez que alguns pedidos são exclusivos a uma determinada gama de
-utilizadores.
+Diretamente conectado à base de dados, este serviço é responsável pelo armazenamento e gestão dos dados da aplicação. A base de dados foi criada com recurso ao software MongoDB, armazenando informações dos utilizadores e dos acórdãos. A API fornece, assim, endpoints para a leitura, criação, atualização e exclusão de dados, permitindo que a aplicação interaja com a base de dados de forma segura e eficiente. Todo este serviço encontra-se protegido de forma a que os pedidos só possam ser realizados sob a existência de token válido. Para além disso, existem verificações relativas ao nível de acesso do utilizador correspondente ao token, uma vez que alguns pedidos são exclusivos a uma determinada gama de utilizadores. Este serviços tem acesso às seguintes coleções:
+
+- **Acordãos (acordaos)** : coleção que contém informação sobre todos os acordãos
+- **Campos (fields)** : coleção que contém todos os campos que podem estar presentes nos acordãos
+- **Tribunais (tribunals)** : coleção que contém todos os tribunais e respetivos descritores
+- **Detalhes dos campos (acordaos_details)** : coleção com informação relativa aos vários campos dos acordãos
+
+| Coleção | Método | Rota | Descrição |
+|---------|--------|------|-----------|
+| Acordãos | GET | /acordaos | Devolve os acordaos da coleção filtrados por uma query string |
+| Acordãos | GET | /acordaos/number | Devolve o número de acordãos presentes na coleção |
+| Acordãos | GET | /acordaos/:id | Devolve o acordão com o id passado como parâmetro |
+| Acordãos | POST | /acordaos | Adiciona um acordão à coleção |
+| Acordãos | PUT | /acordaos/:id | Altera um acordão com o id passado como parâmetro |
+| Acordãos | DELETE | /acordaos/:id | Remove um acordão da coleção com o id passado como parâmetro |
+| Campos | GET | /fields | Devolve todos os registos presentes na coleção |
+| Campos | POST | /fields | Adiciona um novo campo à coleção |
+| Campos | PUT | /fields:id | Altera o campo com o id passado como parâmetro |
+| Campos | DELETE | /fields:id | Remove um campo da coleção com o id passado como parâmetro |
+| Tribunais | GET | /tribunais | Devolve todos os tribunais presentes na coleção |
+| Tribunais | GET | /tribunais/:id | Devolve o tribunal com o id passado como parâmetro |
+| Tribunais | POST | /tribunais | Adiciona um novo tribunal à coleção |
+| Tribunais | PUT | /tribunais/:id | Altera um tribunal com o id passado como parâmetro |
+| Tribunais | DELETE | /tribunais/:id | Remove um tribunal com o id passado como parâmetro |
 
 
 ### Interface
