@@ -41,20 +41,22 @@ function Edit() {
             axios.get(`${env.apiAcordaosAccessPoint}/${params.id}?token=${localStorage.token}`)
                 .then(response => {
                     if (!response.data.error) {
+                        var id = response.data["_id"]
                         if ("Legislações" in response.data) {
                             Object.keys(response.data["Legislações"]).forEach(key => {
                                 if (response.data["Legislações"][key].length > 0) response.data[key] = response.data["Legislações"][key]
                             })
                             delete response.data["Legislações"]
                         }
-
+                        
                         if ("Jurisprudências" in response.data) {
                             Object.keys(response.data["Jurisprudências"]).forEach(key => {
                                 if (response.data["Jurisprudências"][key].length > 0) response.data[key] = response.data["Jurisprudências"][key]
                             })
                             delete response.data["Jurisprudências"]
                         }
-
+                        
+                        response.data["_id"] = id
                         record = response.data
                         setForm(response.data)
                         setSelectedDescritores(response.data.Descritores.map(descritor => ({ label: descritor, value: descritor })))
@@ -233,7 +235,7 @@ function Edit() {
                 toast.error("Não foi possível atualizar o acórdão!", { position: toast.POSITION.TOP_CENTER })
             })
     }
-
+    
     return (
         <>
             {form && (form === "NoPage" ? (<NoPage />) :

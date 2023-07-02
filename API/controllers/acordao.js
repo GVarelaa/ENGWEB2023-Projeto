@@ -75,6 +75,7 @@ module.exports.deleteAcordao = (id) => {
 };
 
 module.exports.updateAcordao = (acordao) => {
+    console.log(acordao)
     return Acordao.updateOne({ _id: acordao._id }, {$set: acordao})
         .then((response) => {
             return response;

@@ -28,6 +28,7 @@ function Record() {
                 const response = await axios.get(`${env.apiAcordaosAccessPoint}/${params.id}?token=${localStorage.token}`)
                 if (!response.data.error) setRecord(response.data)
                 else setRecord("NoPage")
+                console.log(response.data)
             } catch (error) {}
 
             axios.get(env.apiTribunaisAccessPoint + `?token=${localStorage.token}`)
@@ -140,6 +141,7 @@ function Record() {
 
         handleHideModal()
     }
+
 
     return (
         <>
