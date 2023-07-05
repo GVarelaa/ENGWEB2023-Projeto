@@ -213,11 +213,11 @@ function Record() {
                                             </Form>
                                         </Modal>
                                     </>
-                                    <Link to={"/edit/" + params.id} style={{ 'textDecoration': 'none', 'color': 'inherit' }}>
-                                        <Button variant="outline-dark" startIcon={<Pencil />}>Editar Acórdão</Button>
-                                    </Link>
                                     {decodedToken.level === 100 && (
                                         <>
+                                            <Link to={"/edit/" + params.id} style={{ 'textDecoration': 'none', 'color': 'inherit' }}>
+                                                <Button variant="outline-dark" startIcon={<Pencil />}>Editar Acórdão</Button>
+                                            </Link>
                                             <Button variant="outline-dark" startIcon={<Trash3 />} onClick={(event) => handleShowModal(event, params.id)}>Remover Acórdão</Button>
                                             <Modal show={showModal} onHide={handleHideModal}>
                                                 <Modal.Header closeButton>

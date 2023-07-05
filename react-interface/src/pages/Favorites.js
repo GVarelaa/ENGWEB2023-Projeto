@@ -81,7 +81,7 @@ function Favorites() {
                         <Container className='mt-4'>
                             {data.length>=1 ?(
                                 <div>
-                            <Accordions page_type="Fav" data={data} setData={setData} favorites={favorites} setFavorites={setFavorites} token={decodedToken} />
+                            <Accordions page_type="Fav" data={data} setData={setData} favorites={favorites} setFavorites={setFavorites} token={decodedToken} page="favorites"/>
                             <Container className='d-flex justify-content-center mb-4'>
                                 <PaginationControl page={page} between={4} total={recordsNumber} limit={limit} changePage={handleChangePage} ellipsis={1} />
                             </Container>
