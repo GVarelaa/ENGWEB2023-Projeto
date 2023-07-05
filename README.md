@@ -76,6 +76,13 @@ O serviço de autenticação é destinado ao registo e autenticação dos utiliz
 | GET | /users/login/google/callback | Rota callback da autenticação do Google |
 | POST | /users | Adiciona um utilizador à coleção de utilizadores |
 | POST | /users/register | Adiciona um utilizador à coleção de utilizadores (registo) |
+| POST | /users/login | Autentica um utilizador |
+| POST | /users/image/:id | Guarda uma imagem de um utilizador passado por parâmetro |
+| PUT | /users/:id | Altera as informações de um utilizador
+| PUT | /users/:id/password | Altera a password de um utilizador |
+| PUT | /users/:id/favorites | Adiciona um favorito ao utilizador passado por parâmetro |
+| PUT | /users/:id/removeFavorite | Remove um favorite ao utilizador passado por parâmetro |
+| DELETE | /users/:id | Remove um utilizador passado por parâmetro da coleção |
 
 ### API de Dados
 Diretamente conectado à base de dados, este serviço é responsável pelo armazenamento e gestão dos dados da aplicação. A base de dados foi criada com recurso ao software MongoDB, armazenando informações dos utilizadores e dos acórdãos. A API fornece, assim, endpoints para a leitura, criação, atualização e exclusão de dados, permitindo que a aplicação interaja com a base de dados de forma segura e eficiente. Todo este serviço encontra-se protegido de forma a que os pedidos só possam ser realizados sob a existência de token válido. Para além disso, existem verificações relativas ao nível de acesso do utilizador correspondente ao token, uma vez que alguns pedidos são exclusivos a uma determinada gama de utilizadores. Este serviços tem acesso às seguintes coleções:
